@@ -1,0 +1,30 @@
+---
+  name: 'Build And Test'
+  on:
+    pull_request:
+  # Stop in progress workflows on the same branch and same workflow to use latest committed code
+  concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+  
+  jobs:
+    build-test:
+      name: 'Build And Test'
+      runs-on: [self-hosted, linux, normal]
+      steps:
+        - name: 'Check out code'
+          uses: actions/checkout@v3
+          with:
+            submodules: recursive
+        - name: 'Set up Docker'
+          uses: ./.github/actions/with-docker
+          with:
+            container-name: k-rust-demo-${{ github.sha }}
+        - name: 'Build the semantics'
+          run: docker exec -t k-rust-demo-${{ github.sha }} /bin/bash -c 'make build -j4'
+        - name: 'Run Tests'
+          run: docker exec -t k-rust-demo-${{ github.sha }} /bin/bash -c 'make -j4 test'
+        - name: 'Tear down Docker'
+          if: always()
+          run: |
+            docker stop k-rust-demo-${{ github.sha }}
