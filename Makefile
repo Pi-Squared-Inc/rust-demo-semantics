@@ -23,4 +23,4 @@ $(RUST_TIMESTAMP): $(SEMANTICS_FILES)
 
 $(SYNTAX_OUTPUTS_DIR)/%.rs-parsed: $(SYNTAX_INPUT_DIR)/%.rs $(RUST_TIMESTAMP)
 	mkdir -p $(SYNTAX_OUTPUTS_DIR)
-	kast --definition $(RUST_KOMPILED) $< --sort Crate > $@
+	kast --definition $(RUST_KOMPILED) $< --sort Crate > $@ || (rm $@ && false)
