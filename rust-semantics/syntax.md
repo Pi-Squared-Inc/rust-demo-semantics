@@ -41,10 +41,9 @@ module RUST-SHARED-SYNTAX
     syntax InnerAttribute ::= "#![" Attr "]"  [symbol(innerAttribute)]
     syntax OuterAttribute ::= "#[" Attr "]"  [symbol(outerAttribute)]
 
-    syntax Attr ::= Identifier
-                  | Identifier "(" Identifier ")"
-                  | Identifier "(" StringLiteral ")"
-                  | Identifier "::" Identifier
+    syntax Attr ::= SimplePath
+                  | SimplePath AttrInput
+    syntax AttrInput ::= DelimTokenTree | "=" Expression
 
 ```
 
@@ -53,7 +52,7 @@ module RUST-SHARED-SYNTAX
 ```k
 
   syntax Item ::= OuterAttributes VisOrMacroItem  [symbol(item)]
-  syntax NonEmptyOuterAttributes ::= OuterAttribute | OuterAttribute NonEmptyOuterAttributes
+  syntax NonEmptyOuterAttributes ::= NeList{OuterAttribute, ""}
   syntax OuterAttributes ::= "" | NonEmptyOuterAttributes
   syntax VisOrMacroItem ::= VisItem | MacroItem
   syntax MacroItem ::= MacroInvocationSemi | MacroRulesDefinition
@@ -90,8 +89,7 @@ module RUST-SHARED-SYNTAX
 ```k
 
   syntax SimplePath ::= SimplePathList | "::" SimplePathList
-  syntax SimplePathList ::= SimplePathSegment
-  syntax SimplePathList ::= SimplePathSegment "::" SimplePathList
+  syntax SimplePathList ::= NeList{SimplePathSegment, "::"}
   syntax SimplePathSegment ::= Identifier | "super" | "self" | "crate" | "$crate"
 
 ```
@@ -120,8 +118,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                     | SimplePath "as" SimplePathAs
   syntax MaybeSimplePathWithColon ::= "::" | SimplePath "::"
   syntax MaybeUseTreesMaybeComma ::= "" | UseTrees | UseTrees ","
-  syntax UseTrees ::= UseTree
-  syntax UseTrees ::= UseTree "," UseTrees
+  syntax UseTrees ::= NeList{UseTree, ","}
   syntax MaybeSimplePathAs ::= "" | "as" SimplePathAs
   syntax SimplePathAs ::= Identifier | Underscore
 
@@ -151,8 +148,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                               | MaybeSelfParamWithComma FunctionParameterList MaybeComma
   syntax MaybeComma ::= "" | ","
   syntax MaybeSelfParamWithComma ::= "" | SelfParam ","
-  syntax FunctionParameterList ::= FunctionParam
-  syntax FunctionParameterList ::= FunctionParam "," FunctionParameterList
+  syntax FunctionParameterList ::= NeList{FunctionParam, ","}
 
   syntax SelfParam ::= OuterAttributes ShorthandOrTypedSelf
   syntax ShorthandOrTypedSelf ::= ShorthandSelf | TypedSelf
@@ -423,12 +419,11 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 ```k
 
   syntax PathInExpression ::= PathExprSegments | "::" PathExprSegments
-  syntax PathExprSegments ::= PathExprSegment
-                            | PathExprSegment "::" PathExprSegments
+  syntax PathExprSegments ::= NeList{PathExprSegment, "::"}
   syntax PathExprSegment ::= PathIdentSegment | PathIdentSegment "::" GenericArgs
   syntax PathIdentSegment ::= Identifier | "super" | "self" | "Self" | "crate" | "$crate"
   syntax GenericArgs ::= "<" ">" | "<" GenericArgList MaybeComma ">"
-  syntax GenericArgList ::= GenericArg | GenericArg "," GenericArgList
+  syntax GenericArgList ::= NeList{GenericArg, ","}
   // TODO: Not implemented properly
   syntax GenericArg ::= Type
 
@@ -498,8 +493,9 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax TupleExpression ::= "(" MaybeTupleElements ")"
   syntax MaybeTupleElements ::= "" | TupleElements
   syntax TupleElements  ::= Expression ","
-                          | Expression "," Expression
-                          | Expression "," TupleElements
+                          | Expression "," TupleElementsNoEndComma
+                          | Expression "," TupleElementsNoEndComma ","
+  syntax TupleElementsNoEndComma ::= NeList{Expression, ","}
 
 ```
 
@@ -527,7 +523,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax CallExpression ::= PathExpression "(" MaybeCallParams ")"
   syntax MaybeCallParams ::= "" | CallParams
   syntax CallParams ::= CallParamsList | CallParamsList ","
-  syntax CallParamsList ::= Expression | Expression "," CallParams
+  syntax CallParamsList ::= NeList{Expression, ","}
 
 ```
 
@@ -621,7 +617,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       | NonEmptyStatements Expression
                       // TODO: Not implemented properly
                       | Expression
-  syntax NonEmptyStatements ::= Statement | Statement NonEmptyStatements
+  syntax NonEmptyStatements ::= NeList{Statement, ""}
 
 ```
 
@@ -763,8 +759,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 ```k
 
   syntax Pattern ::= PatternNoTopAlts | "|" PatternNoTopAlts
-  syntax PatternNoTopAlts ::= PatternNoTopAlt
-  syntax PatternNoTopAlts ::= PatternNoTopAlt "|" PatternNoTopAlts
+  syntax PatternNoTopAlts ::= NeList{PatternNoTopAlt, "|"}
   syntax PatternNoTopAlt  ::= PatternWithoutRange
                             | RangePattern
   syntax PatternWithoutRange  ::= LiteralPattern
@@ -855,7 +850,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax TuplePattern ::= "(" MaybeTuplePatternItems ")"
   syntax MaybeTuplePatternItems ::= "" | TuplePatternItems
   syntax TuplePatternItems ::= Pattern "," | RestPattern | Patterns | Patterns ","
-  syntax Patterns ::= Pattern | Pattern "," Patterns
+  syntax Patterns ::= NeList{Pattern, ","}
 
 ```
 
@@ -947,7 +942,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 ```k
 
   syntax TypePath ::= TypePathSegments | "::" TypePathSegments
-  syntax TypePathSegments ::= TypePathSegment | TypePathSegment "::" TypePathSegments
+  syntax TypePathSegments ::= NeList{TypePathSegment, "::"}
   syntax TypePathSegment ::= PathIdentSegment | PathIdentSegment TypePathSegmentSuffix
   syntax TypePathSegmentSuffix ::= TypePathSegmentSuffixSuffix | "::" TypePathSegmentSuffixSuffix
   // TODO: Not implemented properly
@@ -1028,7 +1023,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
   syntax GenericParams  ::= "<" ">"
                           | "<" GenericParamList MaybeComma ">"
-  syntax GenericParamList ::= GenericParam | GenericParam "," GenericParamList
+  syntax GenericParamList ::= NeList{GenericParam, ","}
   // TODO: Not implemented properly
   syntax GenericParam ::= TypeParam
   // TODO: Not implemented properly
