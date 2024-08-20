@@ -67,7 +67,9 @@ module RUST-PREPROCESSING-PRIVATE-HELPERS
 
     syntax NormalizedFunctionParameterOrError ::= normalizeParam(FunctionParam)  [function, total]
     rule normalizeParam(_:OuterAttributes Name:Identifier : T:Type) => Name : T
-    rule normalizeParam(P:FunctionParam) => error("unimplemented normalizedParam case", P:FunctionParam:KItem)
+    rule normalizeParam(P:FunctionParam)
+        => error("unimplemented normalizedParam case", P:FunctionParam:KItem)
+        [owise]
 
     syntax BlockExpressionOrSemicolon ::= getFunctionBlockOrSemicolon(Function)  [function, total]
     rule getFunctionBlockOrSemicolon(_Q:FunctionQualifiers F:FunctionWithoutQualifiers)

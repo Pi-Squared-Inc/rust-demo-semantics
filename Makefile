@@ -1,4 +1,4 @@
-SEMANTICS_FILES ::= $(shell find rust-semantics/ -type f -name '*')
+SEMANTICS_FILES ::= $(shell find rust-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
 RUST_KOMPILED ::= .build/rust-kompiled
 RUST_TIMESTAMP ::= $(RUST_KOMPILED)/timestamp
 SYNTAX_INPUT_DIR ::= tests/syntax
