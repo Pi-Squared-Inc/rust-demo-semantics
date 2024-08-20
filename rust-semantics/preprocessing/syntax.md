@@ -25,26 +25,13 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
                                 )
 
     syntax Initializer  ::= addMethod(traitName : TypePath, function: Function, atts:OuterAttributes)
-                          | addMethod1(
+                          | #addMethod(
                                 TypePath,
-                                FunctionWithWhere, BlockExpressionOrSemicolon,
+                                Identifier,
+                                NormalizedFunctionParameterListOrError,
+                                Type,
+                                BlockExpressionOrSemicolon,
                                 OuterAttributes
-                            )
-                          | addMethod2(
-                                TypePath,
-                                FunctionWithParams, Type,
-                                BlockExpressionOrSemicolon, OuterAttributes
-                            )
-                          | addMethod3(
-                                TypePath,
-                                Identifier, NormalizedFunctionParameterList,
-                                FunctionParameterList, Type,
-                                BlockExpressionOrSemicolon, OuterAttributes
-                            )
-                          | addMethod4(
-                                TypePath,
-                                Identifier, NormalizedFunctionParameterList, Type,
-                                BlockExpressionOrSemicolon, OuterAttributes
                             )
 
     // TODO: Move to a more generic place
