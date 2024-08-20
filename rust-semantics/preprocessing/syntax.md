@@ -1,12 +1,12 @@
 ```k
 
-module RUST-INDEXING-SYNTAX
+module RUST-PREPROCESSING-SYNTAX
     imports RUST-SHARED-SYNTAX
 
     syntax Initializer ::= crateParser(crate: Crate)
 endmodule
 
-module RUST-INDEXING-PRIVATE-SYNTAX
+module RUST-PREPROCESSING-PRIVATE-SYNTAX
     imports LIST
     imports MAP
     imports RUST-REPRESENTATION

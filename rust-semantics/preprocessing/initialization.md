@@ -2,8 +2,8 @@
 
 module INITIALIZATION
     imports private RUST-RUNNING-CONFIGURATION
-    imports private RUST-INDEXING-PRIVATE-HELPERS
-    imports private RUST-INDEXING-PRIVATE-SYNTAX
+    imports private RUST-PREPROCESSING-PRIVATE-HELPERS
+    imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 
     // rule
     //     <k> crateInitializer

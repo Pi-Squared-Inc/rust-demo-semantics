@@ -3,8 +3,8 @@
 module CRATE
     imports private LIST
     imports private MAP
-    imports private RUST-INDEXING-PRIVATE-SYNTAX
-    imports private RUST-INDEXING-SYNTAX
+    imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
+    imports private RUST-PREPROCESSING-SYNTAX
     imports private RUST-REPRESENTATION
     imports private RUST-RUNNING-CONFIGURATION
 

@@ -1,7 +1,7 @@
 ```k
 
 module RUST-CONFIGURATION
-    imports RUST-INDEXING-CONFIGURATION
+    imports RUST-PREPROCESSING-CONFIGURATION
 
     configuration
         <rust>
@@ -11,7 +11,7 @@ module RUST-CONFIGURATION
 endmodule
 
 module RUST-RUNNING-CONFIGURATION
-    imports private RUST-INDEXING-SYNTAX
+    imports private RUST-PREPROCESSING-SYNTAX
     imports RUST-CONFIGURATION
 
     configuration
