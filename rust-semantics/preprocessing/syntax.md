@@ -14,27 +14,35 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
 
     syntax Initializer  ::= traitParser(Trait)
                           | traitMethodsParser(AssociatedItems, functions: Map, traitName:Identifier)
-                          | crateInitializer
-                                ( constantNames:List, constants: Map
-                                , traitName: Identifier
+                          | constantInitializer
+                                ( constantNames: List, constants: Map )
+                          | traitInitializer
+                                ( traitName: TypePath
+                                )
+                          | traitMethodInitializer
+                                ( traitName: TypePath
                                 , functionNames:List, functions: Map
                                 )
 
-    syntax Initializer  ::= addMethod(function: Function, atts:OuterAttributes)
+    syntax Initializer  ::= addMethod(traitName : TypePath, function: Function, atts:OuterAttributes)
                           | addMethod1(
+                                TypePath,
                                 FunctionWithWhere, BlockExpressionOrSemicolon,
                                 OuterAttributes
                             )
                           | addMethod2(
+                                TypePath,
                                 FunctionWithParams, Type,
                                 BlockExpressionOrSemicolon, OuterAttributes
                             )
                           | addMethod3(
+                                TypePath,
                                 Identifier, NormalizedFunctionParameterList,
                                 FunctionParameterList, Type,
                                 BlockExpressionOrSemicolon, OuterAttributes
                             )
                           | addMethod4(
+                                TypePath,
                                 Identifier, NormalizedFunctionParameterList, Type,
                                 BlockExpressionOrSemicolon, OuterAttributes
                             )

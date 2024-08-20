@@ -67,11 +67,13 @@ module CRATE
             , traitName : Name:Identifier
             , traitFunctions: Functions:Map
             )
-          => crateInitializer
-            ( ... constantNames: keys_list(Constants), constants: Constants
-            , traitName: Name
-            , functionNames:keys_list(Functions), functions: Functions
-            )
+          => constantInitializer
+              ( ... constantNames: keys_list(Constants), constants: Constants )
+          ~> traitInitializer(Name)
+          ~> traitMethodInitializer
+              ( ... traitName: Name
+              , functionNames:keys_list(Functions), functions: Functions
+              )
 endmodule
 
 ```

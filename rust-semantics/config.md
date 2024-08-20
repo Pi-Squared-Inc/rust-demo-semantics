@@ -5,7 +5,7 @@ module RUST-CONFIGURATION
 
     configuration
         <rust>
-            <crate/>
+            <preprocessed/>
         </rust>
 
 endmodule
