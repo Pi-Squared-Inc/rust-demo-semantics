@@ -5,14 +5,12 @@ module INITIALIZATION
     imports private RUST-PREPROCESSING-PRIVATE-HELPERS
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 
-    rule constantInitializer(... constantNames : .List) => .K
-
     rule (.K => addMethod(TraitName, F, A))
           ~> traitMethodInitializer
               ( ... traitName : TraitName:TypePath
-              , functionNames: (ListItem(Name:Identifier) => .List) _Names:List
+              , functionNames: (ListItem(Name:Identifier:KItem) => .List) _Names:List
               , functions: _Functions:Map
-                ((Name |-> (A:OuterAttributes F:Function):AssociatedItem) => .Map)
+                ((Name:Identifier:KItem |-> (A:OuterAttributes F:Function):AssociatedItem) => .Map)
               )
     rule traitMethodInitializer(... functionNames: .List) => .K
 
