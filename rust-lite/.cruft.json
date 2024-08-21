@@ -1,0 +1,18 @@
+{
+  "template": "https://github.com/runtimeverification/python-project-template",
+  "commit": "601d5e2a0e8a98c87dcb1ae694d22d76d0114e01",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "rust-lite",
+      "project_slug": "rust-lite",
+      "package_name": "rust_lite",
+      "version": "0.1.0",
+      "description": "Pyk scripts for running our Rust Lite Semantics",
+      "author_name": "Runtime Verification, Inc.",
+      "author_email": "contact@runtimeverification.com",
+      "_template": "https://github.com/runtimeverification/python-project-template"
+    }
+  },
+  "directory": null
+}
