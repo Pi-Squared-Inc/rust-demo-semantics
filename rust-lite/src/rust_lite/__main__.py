@@ -23,11 +23,16 @@ _LOG_FORMAT: Final = '%(levelname)s %(asctime)s %(name)s - %(message)s'
 
 
 def main() -> None:
-    print("Instantiating module manager")
+    print("Instantiating module manager;")
 
     module_manager = RustLiteManager()
 
-    print("Module manager initiated")
+    print("Module manager initiated; Trying to load program into K cell;")
 
-    pass
+    module_manager.load_program("Test")
+
+    print("Program loaded; Trying to fetch the content of the K cell.")
+
+    module_manager.fetch_k_cell_content()
+    
 
