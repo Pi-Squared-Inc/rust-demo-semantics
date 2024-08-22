@@ -39,7 +39,7 @@ class RustLiteManager():
         self.cterm = CTerm.from_kast(init_config)
 
     def load_program(self, program: str) -> None:
-        # self.cterm = CTerm.from_kast(set_cell(self.cterm.config, 'K_CELL', KApply(program, [])))
+
         self.cterm = CTerm.from_kast(set_cell(self.cterm.config, 'K_CELL', stringToken(program)))
         pattern = self.krun.kast_to_kore(self.cterm.config, sort=GENERATED_TOP_CELL)
         output_kore = self.krun.run_pattern(pattern, pipe_stderr=True)
@@ -48,6 +48,5 @@ class RustLiteManager():
 
     def fetch_k_cell_content(self):
         cell = self.cterm.cell('K_CELL')
-        # assert type(cell) is KToken
         _PPRINT.pprint(cell)
         return cell

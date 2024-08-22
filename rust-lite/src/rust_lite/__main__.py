@@ -29,10 +29,12 @@ def main() -> None:
 
     print("Module manager initiated; Trying to load program into K cell;")
 
-    module_manager.load_program("Test")
+    contract_code = open('../tests/execution/empty.rs', 'r').read()
+    # contract_code = open('../tests/syntax/erc_20_token.rs', 'r').read()
+
+    module_manager.load_program(contract_code)
 
     print("Program loaded; Trying to fetch the content of the K cell.")
 
     module_manager.fetch_k_cell_content()
-    
 
