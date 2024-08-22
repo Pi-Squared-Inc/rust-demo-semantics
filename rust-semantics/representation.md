@@ -10,11 +10,15 @@ module RUST-REPRESENTATION
     syntax MInt{32}
     syntax MInt{64}
 
+    syntax SemanticsError ::= error(String, KItem)
+
     syntax FunctionBodyRepresentation ::= block(BlockExpression)
                                         | "empty"
                                         | storageAccessor(StringLiteral)
     syntax NormalizedFunctionParameter ::= Identifier ":" Type
     syntax NormalizedFunctionParameterList ::= List{NormalizedFunctionParameter, ","}
+
+    syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 
     syntax Value  ::= i32(MInt{32})
                     | u32(MInt{32})

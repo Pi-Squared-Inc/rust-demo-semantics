@@ -1,8 +1,8 @@
 ```k
 
 module TRAIT-METHODS
-    imports private RUST-INDEXING-PRIVATE-HELPERS
-    imports private RUST-INDEXING-PRIVATE-SYNTAX
+    imports private RUST-PREPROCESSING-PRIVATE-HELPERS
+    imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 
     rule traitMethodsParser(
             (A:OuterAttributes F:Function) AIs:AssociatedItems => AIs,
