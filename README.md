@@ -10,6 +10,13 @@ Also, this semantics relies on top-level traits being annotated with
 `#[multiversx_sc::contract]`, and allows calls to methods declared in these
 traits.
 
+Running
+-------
+
+Building the semantics: `make build`
+
+Running tests: `make tests`
+
 MultiversX (MX) contracts
 -------------------------
 
@@ -19,7 +26,7 @@ A MX contract is usually declared as a trait with a `#[multiversx_sc::contract]`
 attribute. The contract's endpoints are usually methods with a
 `#[endpoint(endpointName)]` attribute. A readonly endpoint has
 a `#[view(viewName)]` attribute instead. The contract's storage is
-declared byß a method without body, with a `#[storage_mapper("storage_name")]`
+declared by a method without body, with a `#[storage_mapper("storage_name")]`
 attribute and, perhaps, a `#[view(viewName)]` attributes.
 The names in these attributes do not have to be related to the names of the
 functions tagged with them.
@@ -31,7 +38,7 @@ infrastructure.
 **Storage**
 
 In the VM, the storage is a map from account
-to (map from bytes to bytes). However, int the rust code, the storage is
+to (map from bytes to bytes). However, in the rust code, the storage is
 declared as a function with arguments of variout types and an object return
 value. Let us take an example:
 ```rs
