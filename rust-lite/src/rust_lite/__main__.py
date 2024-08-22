@@ -30,12 +30,10 @@ def main() -> None:
     print('Module manager initiated; Trying to load program into K cell;')
 
 
-    contract_code = open('../.build/syntax-output/erc_20_token.rs-parsed', 'r').read()
-    # contract_code = open('../erc20.json', 'r').read()
-    # contract_code = open('../tests/execution/empty.rs', 'r').read()
-    # contract_code = open('../tests/syntax/erc_20_token.rs', 'r').read()
+    # contract_path = '../tests/syntax/erc_20_token.rs'
+    contract_path = '../tests/execution/empty.rs'
 
-    module_manager.load_program(contract_code)
+    module_manager.load_program(contract_path)
 
     print('Program loaded; Trying to fetch the content of the K cell.')
 
