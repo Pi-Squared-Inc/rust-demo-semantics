@@ -17,6 +17,20 @@ Building the semantics: `make build`
 
 Running tests: `make tests`
 
+Parsing a Rust file:
+```sh
+kast --definition .build/rust-kompiled my-file.rs --sort Crate
+```
+
+Preprocessing a Rust file:
+```sh
+krun \
+		my-file.rs \
+		--definition .build/rust-kompiled \
+		--output kore \
+		--output-file my-file.kore
+```
+
 MultiversX (MX) contracts
 -------------------------
 
