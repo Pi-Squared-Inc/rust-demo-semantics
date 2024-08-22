@@ -57,13 +57,13 @@ class RustLiteManager():
         ## Manually call kast to get the stdout into a file. Load the file and use KAstParser to convert into a KList
         parser = KAstParser(program)
         parsed_program = parser.klist()
-        _PPRINT.pprint(parsed_program)
+        # _PPRINT.pprint(parsed_program)
         # return
 
         ## ATTEMPT 4 ------------------------------------------
         ## Using kast to generate a .json of the parsed contract. program should be the content of '../erc20.json'
         # program_json = json.loads(program)
-        # parsed_program = KInner.from_dict(program_json)
+        # parsed_program = KInner.from_dict(program_json['term'])
         # return
 
         self.cterm = CTerm.from_kast(set_cell(self.cterm.config, 'K_CELL', KSequence(KApply('crateParser(_)_RUST-INDEXING-SYNTAX_Initializer_Crate', parsed_program))))
