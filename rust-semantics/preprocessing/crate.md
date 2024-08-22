@@ -3,8 +3,8 @@
 module CRATE
     imports private LIST
     imports private MAP
-    imports private RUST-INDEXING-PRIVATE-SYNTAX
-    imports private RUST-INDEXING-SYNTAX
+    imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
+    imports private RUST-PREPROCESSING-SYNTAX
     imports private RUST-REPRESENTATION
     imports private RUST-RUNNING-CONFIGURATION
 
@@ -67,11 +67,13 @@ module CRATE
             , traitName : Name:Identifier
             , traitFunctions: Functions:Map
             )
-          => crateInitializer
-            ( ... constantNames: keys_list(Constants), constants: Constants
-            , traitName: Name
-            , functionNames:keys_list(Functions), functions: Functions
-            )
+          => constantInitializer
+              ( ... constantNames: keys_list(Constants), constants: Constants )
+          ~> traitInitializer(Name)
+          ~> traitMethodInitializer
+              ( ... traitName: Name
+              , functionNames:keys_list(Functions), functions: Functions
+              )
 endmodule
 
 ```
