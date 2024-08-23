@@ -1,29 +1,17 @@
 from __future__ import annotations
 
-import contextlib
-import json
-import logging
-import sys
 import pprint
 from collections.abc import Iterable
 from typing import TYPE_CHECKING, Mapping, Any
 from pathlib import Path
 
-from pathos.pools import ProcessPool  # type: ignore
-from pyk.cli.pyk import parse_toml_args
 from pyk.kast.inner import KApply, KSequence, KSort, KToken, KInner
 from pyk.kast.parser import KAstParser
 from pyk.kast.manip import set_cell
-from pyk.kast.kast import kast_term
 from pyk.cterm import CTerm
 from pyk.ktool.krun import KRun
 from pyk.ktool.kprint import _kast
 from pyk.prelude.k import GENERATED_TOP_CELL
-from pyk.kdist import kdist
-from pyk.kore.prelude import top_cell_initializer
-from pyk.kore.tools import kore_print
-from pyk.utils import FrozenDict
-from pyk.prelude.string import stringToken
 
 _PPRINT = pprint.PrettyPrinter(width=41, compact=True)
 
@@ -46,35 +34,9 @@ class RustLiteManager():
         returned_process = _kast(file=program_path, definition_dir=f'../.build/rust-kompiled')
 
         program = returned_process.stdout
-        # program = kast_term(json.loads(returned_process.stdout))
-
-        # print('kasted program')
-        # return
-    
-        ## ATTEMPT 2 ------------------------------------------
-        ## Perform the substitution of the $PGM. It seems to be equivalent to the other approaches used.
-        # self.krun.definition.empty_config(GENERATED_TOP_CELL)
-        # init_config = self.krun.definition.init_config(GENERATED_TOP_CELL)
-
-        # init_subst = {
-        #     '$PGM': stringToken(program),
-        # }
-
-        # init_term = Subst(init_subst)(init_config)
-        # self.cterm = CTerm.from_kast(init_term)
-
-        ## ATTEMPT 3 ------------------------------------------
-        ## Manually call kast to get the stdout into a file. Load the file and use KAstParser to convert into a KList
+        
         parser = KAstParser(program)
         parsed_program = parser.klist()
-        # _PPRINT.pprint(parsed_program)
-        # return
-
-        ## ATTEMPT 4 ------------------------------------------
-        ## Using kast to generate a .json of the parsed contract. program should be the content of '../erc20.json'
-        # program_json = json.loads(program)
-        # parsed_program = KInner.from_dict(program_json['term'])
-        # return
 
         self.cterm = CTerm.from_kast(set_cell(self.cterm.config, 'K_CELL', KSequence(KApply('crateParser(_)_RUST-PREPROCESSING-SYNTAX_Initializer_Crate', parsed_program))))
         pattern = self.krun.kast_to_kore(self.cterm.config, sort=GENERATED_TOP_CELL)

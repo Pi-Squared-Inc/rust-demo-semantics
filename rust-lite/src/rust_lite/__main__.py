@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import contextlib
-import json
 import logging
 import sys
 from collections.abc import Iterable
@@ -56,9 +54,6 @@ def exec_run(options: RunOptions) -> None:
     module_manager = RustLiteManager()
 
     print('Module manager initiated; Trying to load program into K cell;')
-
-    # contract_path = '../tests/syntax/erc_20_token.rs'
-    # contract_path = '../tests/execution/empty.rs'
 
     module_manager.load_program(contract_path)
 
