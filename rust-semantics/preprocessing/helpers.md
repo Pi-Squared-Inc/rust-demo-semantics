@@ -77,7 +77,7 @@ module RUST-PREPROCESSING-PRIVATE-HELPERS
     rule getFunctionBlockOrSemicolon(_F:FunctionWithWhere B:BlockExpressionOrSemicolon)
         => B
 
-    syntax Type ::= getFunctionReturnType(Function)
+    syntax Type ::= getFunctionReturnType(Function)  [function, total]
     rule getFunctionReturnType(_Q:FunctionQualifiers F:FunctionWithoutQualifiers)
         => getFunctionReturnType(F)
     rule getFunctionReturnType(F:FunctionWithWhere _B:BlockExpression)
