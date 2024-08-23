@@ -28,7 +28,7 @@ syntax-test: $(SYNTAX_OUTPUTS)
 indexing-test: $(INDEXING_OUTPUTS)
 
 $(RUST_TIMESTAMP): $(SEMANTICS_FILES)
-	$$(which kompile) rust-semantics/rust.md -o $(RUST_KOMPILED)
+	$$(which kompile) rust-semantics/rust.md --emit-json -o $(RUST_KOMPILED)
 
 $(SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(SYNTAX_INPUT_DIR)/%.rs $(RUST_TIMESTAMP)
 	mkdir -p $(SYNTAX_OUTPUT_DIR)
