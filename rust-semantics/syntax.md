@@ -201,9 +201,9 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax ConstantItem ::= "const" IdentifierOrUnderscore ":" Type MaybeEqualsExpression ";"
+  syntax ConstantItem ::= "const" IdentifierOrUnderscore ":" Type "=" Expression ";"  [strict(3)]
+                        | "const" IdentifierOrUnderscore ":" Type ";"
   syntax IdentifierOrUnderscore ::= Identifier | Underscore
-  syntax MaybeEqualsExpression ::= "" | "=" Expression
 
 ```
 
@@ -941,8 +941,44 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax TypePath ::= TypePathSegments | "::" TypePathSegments
-  syntax TypePathSegments ::= NeList{TypePathSegment, "::"}
+  syntax TypePath ::= TypePathSegments
+                    | "::" TypePathSegments
+  // There is a K bug somewhere which causes an identifier to be either directly
+  // injected in Type (Identifier -> PathIdentSegment -> TypePathSegment ->
+  // TypePathSegments -> TypePath -> TypeNoBounds -> Type) or to be included
+  // through a constructor (concatTypePathSegments(Identifier, .TypePathSegments)).
+  // This is really annoying because it does not generate compilation errors,
+  // but causes rules to not apply properly.
+  //
+  // As an example, this means that you can't simply write
+  //
+  // rule cast(u64(Value), u64) => u64(Value)
+  //
+  // because that rule will compile just fine, but it will never apply at
+  // runtime because it uses an injection (why??? there is no injection
+  // available!), while the parser will produce actual TypePathSegments lists
+  // (the K rule will also produce lists from `u64` sometimes, I'm not yet sure
+  // when). Instead, you need to write
+  //
+  // rule cast(u64(Value), u64 :: .TypePathSegments) => u64(Value)
+  //
+  // which will work, but you have to figure out all cases where this may happen
+  // without any help from the compiler.
+  //
+  // FWIW, one way of producing a list in K instead of an injection is to do
+  // something like:
+  //
+  // syntax KItem ::= tmp(TypePathSegments)
+  // rule stuff => tmp(u64)
+  //
+  // I'm not sure why one does not get an injection here (but it switches back
+  // to injections when replacing TypePathSegments by Type). This behaviour is
+  // inconsistent, and it's a bug to use injections here.
+  //
+  // I just wanted to say that I think it's better to not use NeList here.
+  //
+  // syntax TypePathSegments ::= NeList{TypePathSegment, "::"}
+  syntax TypePathSegments ::= TypePathSegment | TypePathSegment "::" TypePathSegments
   syntax TypePathSegment ::= PathIdentSegment | PathIdentSegment TypePathSegmentSuffix
   syntax TypePathSegmentSuffix ::= TypePathSegmentSuffixSuffix | "::" TypePathSegmentSuffixSuffix
   // TODO: Not implemented properly

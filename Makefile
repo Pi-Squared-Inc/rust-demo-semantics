@@ -26,7 +26,6 @@ test: syntax-test indexing-test
 syntax-test: $(SYNTAX_OUTPUTS)
 
 indexing-test: $(INDEXING_OUTPUTS)
-	echo $(INDEXING_OUTPUTS)
 
 $(RUST_TIMESTAMP): $(SEMANTICS_FILES)
 	$$(which kompile) rust-semantics/rust.md --emit-json -o $(RUST_KOMPILED)
