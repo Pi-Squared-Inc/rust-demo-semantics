@@ -2,6 +2,7 @@
 
 module RUST-REPRESENTATION
     imports INT
+    imports LIST  // for filling the second argument of `error`.
     imports MINT
     imports RUST-SHARED-SYNTAX
 
@@ -9,6 +10,7 @@ module RUST-REPRESENTATION
     syntax MInt{16}
     syntax MInt{32}
     syntax MInt{64}
+    syntax MInt{128}
 
     syntax SemanticsError ::= error(String, KItem)
 
@@ -24,11 +26,21 @@ module RUST-REPRESENTATION
                     | u32(MInt{32})
                     | i64(MInt{64})
                     | u64(MInt{64})
+                    | u128(MInt{128})
                     | tuple(ValueList)
     syntax ValueList ::= List{Value, ","}
     syntax Expression ::= Value
+    syntax KResult ::= Value
+
+    syntax ValueOrError ::= Value | SemanticsError
 
     syntax Type ::= "$selftype"
+
+    syntax Identifier ::= "i32"  [token]
+                        | "u32"  [token]
+                        | "i64"  [token]
+                        | "u64"  [token]
+    syntax MaybeIdentifier ::= ".Identifier" | Identifier
 
 endmodule
 

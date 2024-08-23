@@ -14,8 +14,6 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
 
     syntax Initializer  ::= traitParser(Trait)
                           | traitMethodsParser(AssociatedItems, functions: Map, traitName:Identifier)
-                          | constantInitializer
-                                ( constantNames: List, constants: Map )
                           | traitInitializer
                                 ( traitName: TypePath
                                 )

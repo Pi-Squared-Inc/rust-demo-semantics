@@ -10,7 +10,7 @@ module RUST-PREPROCESSING-CONFIGURATION
         <preprocessed>
             <constants>
                 <constant multiplicity="*" type="Map">
-                    <constant-name> my_identifier </constant-name>
+                    <constant-name> .Identifier </constant-name>
                     <constant-value> tuple(.ValueList) </constant-value>
                 </constant>
             </constants>
@@ -19,7 +19,7 @@ module RUST-PREPROCESSING-CONFIGURATION
                     <trait-path> my_identifier:TypePath </trait-path>
                     <methods>
                         <method multiplicity="*" type="Map">
-                            <method-name> my_identifier </method-name>
+                            <method-name> .Identifier </method-name>
                             <method-params> .NormalizedFunctionParameterList </method-params>
                             <method-return-type> ():Type </method-return-type>
                             <method-implementation> empty:FunctionBodyRepresentation </method-implementation>
