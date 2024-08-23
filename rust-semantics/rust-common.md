@@ -3,10 +3,10 @@ requires "config.md"
 requires "expression.md"
 requires "preprocessing.md"
 requires "representation.md"
-requires "syntax.md"
+requires "rust-common-syntax.md"
 
-module RUST
-  imports RUST-CONFIGURATION
+module RUST-COMMON
+  imports RUST-RUNNING-CONFIGURATION
   imports RUST-EXPRESSION
   imports RUST-PREPROCESSING
   imports RUST-REPRESENTATION

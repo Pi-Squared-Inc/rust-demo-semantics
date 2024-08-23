@@ -1,6 +1,6 @@
 SEMANTICS_FILES ::= $(shell find rust-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
 RUST_KOMPILED ::= .build/rust-kompiled
-RUST_TIMESTAMP ::= $(RUST_KOMPILED)/timestamp
+RUST_PREPROCESSING_TIMESTAMP ::= $(RUST_KOMPILED)/timestamp
 SYNTAX_INPUT_DIR ::= tests/syntax
 SYNTAX_OUTPUT_DIR ::= .build/syntax-output
 PREPROCESSING_INPUT_DIR ::= tests/preprocessing
@@ -18,7 +18,7 @@ PREPROCESSING_STATUSES ::= $(patsubst %.rs.preprocessed.kore,%.rs.status,$(PREPR
 clean:
 	rm -r .build
 
-build: $(RUST_TIMESTAMP)
+build: $(RUST_PREPROCESSING_TIMESTAMP)
 
 test: syntax-test preprocessing-test
 
@@ -26,14 +26,14 @@ syntax-test: $(SYNTAX_OUTPUTS)
 
 preprocessing-test: $(PREPROCESSING_OUTPUTS)
 
-$(RUST_TIMESTAMP): $(SEMANTICS_FILES)
-	$$(which kompile) rust-semantics/rust.md --emit-json -o $(RUST_KOMPILED)
+$(RUST_PREPROCESSING_TIMESTAMP): $(SEMANTICS_FILES)
+	$$(which kompile) rust-semantics/targets/preprocessing/rust.md -o $(RUST_KOMPILED)
 
-$(SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(SYNTAX_INPUT_DIR)/%.rs $(RUST_TIMESTAMP)
+$(SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(SYNTAX_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)
 	mkdir -p $(SYNTAX_OUTPUT_DIR)
 	kast --definition $(RUST_KOMPILED) $< --sort Crate > $@.tmp && mv -f $@.tmp $@
 
-$(PREPROCESSING_OUTPUT_DIR)/%.rs.preprocessed.kore: $(PREPROCESSING_INPUT_DIR)/%.rs $(RUST_TIMESTAMP)
+$(PREPROCESSING_OUTPUT_DIR)/%.rs.preprocessed.kore: $(PREPROCESSING_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)
 	mkdir -p $(PREPROCESSING_OUTPUT_DIR)
 	krun \
 		$< \

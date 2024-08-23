@@ -6,7 +6,7 @@ macros being already expanded. However, expanding macros on MultiversX code
 would force us to support more Rust features in the main semantics.
 
 ```k
-module RUST-SYNTAX
+module RUST-COMMON-SYNTAX
     imports RUST-SHARED-SYNTAX
 
     syntax Underscore ::= "_"  [token]
@@ -18,7 +18,7 @@ module RUST-SYNTAX
 ```k
 
   // TODO: Not implemented properly
-  syntax Identifier ::= r"[A-Za-z_][A-Za-z0-9\\_]*"  [prec(2), token]
+  syntax Identifier ::= r"[A-Za-z_][A-Za-z0-9\\_]*"  [token]
 endmodule
 
 module RUST-SHARED-SYNTAX
