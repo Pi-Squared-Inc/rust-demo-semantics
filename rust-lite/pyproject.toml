@@ -34,7 +34,11 @@ pytest-xdist = "*"
 pyupgrade = "*"
 
 [tool.poetry.scripts]
-rust = "rust_lite.__main__:main"
+main = "rust_lite.__main__:main"
+empty = "rust_lite.__main__:exec_empty"
+erc20 = "rust_lite.__main__:exec_erc20"
+lending = "rust_lite.__main__:exec_lending"
+staking = "rust_lite.__main__:exec_staking"
 
 [tool.isort]
 profile = "black"
