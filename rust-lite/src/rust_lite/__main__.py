@@ -35,7 +35,7 @@ def main() -> None:
     stripped_args = toml_args | {
         key: val for (key, val) in vars(args).items() if val is not None and not (isinstance(val, Iterable) and not val)
     }
-    print(stripped_args)
+
     options = generate_options(stripped_args)
 
     executor_name = 'exec_' + args.command.lower().replace('-', '_')
@@ -57,7 +57,7 @@ def exec_run(options: RunOptions) -> None:
 
     module_manager.load_program(contract_path)
 
-    print('Program loaded; Trying to fetch the content of the K cell.')
+    print('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
 
     module_manager.fetch_k_cell_content()
 

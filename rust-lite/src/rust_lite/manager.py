@@ -45,6 +45,8 @@ class RustLiteManager():
         
 
     def fetch_k_cell_content(self):
+        print('--------------------------------------------------')
+        print('K CELL CONTENTS: ')
         cell = self.cterm.cell('K_CELL')
         _PPRINT.pprint(cell)
         return cell
