@@ -64,30 +64,14 @@ def _create_argument_parser() -> ArgumentParser:
 
     command_parser = parser.add_subparsers(dest='command', required=True)
 
-    # command_parser.add_parser('version', help='Print Rust-Lite version and exit.', parents=[rust_lite_cli_args.logging_args])
-
     run_args = command_parser.add_parser(
         'run',
         help='Run Rust-Lite program.',
         parents=[
             rust_lite_cli_args.logging_args,
-            # rust_lite_cli_args.target_args,
-            # rust_lite_cli_args.k_args,
         ],
     )
     run_args.add_argument('input_file', type=file_path, help='Path to input file.')
-    # run_args.add_argument(
-    #     '--output',
-    #     type=PrintOutput,
-    #     choices=list(PrintOutput),
-    # )
-    # run_args.add_argument(
-    #     '--sort',
-    #     dest='sort',
-    #     default=None,
-    #     type=KSort,
-    #     help='Sort to parse input as.',
-    # )
 
     return parser
 
