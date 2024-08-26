@@ -23,6 +23,7 @@ module RUST-PREPROCESSING-CONFIGURATION
                             <method-params> .NormalizedFunctionParameterList </method-params>
                             <method-return-type> ():Type </method-return-type>
                             <method-implementation> empty:FunctionBodyRepresentation </method-implementation>
+                            <method-outer-attributes> `emptyOuterAttributes`(.KList):OuterAttributes </method-outer-attributes>
                         </method>
                     </methods>
                 </trait>

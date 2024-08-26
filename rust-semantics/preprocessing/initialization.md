@@ -5,15 +5,6 @@ module INITIALIZATION
     imports private RUST-PREPROCESSING-PRIVATE-HELPERS
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 
-    rule (.K => addMethod(TraitName, F, A))
-          ~> traitMethodInitializer
-              ( ... traitName : TraitName:TypePath
-              , functionNames: (ListItem(Name:Identifier:KItem) => .List) _Names:List
-              , functions: _Functions:Map
-                ((Name:Identifier:KItem |-> (A:OuterAttributes F:Function):AssociatedItem) => .Map)
-              )
-    rule traitMethodInitializer(... functionNames: .List) => .K
-
     rule
         <k> traitInitializer(Name:TypePath) => .K
             ...
@@ -42,7 +33,7 @@ module INITIALIZATION
                 Trait:TypePath,
                 Name:Identifier, P:NormalizedFunctionParameterList,
                 R:Type, B:BlockExpression,
-                _A:OuterAttributes
+                A:OuterAttributes
             ) => .K
             ...
         </k>
@@ -56,6 +47,7 @@ module INITIALIZATION
                 <method-params> P </method-params>
                 <method-return-type> R </method-return-type>
                 <method-implementation> block(B) </method-implementation>
+                <method-outer-attributes> A </method-outer-attributes>
               </method>
             ...
           </methods>

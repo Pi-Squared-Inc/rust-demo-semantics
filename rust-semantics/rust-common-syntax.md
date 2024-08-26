@@ -53,7 +53,8 @@ module RUST-SHARED-SYNTAX
 
   syntax Item ::= OuterAttributes VisOrMacroItem  [symbol(item)]
   syntax NonEmptyOuterAttributes ::= NeList{OuterAttribute, ""}
-  syntax OuterAttributes ::= "" | NonEmptyOuterAttributes
+  syntax OuterAttributes  ::= ""  [symbol("emptyOuterAttributes")]
+                            | NonEmptyOuterAttributes
   syntax VisOrMacroItem ::= VisItem | MacroItem
   syntax MacroItem ::= MacroInvocationSemi | MacroRulesDefinition
   syntax VisItem ::= MaybeVisibility VisItemItem

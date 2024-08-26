@@ -13,13 +13,9 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
     imports RUST-SHARED-SYNTAX
 
     syntax Initializer  ::= traitParser(Trait)
-                          | traitMethodsParser(AssociatedItems, functions: Map, traitName:Identifier)
+                          | traitMethodsParser(AssociatedItems, traitName:Identifier)
                           | traitInitializer
                                 ( traitName: TypePath
-                                )
-                          | traitMethodInitializer
-                                ( traitName: TypePath
-                                , functionNames:List, functions: Map
                                 )
 
     syntax Initializer  ::= addMethod(traitName : TypePath, function: Function, atts:OuterAttributes)
