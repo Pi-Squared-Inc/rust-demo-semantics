@@ -68,4 +68,3 @@ $(EXECUTION_OUTPUT_DIR)/%.run.executed.kore: $(EXECUTION_INPUT_DIR)/%.run $(RUST
 		-cTEST="$(shell cat $<)" \
 		-pTEST=$(CURDIR)/run-test.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
-	mv -f $@.tmp $@
