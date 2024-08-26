@@ -3,6 +3,7 @@
 module RUST-REPRESENTATION
     imports INT
     imports LIST  // for filling the second argument of `error`.
+    imports MAP
     imports MINT
     imports RUST-SHARED-SYNTAX
 
@@ -20,6 +21,10 @@ module RUST-REPRESENTATION
     syntax NormalizedFunctionParameter ::= Identifier ":" Type
     syntax NormalizedFunctionParameterList ::= List{NormalizedFunctionParameter, ","}
 
+    syntax NormalizedCallParams ::=List{Int, ","}
+
+    syntax Instruction ::= normalizedMethodCall(TypePath, Identifier, NormalizedCallParams)
+
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 
     syntax Value  ::= i32(MInt{32})
@@ -28,6 +33,7 @@ module RUST-REPRESENTATION
                     | u64(MInt{64})
                     | u128(MInt{128})
                     | tuple(ValueList)
+                    | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
     syntax ValueList ::= List{Value, ","}
     syntax Expression ::= Value
     syntax KResult ::= Value
