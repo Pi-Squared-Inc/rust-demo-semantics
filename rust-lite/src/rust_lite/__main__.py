@@ -59,7 +59,7 @@ def exec_run(options: RunOptions) -> None:
 
     print('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
 
-    module_manager.fetch_k_cell_content()
+    module_manager.fetch_k_top_element()
 
 def trigger_exec_run(stripped_args):
     options = generate_options(stripped_args)
@@ -68,7 +68,7 @@ def trigger_exec_run(stripped_args):
     execute(options)
 
 def exec_empty() -> None:
-    stripped_args = {'command': 'run', 'input_file': Path('../tests/execution/empty.rs')}
+    stripped_args = {'command': 'run', 'input_file': Path('../tests/preprocessing/empty.rs')}
     trigger_exec_run(stripped_args)
 
 def exec_erc20() -> None:
