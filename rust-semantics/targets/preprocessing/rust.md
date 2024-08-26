@@ -1,7 +1,9 @@
 ```k
 
 requires "configuration.md"
-requires "../../rust-common.md"
+requires "../../preprocessing.md"
+requires "../../representation.md"
+requires "../../expression.md"
 requires "../../rust-common-syntax.md"
 
 module RUST-SYNTAX
@@ -9,8 +11,9 @@ module RUST-SYNTAX
 endmodule
 
 module RUST
+    imports private RUST-EXPRESSION
+    imports private RUST-PREPROCESSING
     imports private RUST-RUNNING-CONFIGURATION
-    imports private RUST-COMMON
 endmodule
 
 ```

@@ -10,12 +10,14 @@ endmodule
 
 module RUST-RUNNING-CONFIGURATION
     imports COMMON-K-CELL
-    imports RUST-CONFIGURATION
+    imports RUST-PREPROCESSING-CONFIGURATION
 
     configuration
         <rust-mx>
             <k/>
-            <rust/>
+            <rust>
+                <preprocessed/>
+            </rust>
         </rust-mx>
 endmodule
 
