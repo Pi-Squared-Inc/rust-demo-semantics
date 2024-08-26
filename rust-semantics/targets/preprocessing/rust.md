@@ -9,7 +9,8 @@ module RUST-SYNTAX
 endmodule
 
 module RUST
-    imports RUST-COMMON
+    imports private RUST-RUNNING-CONFIGURATION
+    imports private RUST-COMMON
 endmodule
 
 ```

@@ -13,6 +13,7 @@ endmodule
 module RUST
     imports RUST-COMMON
     imports RUST-EXECUTION-TEST
+    imports RUST-RUNNING-CONFIGURATION
 endmodule
 
 ```

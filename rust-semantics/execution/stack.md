@@ -1,8 +1,9 @@
 ```k
 
 module RUST-STACK
-    imports LIST
-    imports RUST-RUNNING-CONFIGURATION
+    imports private COMMON-K-CELL
+    imports private LIST
+    imports private RUST-EXECUTION-CONFIGURATION
 
     syntax Instruction  ::= "pushLocalState"
                           | "popLocalState"

@@ -10,11 +10,14 @@ module RUST-EXECUTION-TEST-PARSING-SYNTAX
 endmodule
 
 module RUST-EXECUTION-TEST
-    imports LIST
-    imports RUST-EXECUTION-TEST-PARSING-SYNTAX
-    imports RUST-HELPERS
-    imports RUST-REPRESENTATION
-    imports RUST-RUNNING-CONFIGURATION
+    imports private COMMON-K-CELL
+    imports private LIST
+    imports private RUST-EXECUTION-CONFIGURATION
+    imports private RUST-EXECUTION-TEST-PARSING-SYNTAX
+    imports private RUST-EXECUTION-TEST-CONFIGURATION
+    imports private RUST-HELPERS
+    imports private RUST-PREPROCESSING-CONFIGURATION
+    imports private RUST-REPRESENTATION
 
     rule E:ExecutionItem ; Es:ExecutionTest => E ~> Es
     rule .ExecutionTest => .K
