@@ -4,11 +4,13 @@ module TRAIT-METHODS
     imports private RUST-PREPROCESSING-PRIVATE-HELPERS
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 
-    rule traitMethodsParser(
-            (A:OuterAttributes F:Function) AIs:AssociatedItems => AIs,
-            Functions => Functions[getFunctionName(F):Identifier:KItem <- (A F):AssociatedItem],
-            _Name:Identifier
-        )
+    rule  traitMethodsParser(.AssociatedItems, _Name:Identifier)
+          => .K
+    rule (.K => addMethod(TraitName, F, A))
+        ~> traitMethodsParser(
+              (A:OuterAttributes F:Function) AIs:AssociatedItems => AIs,
+              TraitName:Identifier
+          )
 endmodule
 
 ```
