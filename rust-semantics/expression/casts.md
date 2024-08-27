@@ -42,6 +42,12 @@ module RUST-CASTS
     // We don't need a value for the unit type
     rule implicitCastTo(( )) => .K
 
+    // Rewrites
+
+    rule V:Value ~> castTo(T:Type) => cast(V, T)
+    // We don't need a value for the unit type
+    rule castTo(( )) => .K
+
 endmodule
 
 ```
