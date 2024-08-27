@@ -24,7 +24,7 @@ module RUST-CALLS
                 ~> clearLocalState
                 ~> setArgs(Args, Params)
                 ~> FunctionBody
-                ~> castTo(ReturnType)
+                ~> implicitCastTo(ReturnType)
                 ~> popLocalState
             ...
         </k>

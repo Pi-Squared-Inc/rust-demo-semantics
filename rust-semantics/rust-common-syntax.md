@@ -454,7 +454,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```
 
-  https://doc.rust-lang.org/reference/expressions/operator-expr.html#type-cast-expressions
+  https://doc.rust-lang.org/reference/expressions/operator-expr.html#type-implicitCast-expressions
 
 ```k
 
@@ -952,7 +952,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   //
   // As an example, this means that you can't simply write
   //
-  // rule cast(u64(Value), u64) => u64(Value)
+  // rule implicitCast(u64(Value), u64) => u64(Value)
   //
   // because that rule will compile just fine, but it will never apply at
   // runtime because it uses an injection (why??? there is no injection
@@ -960,7 +960,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   // (the K rule will also produce lists from `u64` sometimes, I'm not yet sure
   // when). Instead, you need to write
   //
-  // rule cast(u64(Value), u64 :: .TypePathSegments) => u64(Value)
+  // rule implicitCast(u64(Value), u64 :: .TypePathSegments) => u64(Value)
   //
   // which will work, but you have to figure out all cases where this may happen
   // without any help from the compiler.
