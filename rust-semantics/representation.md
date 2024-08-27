@@ -1,11 +1,11 @@
 ```k
 
-module RUST-REPRESENTATION
-    imports INT
+module RUST-VALUE-SYNTAX
     imports LIST  // for filling the second argument of `error`.
     imports MAP
     imports MINT
     imports RUST-SHARED-SYNTAX
+    imports STRING
 
     syntax MInt{8}
     syntax MInt{16}
@@ -15,6 +15,26 @@ module RUST-REPRESENTATION
 
     syntax SemanticsError ::= error(String, KItem)
 
+    syntax Value  ::= i32(MInt{32})
+                    | u32(MInt{32})
+                    | i64(MInt{64})
+                    | u64(MInt{64})
+                    | u128(MInt{128})
+                    | tuple(ValueList)
+                    | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
+
+    syntax ValueList ::= List{Value, ","}
+    syntax Expression ::= Value
+    syntax KResult ::= Value
+
+    syntax ValueOrError ::= Value | SemanticsError
+endmodule
+
+module RUST-REPRESENTATION
+    imports INT
+    imports RUST-SHARED-SYNTAX
+    imports RUST-VALUE-SYNTAX
+
     syntax FunctionBodyRepresentation ::= block(BlockExpression)
                                         | "empty"
                                         | storageAccessor(StringLiteral)
@@ -23,22 +43,10 @@ module RUST-REPRESENTATION
 
     syntax NormalizedCallParams ::=List{Int, ","}
 
-    syntax Instruction ::= normalizedMethodCall(TypePath, Identifier, NormalizedCallParams)
+    syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, NormalizedCallParams)
+                          | implicitCastTo(Type)
 
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
-
-    syntax Value  ::= i32(MInt{32})
-                    | u32(MInt{32})
-                    | i64(MInt{64})
-                    | u64(MInt{64})
-                    | u128(MInt{128})
-                    | tuple(ValueList)
-                    | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
-    syntax ValueList ::= List{Value, ","}
-    syntax Expression ::= Value
-    syntax KResult ::= Value
-
-    syntax ValueOrError ::= Value | SemanticsError
 
     syntax Type ::= "$selftype"
 

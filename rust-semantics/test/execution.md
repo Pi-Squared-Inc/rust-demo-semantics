@@ -2,11 +2,14 @@
 
 module RUST-EXECUTION-TEST-PARSING-SYNTAX
     imports RUST-SHARED-SYNTAX
+    imports RUST-VALUE-SYNTAX
 
     syntax ExecutionTest ::= NeList{ExecutionItem, ";"}
     // syntax ExecutionTest ::= ExecutionItem ";" ExecutionItem
     syntax ExecutionItem  ::= "new" TypePath
                             | "call" TypePath "." Identifier
+                            | "return_value"
+                            | "check_eq" Expression  [strict]
 endmodule
 
 module RUST-EXECUTION-TEST
@@ -61,6 +64,15 @@ module RUST-EXECUTION-TEST
             Args:NormalizedCallParams,
             0
         ) => normalizedMethodCall(TraitName, MethodName, Args)
+
+    rule
+        <k> (V:Value ~> return_value ; Es:ExecutionTest) => Es ... </k>
+        <test-stack> .List => ListItem(V) ... </test-stack>
+
+    rule
+        <k> check_eq V:Value => .K ... </k>
+        <test-stack> ListItem(V) => .List ... </test-stack>
+
 endmodule
 
 ```

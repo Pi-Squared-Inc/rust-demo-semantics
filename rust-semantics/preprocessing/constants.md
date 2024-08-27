@@ -10,7 +10,7 @@ module RUST-CONSTANTS
 
     rule
         (const Name:Identifier : T:Type = V:Value;):ConstantItem:KItem
-        => setConstant(Name, cast(V, T))
+        => setConstant(Name, implicitCast(V, T))
 
     rule
         <k>

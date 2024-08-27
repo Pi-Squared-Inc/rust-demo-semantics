@@ -240,6 +240,19 @@ We will ignore: use declaratios, some attributes and macros.
 We will not handle: extern crates, functions, type aliases,
 enumerations, unions, static items, external blocks.
 
+Int literals and casts
+----------------------
+
+Int literal [type determination](https://doc.rust-lang.org/stable/reference/expressions/literal-expr.html#integer-literal-expressions)
+
+We will not implement explicit casts. However, int literals with a default type
+are special in that they have some implicit casts determined by the context.
+
+To implement that, we will follow the algorithm in the link above, converting
+everything to `u128`, then we will do a conversion on the spot if something
+else is required. This should mostly work, since we are relying on the Rust
+compiler to check that int types are properly used.
+
 Other things not discussed elsewhere
 ------------------------------------
 

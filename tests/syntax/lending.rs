@@ -84,7 +84,7 @@ pub trait Lending {
         let token_amount = self.token_amount(&token).get();
         let token_shares = self.token_shares(&token).get();
 
-        let shares = 
+        let shares =
             self.to_shares(
                 &amount,
                 &token_amount,
@@ -111,7 +111,7 @@ pub trait Lending {
         let token_borrowed = self.token_borrowed(&token).get();
         let token_borrowed_shares = self.token_borrowed_shares(&token).get();
 
-        let shares = 
+        let shares =
             self.to_shares(
                 &amount,
                 &token_borrowed,
