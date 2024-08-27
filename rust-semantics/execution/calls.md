@@ -2,10 +2,12 @@
 
 module RUST-CALLS
     imports BOOL
-    imports RUST-STACK
-    imports RUST-HELPERS
-    imports RUST-REPRESENTATION
-    imports RUST-RUNNING-CONFIGURATION
+    imports private COMMON-K-CELL
+    imports private RUST-EXECUTION-CONFIGURATION
+    imports private RUST-HELPERS
+    imports private RUST-PREPROCESSING-CONFIGURATION
+    imports private RUST-REPRESENTATION
+    imports private RUST-STACK
 
     // https://doc.rust-lang.org/stable/reference/expressions/method-call-expr.html
 

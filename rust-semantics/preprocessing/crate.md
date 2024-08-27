@@ -1,12 +1,12 @@
 ```k
 
 module CRATE
+    imports private COMMON-K-CELL
     imports private LIST
     imports private MAP
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
     imports private RUST-PREPROCESSING-SYNTAX
     imports private RUST-REPRESENTATION
-    imports private RUST-RUNNING-CONFIGURATION
 
     rule crateParser
         ( (_Atts:InnerAttributes (_A:OuterAttributes _U:UseDeclaration):Item Is:Items):Crate
