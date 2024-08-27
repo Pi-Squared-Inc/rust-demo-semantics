@@ -63,9 +63,10 @@ $(EXECUTION_OUTPUT_DIR)/%.run.executed.kore: $(EXECUTION_INPUT_DIR)/%.run $(RUST
 	krun \
 		"$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" \
 		--definition $(RUST_EXECUTION_KOMPILED) \
+		--parser $(CURDIR)/parse-rust.sh \
 		--output kore \
 		--output-file $@.tmp \
 		-cTEST="$(shell cat $<)" \
-		-pTEST=$(CURDIR)/run-test.sh
+		-pTEST=$(CURDIR)/parse-test.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@

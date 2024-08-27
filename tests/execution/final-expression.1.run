@@ -1,0 +1,4 @@
+new FinalExpression;
+call FinalExpression.constant;
+return_value;
+check_eq 100_u64
