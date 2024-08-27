@@ -51,7 +51,7 @@ $(RUST_EXECUTION_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 	$$(which kompile) rust-semantics/targets/execution/rust.md --emit-json -o $(RUST_EXECUTION_KOMPILED)
 
 $(MX_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES)
-	$$(which kompile) mx-semantics/targets/testing/mx.md -o $(MX_TESTING_KOMPILED)
+	$$(which kompile) mx-semantics/targets/testing/mx.md -o $(MX_TESTING_KOMPILED) --debug
 
 $(RUST_SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(RUST_SYNTAX_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)
 	mkdir -p $(RUST_SYNTAX_OUTPUT_DIR)
