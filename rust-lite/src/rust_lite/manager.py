@@ -44,27 +44,18 @@ class RustLiteManager():
         output_kore = self.krun.run_pattern(pattern, pipe_stderr=False)
         self.cterm = CTerm.from_kast(self.krun.kore_to_kast(output_kore))
         
-
-    def fetch_k_cell_content(self):
-        print('--------------------------------------------------')
-        print('K CELL CONTENTS: ')
+    def fetch_k_cell_content(self) -> KToken:
         cell = self.cterm.cell('K_CELL')
-        _PPRINT.pprint(cell)
         return cell
     
-
-
-    def fetch_k_top_element(self):
-        print('--------------------------------------------------')
-        print('K CELL TOP ELEMENT: ')
-        cell = self.cterm.cell('K_CELL')
-
+    def print_k_top_element(self) -> None:
+        cell = self.fetch_k_cell_content()
         queue: deque[KInner] = deque(cell)
 
+        print('--------------------------------------------------')
+        print('K CELL TOP ELEMENT: ')
         if(len(queue) > 0):
             top_cell = queue.popleft()
             _PPRINT.pprint(top_cell)
         else:
             print('Cell is empty.')
-
-        return cell
