@@ -43,7 +43,8 @@ module RUST-REPRESENTATION
 
     syntax NormalizedCallParams ::=List{Int, ","}
 
-    syntax Instruction ::= normalizedMethodCall(TypePath, Identifier, NormalizedCallParams)
+    syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, NormalizedCallParams)
+                          | castTo(Type)
 
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 

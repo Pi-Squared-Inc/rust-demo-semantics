@@ -24,12 +24,14 @@ module RUST-CALLS
                 ~> clearLocalState
                 ~> setArgs(Args, Params)
                 ~> FunctionBody
+                ~> castTo(ReturnType)
                 ~> popLocalState
             ...
         </k>
         <trait-path> TraitName </trait-path>
         <method-name> MethodName </method-name>
         <method-params> Params:NormalizedFunctionParameterList </method-params>
+        <method-return-type> ReturnType:Type </method-return-type>
         <method-implementation> block(FunctionBody) </method-implementation>
 
     rule

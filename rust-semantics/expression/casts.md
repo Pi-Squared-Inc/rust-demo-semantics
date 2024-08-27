@@ -36,6 +36,12 @@ module RUST-CASTS
     rule cast(u128(Value), i64) => i64(Int2MInt(MInt2Unsigned(Value)))
     rule cast(u128(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
 
+    // Rewrites
+
+    rule V:Value ~> castTo(T:Type) => cast(V, T)
+    // We don't need a value for the unit type
+    rule castTo(( )) => .K
+
 endmodule
 
 ```
