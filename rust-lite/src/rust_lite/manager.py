@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pprint
 from collections.abc import Iterable
+from collections import deque
 from typing import TYPE_CHECKING, Mapping, Any
 from pathlib import Path
 
@@ -20,7 +21,7 @@ class RustLiteManager():
     cterm: CTerm
 
     def __init__(self) -> None:
-        dir_path = Path(f'../.build/rust-kompiled')
+        dir_path = Path(f'../.build/rust-execution-kompiled')
         self.krun = KRun(dir_path)
         self._init_cterm()
 
@@ -31,7 +32,7 @@ class RustLiteManager():
 
     def load_program(self, program_path: str) -> None:
 
-        returned_process = _kast(file=program_path, definition_dir=f'../.build/rust-kompiled')
+        returned_process = _kast(file=program_path, definition_dir=f'../.build/rust-execution-kompiled')
 
         program = returned_process.stdout
         
@@ -43,11 +44,18 @@ class RustLiteManager():
         output_kore = self.krun.run_pattern(pattern, pipe_stderr=False)
         self.cterm = CTerm.from_kast(self.krun.kore_to_kast(output_kore))
         
-
-    def fetch_k_cell_content(self):
-        print('--------------------------------------------------')
-        print('K CELL CONTENTS: ')
+    def fetch_k_cell_content(self) -> KToken:
         cell = self.cterm.cell('K_CELL')
-        _PPRINT.pprint(cell)
         return cell
     
+    def print_k_top_element(self) -> None:
+        cell = self.fetch_k_cell_content()
+        queue: deque[KInner] = deque(cell)
+
+        print('--------------------------------------------------')
+        print('K CELL TOP ELEMENT: ')
+        if(len(queue) > 0):
+            top_cell = queue.popleft()
+            _PPRINT.pprint(top_cell)
+        else:
+            print('Cell is empty.')

@@ -37,10 +37,10 @@ preprocessing-test: $(PREPROCESSING_OUTPUTS)
 execution-test: $(EXECUTION_OUTPUTS)
 
 $(RUST_PREPROCESSING_TIMESTAMP): $(SEMANTICS_FILES)
-	$$(which kompile) rust-semantics/targets/preprocessing/rust.md -o $(RUST_PREPROCESSING_KOMPILED)
+	$$(which kompile) rust-semantics/targets/preprocessing/rust.md --emit-json -o $(RUST_PREPROCESSING_KOMPILED)
 
 $(RUST_EXECUTION_TIMESTAMP): $(SEMANTICS_FILES)
-	$$(which kompile) rust-semantics/targets/execution/rust.md -o $(RUST_EXECUTION_KOMPILED)
+	$$(which kompile) rust-semantics/targets/execution/rust.md --emit-json -o $(RUST_EXECUTION_KOMPILED)
 
 $(SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(SYNTAX_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)
 	mkdir -p $(SYNTAX_OUTPUT_DIR)
