@@ -1,6 +1,7 @@
 ```k
 
 module RUST-BLOCK
+    imports RUST-REPRESENTATION
     imports RUST-SHARED-SYNTAX
     imports RUST-STACK
 
@@ -12,6 +13,10 @@ module RUST-BLOCK
     // variable shadowing
     rule {.InnerAttributes S:Statements}:BlockExpression
         => pushLocalState ~> S ~> popLocalState
+
+    // Blocks are always value expressions and evaluate the last operand in
+    // value expression context.
+    rule V:Value ~> popLocalState => popLocalState ~> V
 endmodule
 
 ```
