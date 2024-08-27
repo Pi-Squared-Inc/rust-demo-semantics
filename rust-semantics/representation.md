@@ -1,6 +1,7 @@
 ```k
 
 module RUST-VALUE-SYNTAX
+    imports BOOL
     imports LIST  // for filling the second argument of `error`.
     imports MAP
     imports MINT
@@ -28,6 +29,10 @@ module RUST-VALUE-SYNTAX
     syntax KResult ::= Value
 
     syntax ValueOrError ::= Value | SemanticsError
+
+    syntax Bool ::= mayBeDefaultTypedInt(Value)  [function, total]
+    rule mayBeDefaultTypedInt(_V) => false  [owise]
+    rule mayBeDefaultTypedInt(u128(_)) => true
 endmodule
 
 module RUST-REPRESENTATION

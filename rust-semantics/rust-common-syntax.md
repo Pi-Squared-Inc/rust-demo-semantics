@@ -737,9 +737,9 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax LetStatement ::= OuterAttributes "let" PatternNoTopAlt MaybeColonType MaybeEqualsExpressionMaybeElseBlockExpression ";"
+  syntax LetStatement ::= OuterAttributes "let" PatternNoTopAlt MaybeColonType ";"
+                        | OuterAttributes "let" PatternNoTopAlt MaybeColonType "=" Expression MaybeElseBlockExpression ";"  [strict(4)]
   syntax MaybeColonType ::= "" | ":" Type
-  syntax MaybeEqualsExpressionMaybeElseBlockExpression ::= "" | "=" Expression MaybeElseBlockExpression
   // TODO: Not implemented properly to remove ambiguities
   syntax MaybeElseBlockExpression ::= "" // | "else" BlockExpression
 
