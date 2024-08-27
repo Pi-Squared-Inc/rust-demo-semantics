@@ -3,7 +3,8 @@
 requires "configuration.md"
 requires "../../preprocessing.md"
 requires "../../representation.md"
-requires "../../expression.md"
+requires "../../expression/casts.md"
+requires "../../expression/literals.md"
 requires "../../rust-common-syntax.md"
 
 module RUST-SYNTAX
@@ -11,7 +12,7 @@ module RUST-SYNTAX
 endmodule
 
 module RUST
-    imports private RUST-EXPRESSION
+    imports private RUST-EXPRESSION-LITERALS
     imports private RUST-PREPROCESSING
     imports private RUST-RUNNING-CONFIGURATION
 endmodule
