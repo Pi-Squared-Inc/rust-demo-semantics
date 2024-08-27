@@ -1,0 +1,7 @@
+push 10;
+call 1 MX#bigIntNew;
+push 20;
+call 1 MX#bigIntNew;
+call 2 MX#bigIntAdd;
+get_big_int;
+check_eq 10

@@ -1,0 +1,5 @@
+push 10;
+call 1 MX#bigIntNew;
+return_value;
+get_big_int;
+check_eq 10
