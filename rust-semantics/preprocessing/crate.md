@@ -1,12 +1,12 @@
 ```k
 
 module CRATE
+    imports private COMMON-K-CELL
     imports private LIST
     imports private MAP
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
     imports private RUST-PREPROCESSING-SYNTAX
     imports private RUST-REPRESENTATION
-    imports private RUST-RUNNING-CONFIGURATION
 
     syntax Initializer  ::= crateParser(crate: Crate, traitName: MaybeIdentifier, traitFunctions: Map)
 

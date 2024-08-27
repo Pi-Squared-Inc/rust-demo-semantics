@@ -1,7 +1,8 @@
 ```k
 
 module INITIALIZATION
-    imports private RUST-RUNNING-CONFIGURATION
+    imports private COMMON-K-CELL
+    imports private RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-PREPROCESSING-PRIVATE-HELPERS
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 

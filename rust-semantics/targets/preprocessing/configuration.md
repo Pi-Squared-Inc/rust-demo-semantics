@@ -1,13 +1,23 @@
 ```k
 
-module RUST-RUNNING-CONFIGURATION
+module COMMON-K-CELL
     imports private RUST-PREPROCESSING-SYNTAX
-    imports RUST-CONFIGURATION
+
+    configuration
+        <k> crateParser($PGM:Crate) </k>
+
+endmodule
+
+module RUST-RUNNING-CONFIGURATION
+    imports COMMON-K-CELL
+    imports RUST-PREPROCESSING-CONFIGURATION
 
     configuration
         <rust-mx>
-            <k> crateParser($PGM:Crate) </k>
-            <rust/>
+            <k/>
+            <rust>
+                <preprocessed/>
+            </rust>
         </rust-mx>
 endmodule
 

@@ -1,8 +1,9 @@
 ```k
 module RUST-CONSTANTS
+    imports private COMMON-K-CELL
     imports private RUST-CASTS
+    imports private RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-REPRESENTATION
-    imports private RUST-RUNNING-CONFIGURATION
     imports private RUST-SHARED-SYNTAX
 
     syntax KItem ::= setConstant(Identifier, ValueOrError)
