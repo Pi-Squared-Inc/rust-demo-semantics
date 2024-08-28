@@ -3,6 +3,7 @@
 module MX-BIGUINT-HOOKS
     imports BOOL
     imports COMMON-K-CELL
+    imports K-EQUAL-SYNTAX
     imports MX-BIGUINT-CONFIGURATION
     imports MX-COMMON-SYNTAX
 
@@ -58,6 +59,23 @@ module MX-BIGUINT-HOOKS
         <bigIntHeapNextId> NextId => NextId +Int 1 </bigIntHeapNextId>
         requires Id1 in_keys(Ints) andBool isInt(Ints[Id1] orDefault 0)
             andBool Id2 in_keys(Ints) andBool isInt(Ints[Id2] orDefault 0)
+
+    rule
+        <k> MX#bigIntDiv(mxIntValue(Id1:Int) , mxIntValue(Id2:Int))
+            => mxIntValue(NextId)
+            ...
+        </k>
+        <bigIntHeap>
+            Ints:Map
+            => Ints [ NextId
+                    <-  {Ints[Id1] orDefault 0}:>Int
+                        /Int {Ints[Id2] orDefault 0}:>Int
+                    ]
+        </bigIntHeap>
+        <bigIntHeapNextId> NextId => NextId +Int 1 </bigIntHeapNextId>
+        requires Id1 in_keys(Ints) andBool isInt(Ints[Id1] orDefault 0)
+            andBool Id2 in_keys(Ints) andBool isInt(Ints[Id2] orDefault 0)
+            andBool Ints[Id2] orDefault 0 =/=K 0
 endmodule
 
 ```
