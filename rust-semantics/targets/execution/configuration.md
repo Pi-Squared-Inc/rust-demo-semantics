@@ -3,7 +3,7 @@
 module COMMON-K-CELL
     imports private RUST-EXECUTION-TEST-PARSING-SYNTAX
     imports private RUST-PREPROCESSING-SYNTAX
-    
+
     configuration
         <k> crateParser($PGM:Crate) ~> $TEST:ExecutionTest </k>
 endmodule

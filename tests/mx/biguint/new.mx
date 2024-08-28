@@ -1,0 +1,4 @@
+push mxIntValue(10);
+call 1 MX#bigIntNew;
+get_big_int;
+check_eq mxIntValue(10)
