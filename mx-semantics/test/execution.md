@@ -11,6 +11,8 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
                               | getBigint(Int)
                               | "check_eq" MxValue
                               | setCaller(String)
+                              | addAccount(String)
+                              | setBalance(account:String, token:String, nonce:Int, value:Int)
 
     syntax MxTest ::= NeList{TestInstruction, ";"}
 
@@ -20,6 +22,7 @@ endmodule
 module MX-TEST-EXECUTION
     imports private COMMON-K-CELL
     imports private INT
+    imports private MX-ACCOUNTS-TEST
     imports private MX-BIGUINT-TEST
     imports private MX-CALL-TEST
     imports private MX-TEST-CONFIGURATION
@@ -90,6 +93,62 @@ module MX-CALL-TEST
     rule
         <k> setCaller(S:String) => .K ... </k>
         <mx-caller> _ => S </mx-caller>
+endmodule
+
+module MX-ACCOUNTS-TEST
+    imports private COMMON-K-CELL
+    imports private MX-ACCOUNTS-CONFIGURATION
+    imports private MX-TEST-EXECUTION-PARSING-SYNTAX
+
+    rule
+        <k> addAccount(S:String) => .K ... </k>
+        <mx-accounts>
+            .Bag
+            =>  <mx-account>
+                    <mx-account-address> S </mx-account-address>
+                    <mx-esdt-datas> .Bag </mx-esdt-datas>
+                </mx-account>
+        </mx-accounts>
+
+    rule
+        <k> setBalance
+                (... account: Account:String
+                , token: TokenName:String
+                , nonce: Nonce:Int
+                , value: Value:Int
+                ) => .K
+            ...
+        </k>
+        <mx-account-address> Account </mx-account-address>
+        <mx-esdt-id>
+            <mx-esdt-id-name> TokenName </mx-esdt-id-name>
+            <mx-esdt-id-nonce> Nonce </mx-esdt-id-nonce>
+        </mx-esdt-id>
+        <mx-esdt-balance> _ => Value </mx-esdt-balance>
+        [priority(50)]
+
+    rule
+        <k> setBalance
+                (... account: Account:String
+                , token: TokenName:String
+                , nonce: Nonce:Int
+                , value: Value:Int
+                ) => .K
+            ...
+        </k>
+        <mx-account-address> Account </mx-account-address>
+        <mx-esdt-datas>
+            .Bag =>
+                <mx-esdt-data>
+                    <mx-esdt-id>
+                        <mx-esdt-id-name> TokenName </mx-esdt-id-name>
+                        <mx-esdt-id-nonce> Nonce </mx-esdt-id-nonce>
+                    </mx-esdt-id>
+                    <mx-esdt-balance> Value </mx-esdt-balance>
+                </mx-esdt-data>
+        </mx-esdt-datas>
+        [priority(100)]
+
 endmodule
 
 ```
