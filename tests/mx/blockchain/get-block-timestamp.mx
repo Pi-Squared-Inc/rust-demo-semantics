@@ -1,0 +1,3 @@
+setBlockTimestamp(1234);
+call 0 MX#getBlockTimestamp;
+check_eq mxIntValue(1234)

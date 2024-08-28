@@ -13,6 +13,7 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
                               | setCaller(String)
                               | addAccount(String)
                               | setBalance(account:String, token:String, nonce:Int, value:Int)
+                              | setBlockTimestamp(Int)
 
     syntax MxTest ::= NeList{TestInstruction, ";"}
 
@@ -24,6 +25,7 @@ module MX-TEST-EXECUTION
     imports private INT
     imports private MX-ACCOUNTS-TEST
     imports private MX-BIGUINT-TEST
+    imports private MX-BLOCKS-TEST
     imports private MX-CALL-TEST
     imports private MX-TEST-CONFIGURATION
     imports private MX-TEST-EXECUTION-PARSING-SYNTAX
@@ -148,6 +150,17 @@ module MX-ACCOUNTS-TEST
                 </mx-esdt-data>
         </mx-esdt-datas>
         [priority(100)]
+
+endmodule
+
+module MX-BLOCKS-TEST
+    imports private COMMON-K-CELL
+    imports private MX-BLOCKS-CONFIGURATION
+    imports private MX-TEST-EXECUTION-PARSING-SYNTAX
+
+    rule
+        <k> setBlockTimestamp(T:Int) => .K ... </k>
+        <mx-current-block-timestamp> _ => T </mx-current-block-timestamp>
 
 endmodule
 
