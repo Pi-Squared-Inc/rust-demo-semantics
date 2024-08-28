@@ -1,11 +1,11 @@
 ```k
 
 module MX-BIGUINT-HOOKS
-    imports BOOL
-    imports COMMON-K-CELL
-    imports K-EQUAL-SYNTAX
-    imports MX-BIGUINT-CONFIGURATION
-    imports MX-COMMON-SYNTAX
+    imports private BOOL
+    imports private COMMON-K-CELL
+    imports private K-EQUAL-SYNTAX
+    imports private MX-BIGUINT-CONFIGURATION
+    imports private MX-COMMON-SYNTAX
 
     rule
         <k> MX#bigIntNew(mxIntValue(Value:Int)) => mxIntValue(NextId) ... </k>

@@ -3,12 +3,14 @@
 module MX-TEST-EXECUTION-PARSING-SYNTAX
     imports INT-SYNTAX
     imports MX-COMMON-SYNTAX
+    imports STRING-SYNTAX
 
     syntax TestInstruction  ::= "push" MxValue
                               | "call" argcount:Int MxHookName
                               | "get_big_int"
                               | getBigint(Int)
                               | "check_eq" MxValue
+                              | setCaller(String)
 
     syntax MxTest ::= NeList{TestInstruction, ";"}
 
@@ -19,6 +21,7 @@ module MX-TEST-EXECUTION
     imports private COMMON-K-CELL
     imports private INT
     imports private MX-BIGUINT-TEST
+    imports private MX-CALL-TEST
     imports private MX-TEST-CONFIGURATION
     imports private MX-TEST-EXECUTION-PARSING-SYNTAX
 
@@ -77,6 +80,16 @@ module MX-BIGUINT-TEST
         <bigIntHeapNextId> NextId => NextId +Int 1 </bigIntHeapNextId>
         requires IntId in_keys(Ints) andBool isInt(Ints[IntId] orDefault 0)
 
+endmodule
+
+module MX-CALL-TEST
+    imports private COMMON-K-CELL
+    imports private MX-CALL-CONFIGURATION
+    imports private MX-TEST-EXECUTION-PARSING-SYNTAX
+
+    rule
+        <k> setCaller(S:String) => .K ... </k>
+        <mx-caller> _ => S </mx-caller>
 endmodule
 
 ```
