@@ -76,6 +76,26 @@ module MX-BIGUINT-HOOKS
         requires Id1 in_keys(Ints) andBool isInt(Ints[Id1] orDefault 0)
             andBool Id2 in_keys(Ints) andBool isInt(Ints[Id2] orDefault 0)
             andBool Ints[Id2] orDefault 0 =/=K 0
+
+    rule
+        <k> MX#bigIntCmp(mxIntValue(Id1:Int) , mxIntValue(Id2:Int))
+            => mxIntValue
+                ( #cmpInt
+                  ( {Ints[Id1] orDefault 0}:>Int
+                  , {Ints[Id2] orDefault 0}:>Int
+                  )
+                )
+            ...
+        </k>
+        <bigIntHeap> Ints:Map </bigIntHeap>
+        requires Id1 in_keys(Ints) andBool isInt(Ints[Id1] orDefault 0)
+            andBool Id2 in_keys(Ints) andBool isInt(Ints[Id2] orDefault 0)
+
+    syntax Int ::= #cmpInt ( Int , Int ) [function, total, symbol(cmpInt), smtlib(cmpInt)]
+    rule #cmpInt(I1, I2) => -1 requires I1  <Int I2
+    rule #cmpInt(I1, I2) =>  1 requires I1  >Int I2
+    rule #cmpInt(I1, I2) =>  0 requires I1 ==Int I2
+
 endmodule
 
 ```
