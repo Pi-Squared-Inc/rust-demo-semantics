@@ -13,9 +13,6 @@ module MX-CALL-TOOLS-SYNTAX
                                   function:String,
                                   args:MxValueList
                               )
-                            | callContract(function: String, input: MxCallDataCell )
-                              [symbol(callContractString)]
-                            | "finishExecuteOnDestContext"  [symbol(finishExecuteOnDestContext)]
 
     syntax MxCallDataCell ::= prepareIndirectContractCallInput(
                                   caller: String,
@@ -43,6 +40,9 @@ module MX-CALLS-TOOLS
                                 , input: MxCallDataCell
                                 )
                               [symbol(callContractAux)]
+                            | callContract(function: String, input: MxCallDataCell )
+                              [symbol(callContractString)]
+                            | "finishExecuteOnDestContext"  [symbol(finishExecuteOnDestContext)]
                             | "endCall"  [symbol(endCall)]
                             | "asyncExecute"  [symbol(asyncExecute)]
                             | "setVMOutput"  [symbol(setVMOutput)]
@@ -183,6 +183,32 @@ module MX-CALLS-TOOLS
 
     rule parseESDTTransfers(_, _) => .MxEsdtTransferList
         [owise]
+
+  // ------------------------------------------------------
+    rule [executeOnDestContext]:
+        <k> executeOnDestContext
+                (... destination: Destination:String
+                , egldValue: Value:Int
+                , esdtTransfers: Esdt:MxEsdtTransferList
+                , gasLimit: GasLimit:Int
+                , function: Func:String
+                , args: Args:MxValueList
+                )
+            => callContract
+                    ( Func
+                    , prepareIndirectContractCallInput
+                        (... caller: Callee
+                        , callee: Destination
+                        , egldValue: Value
+                        , esdtTransfers: Esdt
+                        , gasLimit: GasLimit
+                        , args:Args
+                        )
+                    )
+                ~> finishExecuteOnDestContext
+            ...
+        </k>
+        <mx-callee> Callee </mx-callee>
 
   // ------------------------------------------------------
     rule [finishExecuteOnDestContext-ok]:

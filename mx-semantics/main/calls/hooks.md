@@ -36,31 +36,6 @@ module MX-CALLS-HOOKS
             )
         => executeOnDestContext(Destination, 0, Transfers, GasLimit, FunctionName, Args)
         requires 0 <Int lengthString(FunctionName)
-
-    rule [executeOnDestContext]:
-        <k> executeOnDestContext
-                (... destination: Destination:String
-                , egldValue: Value:Int
-                , esdtTransfers: Esdt:MxEsdtTransferList
-                , gasLimit: GasLimit:Int
-                , function: Func:String
-                , args: Args:MxValueList
-                )
-            => callContract
-                    ( Func
-                    , prepareIndirectContractCallInput
-                        (... caller: Callee
-                        , callee: Destination
-                        , egldValue: Value
-                        , esdtTransfers: Esdt
-                        , gasLimit: GasLimit
-                        , args:Args
-                        )
-                    )
-                ~> finishExecuteOnDestContext
-            ...
-        </k>
-        <mx-callee> Callee </mx-callee>
 endmodule
 
 ```
