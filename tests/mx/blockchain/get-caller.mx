@@ -1,0 +1,3 @@
+setCaller("Owner");
+call 0 MX#getCaller;
+check_eq mxStringValue("Owner")
