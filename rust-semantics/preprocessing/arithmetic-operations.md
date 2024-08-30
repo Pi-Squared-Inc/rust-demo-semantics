@@ -4,7 +4,7 @@ module RUST-INTEGER-ARITHMETIC-OPERATIONS
     imports RUST-SHARED-SYNTAX
     imports private RUST-REPRESENTATION
 
-    // Operations are implemented only for the same times, 
+    // Operations are implemented only for the same types, 
     // as implicit type casting (coercion) is not available
     // in Rust.
 
