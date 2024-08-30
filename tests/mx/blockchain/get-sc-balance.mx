@@ -1,0 +1,17 @@
+addAccount("Owner");
+
+push mxIntValue(0);
+push mxStringValue("MyToken");
+push mxStringValue("Owner");
+call 3 MX#bigIntGetESDTExternalBalance;
+get_big_int;
+check_eq mxIntValue(0);
+
+setBalance("Owner", "MyToken", 0, 1234);
+
+push mxIntValue(0);
+push mxStringValue("MyToken");
+push mxStringValue("Owner");
+call 3 MX#bigIntGetESDTExternalBalance;
+get_big_int;
+check_eq mxIntValue(1234)
