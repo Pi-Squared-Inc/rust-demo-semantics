@@ -1,0 +1,4 @@
+new ArithmeticExpression;
+call ArithmeticExpression.arithmetic_expression_constant;
+return_value;
+check_eq 86400_u64
