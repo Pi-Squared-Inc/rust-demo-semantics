@@ -19,6 +19,10 @@ build:
 poetry-install:
 	$(POETRY) install
 
+.PHONY: kompile
+kompile:
+	@make -C .. clean -i
+	@make -C .. build
 
 # Tests
 

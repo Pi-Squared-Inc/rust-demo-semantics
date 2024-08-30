@@ -355,13 +355,13 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       //   TypeCastExpression
 
                       > left:
-                        Expression "*" Expression
-                      | Expression "/" Expression
-                      | Expression "%" Expression
+                        Expression "*" Expression [strict, left]
+                      | Expression "/" Expression [strict, left]
+                      | Expression "%" Expression [strict, left]
 
                       > left:
-                        Expression "+" Expression
-                      | Expression "-" Expression
+                        Expression "+" Expression [strict, left]
+                      | Expression "-" Expression [strict, left]
 
                       > left:
                         Expression "<<" Expression
