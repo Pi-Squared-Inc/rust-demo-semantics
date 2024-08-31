@@ -1,5 +1,6 @@
 ```k
 
+requires "preprocessing/arithmetic-operations.md"
 requires "preprocessing/constants.md"
 requires "preprocessing/crate.md"
 requires "preprocessing/configuration.md"
@@ -15,6 +16,7 @@ module RUST-PREPROCESSING
     imports private INITIALIZATION
     imports private TRAIT
     imports private TRAIT-METHODS
+    imports private RUST-INTEGER-ARITHMETIC-OPERATIONS
 endmodule
 
 ```
