@@ -24,4 +24,11 @@ module MX-ACCOUNTS-CONFIGURATION
 
 endmodule
 
+module MX-ACCOUNTS-STACK-CONFIGURATION
+    imports LIST
+
+    configuration
+        <mx-world-stack> .List </mx-world-stack>
+endmodule
+
 ```
