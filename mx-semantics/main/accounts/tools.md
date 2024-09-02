@@ -18,7 +18,7 @@ module MX-ACCOUNTS-TOOLS
                                   )
                             | checkAccountExists(address: String)
                             | checkESDTBalance(account: String, token: String, value: Int)
-                            | addToESDTBalance(account: String, token: String, delta: Int, allowNew: Bool)
+                            | modifyEsdtBalance(account: String, token: String, delta: Int, allowNew: Bool)
 
  // ------------------------------------------------------
 
@@ -47,8 +47,8 @@ module MX-ACCOUNTS-TOOLS
       => checkAccountExists(Source)
       ~> checkAccountExists(Destination)
       ~> checkESDTBalance(Source, TokenName, Value)
-      ~> addToESDTBalance(Source, TokenName, 0 -Int Value, false)
-      ~> addToESDTBalance(Destination, TokenName, Value, true)
+      ~> modifyEsdtBalance(Source, TokenName, 0 -Int Value, false)
+      ~> modifyEsdtBalance(Destination, TokenName, Value, true)
 
  // ------------------------------------------------------
 
@@ -86,9 +86,9 @@ module MX-ACCOUNTS-TOOLS
         [priority(100)]
 
   // ------------------------------------------------------
-    rule [addToESDTBalance]:
+    rule [modifyEsdtBalance]:
         <k>
-            addToESDTBalance
+            modifyEsdtBalance
                 (... account: Account:String
                 , token: TokenName:String
                 , delta: Delta:Int
@@ -105,9 +105,9 @@ module MX-ACCOUNTS-TOOLS
         <mx-esdt-balance> OriginalFrom:Int => OriginalFrom +Int Delta </mx-esdt-balance>
         [priority(50)]
 
-    rule [addToESDTBalance-new-esdtData]:
+    rule [modifyEsdtBalance-new-esdtData]:
         <k>
-            addToESDTBalance
+            modifyEsdtBalance
                 (... account: Account:String
                 , token: TokenName:String
                 , delta: Delta:Int
@@ -128,8 +128,8 @@ module MX-ACCOUNTS-TOOLS
         )
         [priority(100), preserves-definedness]
 
-    rule [addToESDTBalance-new-err-instrs-empty]:
-        addToESDTBalance(... account: _:String, token: _:String, delta: _:Int, allowNew: false)
+    rule [modifyEsdtBalance-new-err-instrs-empty]:
+        modifyEsdtBalance(... account: _:String, token: _:String, delta: _:Int, allowNew: false)
         => #exception(ExecutionFailed, "new ESDT data on sender")
         [priority(100), preserves-definedness]
 
