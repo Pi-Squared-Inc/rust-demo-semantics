@@ -31,6 +31,7 @@ module MX-CALLS-TOOLS
     imports private K-EQUAL-SYNTAX
     imports private MX-CALL-RESULT-CONFIGURATION
     imports private MX-CALL-TOOLS-SYNTAX
+    imports private MX-COMMON-SYNTAX
     imports private STRING
 
     syntax MxInstructions ::= callContractAux
@@ -261,6 +262,9 @@ module MX-CALLS-TOOLS
 
     // TODO: Not implemented.
     rule asyncExecute => .K
+
+    rule [[getCallee() => Callee]]
+        <mx-callee> Callee:String </mx-callee>
 
 endmodule
 
