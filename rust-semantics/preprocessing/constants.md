@@ -7,13 +7,10 @@ module RUST-CONSTANTS
     imports private RUST-SHARED-SYNTAX
 
     syntax KItem ::= setConstant(Identifier, ValueOrError)
-                   | getConstant(Identifier)
 
     rule
         (const Name:Identifier : T:Type = V:Value;):ConstantItem:KItem
         => setConstant(Name, implicitCast(V, T))
-
-    rule Name:Identifier::_:PathExprSegments => getConstant(Name) [owise]
 
     rule
         <k>
@@ -28,11 +25,8 @@ module RUST-CONSTANTS
             ...
         </constants>
 
-    rule
-        <k>
-            getConstant(Name) => V
-            ...
-        </k>
+
+    rule <k> Name:Identifier::.PathExprSegments => V ... </k>
         <constants>
             <constant>
                 <constant-name> Name </constant-name>
