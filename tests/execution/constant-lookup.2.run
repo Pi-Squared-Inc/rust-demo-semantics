@@ -1,5 +1,4 @@
 new ConstantValueLookup;
 call ConstantValueLookup.lookup_constant_with_type;
 return_value;
-check_eq 7_000_u64
-
+check_eq 7100_u64
