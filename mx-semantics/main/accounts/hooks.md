@@ -10,7 +10,7 @@ module MX-ACCOUNTS-HOOKS
                 ( mxStringValue(Owner:String)
                 , mxStringValue(TokenId:String)
                 , mxIntValue(Nonce:Int)
-                , .MxValueList
+                , .MxHookArgs
                 ) => MX#bigIntNew(mxIntValue(Balance)) ... </k>
         <mx-account-address> Owner </mx-account-address>
         <mx-esdt-id>
@@ -23,9 +23,9 @@ module MX-ACCOUNTS-HOOKS
     rule
         <k> MX#bigIntGetESDTExternalBalance
                 ( mxStringValue(Owner:String)
-                , mxStringValue(_TokenId:String)
-                , mxIntValue(_Nonce:Int)
-                , .MxValueList
+                , mxStringValue(TokenId:String)
+                , mxIntValue(Nonce:Int)
+                , .MxHookArgs
                 ) => MX#bigIntNew(mxIntValue(0)) ... </k>
         <mx-account-address> Owner </mx-account-address>
         [priority(100)]
