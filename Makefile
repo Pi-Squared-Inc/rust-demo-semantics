@@ -45,12 +45,18 @@ execution-test: $(EXECUTION_OUTPUTS)
 mx-test: $(MX_TESTING_OUTPUTS)
 
 $(RUST_PREPROCESSING_TIMESTAMP): $(RUST_SEMANTICS_FILES)
-	$$(which kompile) rust-semantics/targets/preprocessing/rust.md --emit-json -o $(RUST_PREPROCESSING_KOMPILED)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(RUST_PREPROCESSING_KOMPILED)
+	$$(which kompile) rust-semantics/targets/preprocessing/rust.md --emit-json -o $(RUST_PREPROCESSING_KOMPILED) --debug
 
 $(RUST_EXECUTION_TIMESTAMP): $(RUST_SEMANTICS_FILES)
-	$$(which kompile) rust-semantics/targets/execution/rust.md --emit-json -o $(RUST_EXECUTION_KOMPILED)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(RUST_EXECUTION_KOMPILED)
+	$$(which kompile) rust-semantics/targets/execution/rust.md --emit-json -o $(RUST_EXECUTION_KOMPILED) --debug
 
 $(MX_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(MX_TESTING_KOMPILED)
 	$$(which kompile) mx-semantics/targets/testing/mx.md -o $(MX_TESTING_KOMPILED) --debug
 
 $(RUST_SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(RUST_SYNTAX_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)

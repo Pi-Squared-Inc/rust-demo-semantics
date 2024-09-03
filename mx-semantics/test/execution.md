@@ -5,11 +5,13 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
     imports MX-COMMON-SYNTAX
     imports STRING-SYNTAX
 
-    syntax TestInstruction  ::= "push" MxValue
+    syntax TestInstruction  ::= "error"
+                              | "push" MxValue
                               | "call" argcount:Int MxHookName
                               | "get_big_int"
                               | getBigint(Int)
                               | "check_eq" MxValue
+                              | setCallee(String)
                               | setCaller(String)
                               | addAccount(String)
                               | setBalance(account:String, token:String, nonce:Int, value:Int)
@@ -53,8 +55,8 @@ module MX-TEST-EXECUTION
         <k> check_eq V => .K ... </k>
         <mx-test-stack> V , L:MxValueStack => L </mx-test-stack>
 
-    syntax MxHookArgs ::= takeArgs(Int, MxValueStack)  [function, total]
-    rule takeArgs(N:Int, _:MxValueStack) => .MxHookArgs
+    syntax MxValueList ::= takeArgs(Int, MxValueStack)  [function, total]
+    rule takeArgs(N:Int, _:MxValueStack) => .MxValueList
         requires N <=Int 0
     rule takeArgs(N:Int, (V:MxValue ,  Vs:MxValueStack)) => V , takeArgs(N -Int 1, Vs)
         requires 0 <Int N
@@ -95,7 +97,6 @@ module MX-CALL-TEST
     rule
         <k> setCaller(S:String) => .K ... </k>
         <mx-caller> _ => S </mx-caller>
-endmodule
 
 module MX-ACCOUNTS-TEST
     imports private COMMON-K-CELL
@@ -110,7 +111,9 @@ module MX-ACCOUNTS-TEST
                     <mx-account-address> S </mx-account-address>
                     <mx-esdt-datas> .Bag </mx-esdt-datas>
                 </mx-account>
+            ...
         </mx-accounts>
+        [priority(100)]
 
     rule
         <k> setBalance
@@ -150,6 +153,9 @@ module MX-ACCOUNTS-TEST
                 </mx-esdt-data>
         </mx-esdt-datas>
         [priority(100)]
+
+    rule (.K => error) ~> setBalance(...)
+        [priority(200)]
 
 endmodule
 

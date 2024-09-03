@@ -6,7 +6,7 @@ module MX-BLOCKS-HOOKS
     imports private MX-COMMON-SYNTAX
 
     rule
-        <k> MX#getBlockTimestamp ( .MxHookArgs ) => mxIntValue(T) ... </k>
+        <k> MX#getBlockTimestamp ( .MxValueList ) => mxIntValue(T) ... </k>
         <mx-current-block-timestamp> T </mx-current-block-timestamp>
 
 endmodule
