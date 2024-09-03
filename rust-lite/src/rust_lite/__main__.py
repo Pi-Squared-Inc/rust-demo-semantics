@@ -60,6 +60,7 @@ def exec_run(options: RunOptions) -> None:
     print('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
 
     module_manager.print_k_top_element()
+    module_manager.print_constants_cell()
 
 def trigger_exec_run(stripped_args):
     options = generate_options(stripped_args)
@@ -76,11 +77,11 @@ def exec_erc20() -> None:
     trigger_exec_run(stripped_args)
 
 def exec_staking() -> None:
-    stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/lending.rs')}
+    stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/staking.rs')}
     trigger_exec_run(stripped_args)
 
 def exec_lending() -> None:
-    stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/staking.rs')}
+    stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/lending.rs')}
     trigger_exec_run(stripped_args)
 
 

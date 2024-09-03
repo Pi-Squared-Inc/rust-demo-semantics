@@ -25,16 +25,14 @@ module RUST-CONSTANTS
             ...
         </constants>
 
-
     rule <k> Name:Identifier::.PathExprSegments => V ... </k>
-        <constants>
-            <constant>
-                <constant-name> Name </constant-name>
-                <constant-value> V:Value </constant-value>
-            </constant>
-            ...
-        </constants>
+        <constant-name> Name </constant-name>
+        <constant-value> V:Value </constant-value>
 
+    rule <k> Name:Identifier::I:Identifier::.PathExprSegments => V ... </k>
+        <constant-name> Name </constant-name>
+        <constant-value> V:Value </constant-value>
 
+        
 endmodule
 ```
