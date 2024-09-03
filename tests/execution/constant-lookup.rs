@@ -17,7 +17,8 @@ pub trait ConstantValueLookup {
     fn lookup_constant(&self) -> u64 { YEARLY_INTEREST }
 
     fn lookup_constant_with_type(&self) -> u64 { 
-        let x = YEARLY_INTEREST::u64;
-        x }
+        let x = YEARLY_INTEREST;
+        x 
+    }
 
 }
