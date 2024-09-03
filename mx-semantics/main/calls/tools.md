@@ -26,10 +26,12 @@ module MX-CALL-TOOLS-SYNTAX
 endmodule
 
 module MX-CALLS-TOOLS
+    imports private BOOL
     imports private COMMON-K-CELL
     imports private INT
     imports private K-EQUAL-SYNTAX
     imports private MX-CALL-RESULT-CONFIGURATION
+    imports private MX-CALL-RETV-CONFIGURATION
     imports private MX-CALL-TOOLS-SYNTAX
     imports private MX-COMMON-SYNTAX
     imports private STRING
@@ -47,6 +49,7 @@ module MX-CALLS-TOOLS
                             | "endCall"  [symbol(endCall)]
                             | "asyncExecute"  [symbol(asyncExecute)]
                             | "setVMOutput"  [symbol(setVMOutput)]
+                            | mkCall(function: String, callData: MxCallDataCell)
 
   // -----------------------------------------------------------------------------------
     rule prepareIndirectContractCallInput
@@ -94,6 +97,18 @@ module MX-CALLS-TOOLS
             ...
         </k>
         <mx-call-result> _ => .MxCallResult </mx-call-result>
+
+    rule [callContractAux]:
+        callContractAux
+            (... caller: _From:String
+            , callee: To:String
+            , function: FuncName:String
+            , input: CallData:MxCallDataCell
+            )
+        => newExecutionEnvironment(To)
+            ~> mkCall(FuncName, CallData)
+      requires notBool(isBuiltin(FuncName))
+          andBool "callBack" =/=K FuncName
 
     rule [callContractAux-builtin]:
         callContractAux
@@ -168,9 +183,64 @@ module MX-CALLS-TOOLS
         => .K
         requires getCallFunc(FUNC, Args) ==K ""
 
+    rule [determineIsSCCallAfter-call]:
+        determineIsSCCallAfter
+            ( Sender:String, Destination:String, Func:BuiltinFunction
+            ,   <mx-call-data>
+                    <mx-call-args> Args:MxValueList </mx-call-args>
+                    <mx-gas-provided> Gas:Int </mx-gas-provided>
+                    <mx-gas-price> GasPrice:Int </mx-gas-price>
+                    ...
+                </mx-call-data>
+            )
+        => newExecutionEnvironment(Destination)
+            ~> mkCall
+                ( getCallFunc(Func, Args)
+                , mkCallDataEsdtExec(Sender, Destination, Func, Args, Gas, GasPrice)
+                )
+      requires getCallFunc(Func, Args) =/=K ""
+
+
+    syntax MxCallDataCell ::= mkCallDataEsdtExec
+        (caller: String, callee: String
+        , transferFunction: BuiltinFunction
+        , args: MxValueList, gas: Int, gasPrice: Int)
+        [function, total]
+  // -----------------------------------------------------------------------------------
+    rule mkCallDataEsdtExec
+            (... caller: Caller:String
+            , callee: Callee:String
+            , transferFunction: Function:BuiltinFunction
+            , args: Args:MxValueList
+            , gas: Gas:Int, gasPrice: GasPrice:Int
+            )
+        =>  <mx-call-data>
+                <mx-callee> Callee </mx-callee>
+                <mx-caller> Caller </mx-caller>
+                <mx-call-args> getCallArgs(Function, Args) </mx-call-args>
+                <mx-egld-value> 0 </mx-egld-value>
+                <mx-esdt-transfers> parseESDTTransfers(Function, Args) </mx-esdt-transfers>
+                <mx-gas-provided> Gas </mx-gas-provided>
+                <mx-gas-price> GasPrice </mx-gas-price>
+            </mx-call-data>
+
+    syntax MxValueList ::= getCallArgs(BuiltinFunction, MxValueList)  [function, total]
+  // -------------------------------------------------------------------------------
+    rule getCallArgs(#ESDTTransfer, Args:MxValueList)
+        => drop(3, Args) // drop token, amount, func
+    rule getCallArgs(_, _) => .MxValueList  [owise]
+
+    syntax MxValueList ::= drop(Int, MxValueList)  [function, total]
+  // -------------------------------------------------------------------------------
+    rule drop(N:Int, Vs:MxValueList) => Vs
+        requires N <=Int 0
+    rule drop(N:Int, (_V:MxValue ,  Vs:MxValueList)) => drop(N -Int 1, Vs)
+        requires 0 <Int N
+
+
     syntax String ::= getCallFunc(BuiltinFunction, MxValueList)  [function, total]
   // --------------------------------------------------------------------------
-    rule getCallFunc(#ESDTTransfer,    ARGS) => getArgString(ARGS, 2) // token&amount&func&...
+    rule getCallFunc(#ESDTTransfer,    Args) => getArgString(Args, 2) // token&amount&func&...
     // rule getCallFunc(#ESDTNFTTransfer, ARGS) => getArgString(ARGS, 4) // token&nonce&amount&dest&func&...
     // rule getCallFunc(#MultiESDTNFTTransfer, ARGS)
     //     => getArg(ARGS, MultiESDTNFTTransfer.num(ARGS) *Int 3 +Int 2)
@@ -214,8 +284,9 @@ module MX-CALLS-TOOLS
   // ------------------------------------------------------
     rule [finishExecuteOnDestContext-ok]:
         <k> finishExecuteOnDestContext => mxIntValue(0) ... </k>
-        <mx-call-result> mxCallResult(... returnCode: OK) => .MxCallResult </mx-call-result>
- 
+        <mx-call-result> mxCallResult(... returnCode: OK, out: Value:MxValue) => .MxCallResult </mx-call-result>
+        <mx-return-values> .MxValueList => Value , .MxValueList </mx-return-values>
+
     rule [finishExecuteOnDestContext-exception]:
         <k> finishExecuteOnDestContext => resolveErrorFromOutput(EC, MSG) ... </k>
         <mx-call-result> mxCallResult(... returnCode: EC:ExceptionCode, returnMessage: MSG) => .MxCallResult </mx-call-result>
@@ -250,7 +321,7 @@ module MX-CALLS-TOOLS
             ~> popCallState
             ~> dropWorldState
 
-    rule [setVMOutput]:
+    rule [setVMOutput-no-retv]:
         <k> setVMOutput => .K ... </k>
         <mx-call-result>
             _ => mxCallResult
@@ -259,6 +330,34 @@ module MX-CALLS-TOOLS
                     , out: mxUnitValue()
                     )
         </mx-call-result>
+        <mx-return-values> .MxValueList </mx-return-values>
+
+    rule [setVMOutput-with-retv]:
+        <k> setVMOutput => .K ... </k>
+        <mx-call-result>
+            _ => mxCallResult
+                    (... returnCode: OK
+                    , returnMessage: ""
+                    , out: ReturnValue
+                    )
+        </mx-call-result>
+        <mx-return-values> ReturnValue:MxValue , .MxValueList => .MxValueList </mx-return-values>
+
+
+    rule
+        <k>
+            mkCall
+                (... function: FunctionName:String
+                , callData: CallData:MxCallDataCell
+                )
+            => clearBigInts ~> host.mkCall(FunctionName)
+            ...
+        </k>
+        (_:MxCallDataCell => CallData)
+
+    rule
+        <k> returnCallData(V:MxValue) => .K ... </k>
+        <mx-return-values> .MxValueList => V , .MxValueList </mx-return-values>
 
     // TODO: Not implemented.
     rule asyncExecute => .K
