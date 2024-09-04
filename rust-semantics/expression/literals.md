@@ -1,6 +1,7 @@
 ```k
 module RUST-EXPRESSION-LITERALS
     imports private RUST-EXPRESSION-INTEGER-LITERALS
+    imports private RUST-EXPRESSION-BOOLEAN-LITERALS
 endmodule
 
 module RUST-EXPRESSION-INTEGER-LITERALS
@@ -93,5 +94,12 @@ module RUST-EXPRESSION-INTEGER-LITERALS
         requires lengthString(Contained) <=Int lengthString(Containing)
     rule startsWith(_, _) => false [owise]
 
+endmodule
+
+module RUST-EXPRESSION-BOOLEAN-LITERALS
+    imports BOOL
+    imports RUST-SHARED-SYNTAX
+    
+    rule true:LiteralExpression => true:Bool
 endmodule
 ```

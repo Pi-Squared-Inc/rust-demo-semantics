@@ -23,6 +23,7 @@ module RUST-VALUE-SYNTAX
                     | u128(MInt{128})
                     | tuple(ValueList)
                     | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
+                    | Bool
 
     syntax ValueList ::= List{Value, ","}
     syntax Expression ::= Value

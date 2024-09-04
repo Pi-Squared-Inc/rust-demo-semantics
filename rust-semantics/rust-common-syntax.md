@@ -372,12 +372,12 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       | Expression "^" Expression
                       | Expression "|" Expression
 
-                      > Expression "==" Expression
-                      | Expression "!=" Expression
-                      | Expression ">" Expression
-                      | Expression "<" Expression
-                      | Expression ">=" Expression
-                      | Expression "<=" Expression
+                      > Expression "==" Expression [seqstrict]
+                      | Expression "!=" Expression [seqstrict]
+                      | Expression ">" Expression [seqstrict]
+                      | Expression "<" Expression [seqstrict]
+                      | Expression ">=" Expression [seqstrict]
+                      | Expression "<=" Expression [seqstrict]
 
                       > left:
                         Expression "&&" Expression
