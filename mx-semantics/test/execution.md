@@ -10,6 +10,7 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
                               | "call" argcount:Int MxHookName
                               | "get_big_int"
                               | "push_store_data"
+                              | "push_return_value"
                               | getBigint(Int)
                               | "check_eq" MxValue
                               | setCallee(String)
@@ -19,6 +20,7 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
                               | setBalance(account:String, token:String, nonce:Int, value:Int)
                               | setStorage(account:String, key:String, value:MxValue)
                               | setBlockTimestamp(Int)
+                              | setMockCode(String, MxValue)
 
     syntax MxTest ::= NeList{TestInstruction, ";"}
 
@@ -27,9 +29,16 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
     syntax MxWrappedValue ::= wrappedMx(MxValue)
 endmodule
 
+module MX-TEST-INTERNAL-SYNTAX
+    imports MX-COMMON-SYNTAX
+
+    syntax ContractCode ::= mockCode(MxValue)
+endmodule
+
 module MX-TEST-EXECUTION
     imports private COMMON-K-CELL
     imports private INT
+    imports private MX-ACCOUNTS-CODE-TEST
     imports private MX-ACCOUNTS-TEST
     imports private MX-BIGUINT-TEST
     imports private MX-BLOCKS-TEST
@@ -105,6 +114,8 @@ endmodule
 module MX-CALL-TEST
     imports private COMMON-K-CELL
     imports private MX-CALL-CONFIGURATION
+    imports private MX-CALL-RETURN-VALUE-CONFIGURATION
+    imports private MX-TEST-CONFIGURATION
     imports private MX-TEST-EXECUTION-PARSING-SYNTAX
 
     rule
@@ -118,6 +129,44 @@ module MX-CALL-TEST
     rule
         <k> setCallee(S:String) => .K ... </k>
         <mx-callee> _ => S </mx-callee>
+
+    rule
+        <k> push_return_value => .K ... </k>
+        <mx-return-values>  V:MxValue , .MxValueList => .MxValueList </mx-return-values>
+        <mx-test-stack> L:MxValueStack => V , L </mx-test-stack>
+
+endmodule
+
+module MX-ACCOUNTS-CODE-TEST
+    imports private COMMON-K-CELL
+    imports private MX-ACCOUNTS-ADDRESS-CONFIGURATION
+    imports private MX-ACCOUNTS-CODE-CONFIGURATION
+    imports private MX-TEST-CONFIGURATION
+    imports private MX-TEST-EXECUTION-PARSING-SYNTAX
+    imports private MX-TEST-INTERNAL-SYNTAX
+
+    rule
+        <k> setMockCode(S:String, V:MxValue) => .K ... </k>
+        <mx-account-address> S </mx-account-address>
+        <mx-account-code> _ => mockCode(V) </mx-account-code>
+
+    rule
+        <k>
+            host.newEnvironment(mockCode(_) #as Code:ContractCode) => .K
+            ...
+        </k>
+        <mock-host-code>
+            _ => Code
+        </mock-host-code>
+
+    rule
+        <k> host . mkCall (... functionName: "myMockFunc" )
+            => MX#finish(V)
+            ...
+        </k>
+        <mock-host-code>
+            mockCode(V:MxValue)
+        </mock-host-code>
 endmodule
 
 module MX-ACCOUNTS-TEST
@@ -137,6 +186,7 @@ module MX-ACCOUNTS-TEST
                     <mx-account-address> S </mx-account-address>
                     <mx-esdt-datas> .Bag </mx-esdt-datas>
                     <mx-account-storage> .Bag </mx-account-storage>
+                    ...
                 </mx-account>
             ...
         </mx-accounts>

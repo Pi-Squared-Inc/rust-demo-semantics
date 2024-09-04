@@ -1,8 +1,9 @@
 ```k
 
-module MX-ACCOUNTS-HOOKS
+module MX-ACCOUNTS-ESDT-HOOKS
     imports private COMMON-K-CELL
-    imports private MX-ACCOUNTS-CONFIGURATION
+    imports private MX-ACCOUNTS-ADDRESS-CONFIGURATION
+    imports private MX-ACCOUNTS-ESDT-CONFIGURATION
     imports private MX-COMMON-SYNTAX
 
     rule

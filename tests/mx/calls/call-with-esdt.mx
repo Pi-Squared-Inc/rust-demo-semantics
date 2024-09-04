@@ -1,0 +1,32 @@
+addAccount("Caller");
+addAccount("Receiver");
+setBalance("Caller", "MyToken", 0, 1234);
+setCallee("Caller");
+setMockCode("Receiver", mxIntValue(120));
+
+push mxListValue(mxIntValue(20), mxIntValue(100));
+push mxStringValue("myMockFunc");
+push mxIntValue(0);
+push mxTransfersValue(mxTransferValue("MyToken", 0, 100));
+push mxIntValue(0);
+push mxStringValue("Receiver");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxIntValue(120);
+
+push mxIntValue(0);
+push mxStringValue("MyToken");
+push mxStringValue("Caller");
+call 3 MX#bigIntGetESDTExternalBalance;
+get_big_int;
+check_eq mxIntValue(1134);
+
+push mxIntValue(0);
+push mxStringValue("MyToken");
+push mxStringValue("Receiver");
+call 3 MX#bigIntGetESDTExternalBalance;
+get_big_int;
+check_eq mxIntValue(100)
+

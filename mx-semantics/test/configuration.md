@@ -6,6 +6,7 @@ module MX-TEST-CONFIGURATION
     configuration
         <mx-test>
             <mx-test-stack> .MxValueStack </mx-test-stack>
+            <mock-host-code> .ContractCode </mock-host-code>
         </mx-test>
 
 endmodule

@@ -4,10 +4,14 @@ module MX-ACCOUNTS-TOOLS
     imports private BOOL
     imports private COMMON-K-CELL
     imports private INT
+    imports private MX-ACCOUNTS-ADDRESS-CONFIGURATION
+    imports private MX-ACCOUNTS-ESDT-CONFIGURATION
+    // TODO: refactor so that MX-ACCOUNTS-CONFIGURATION is not needed here.
     imports private MX-ACCOUNTS-CONFIGURATION
+    // TODO: refactor so that MX-ACCOUNTS-STACK-CONFIGURATION is not needed here.
+    imports private MX-ACCOUNTS-STACK-CONFIGURATION
     imports private MX-COMMON-SYNTAX
     imports private STRING
-    imports private MX-ACCOUNTS-STACK-CONFIGURATION
 
     syntax MxInstructions ::= transferESDT
                                   ( source: String

@@ -40,10 +40,21 @@ module MX-COMMON-SYNTAX
                             | "resetCallState"  [symbol(resetCallState)]
                             | "pushWorldState"  [symbol(pushWorldState)]
                             | "dropWorldState"  [symbol(dropWorldState)]
+                            | "clearBigInts"  [symbol(clearBigInts)]
                             | processBuiltinFunction(BuiltinFunction, String, String, MxCallDataCell)
                               [symbol(processBuiltinFunction)]
-                            | checkBool(Bool, String)    [symbol(checkBool)]
+                            | newExecutionEnvironment(contractAddress:String)
+                            | checkBool(Bool, String)   [symbol(checkBool)]
                             | storeHostValue(destination: MxValue, value: MxValue)
+                            | returnCallData(MxValue)  [symbol(returnCallData)]
+
+    syntax MxHostInstructions ::= "host" "." "newEnvironment" "(" ContractCode ")"
+                                | "host" "." "mkCall" "(" functionName:String ")"
+                                | "host" "." "pushCallState"
+                                | "host" "." "popCallState"
+                                | "host" "." "resetCallState"
+
+    syntax ContractCode ::= ".ContractCode"
 
     syntax MxCallResult ::= ".MxCallResult"
                           | mxCallResult
