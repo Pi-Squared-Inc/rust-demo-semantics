@@ -24,7 +24,7 @@ module MX-CALL-RESULT-CONFIGURATION
         <mx-call-result> .MxCallResult </mx-call-result>
 endmodule
 
-module MX-CALL-RETV-CONFIGURATION
+module MX-CALL-RETURN-VALUE-CONFIGURATION
     imports MX-COMMON-SYNTAX
 
     configuration

@@ -114,7 +114,7 @@ endmodule
 module MX-CALL-TEST
     imports private COMMON-K-CELL
     imports private MX-CALL-CONFIGURATION
-    imports private MX-CALL-RETV-CONFIGURATION
+    imports private MX-CALL-RETURN-VALUE-CONFIGURATION
     imports private MX-TEST-CONFIGURATION
     imports private MX-TEST-EXECUTION-PARSING-SYNTAX
 

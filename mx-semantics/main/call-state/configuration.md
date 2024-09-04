@@ -5,7 +5,7 @@ requires "../calls/configuration.md"
 module MX-CALL-STATE-CONFIGURATION
     imports MX-BIGUINT-CONFIGURATION
     imports MX-CALL-CONFIGURATION
-    imports MX-CALL-RETV-CONFIGURATION
+    imports MX-CALL-RETURN-VALUE-CONFIGURATION
 
     configuration
         <mx-call-state>

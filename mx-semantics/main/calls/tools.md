@@ -31,7 +31,7 @@ module MX-CALLS-TOOLS
     imports private INT
     imports private K-EQUAL-SYNTAX
     imports private MX-CALL-RESULT-CONFIGURATION
-    imports private MX-CALL-RETV-CONFIGURATION
+    imports private MX-CALL-RETURN-VALUE-CONFIGURATION
     imports private MX-CALL-TOOLS-SYNTAX
     imports private MX-COMMON-SYNTAX
     imports private STRING
