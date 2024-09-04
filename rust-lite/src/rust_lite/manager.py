@@ -32,7 +32,7 @@ class RustLiteManager():
 
     def load_program(self, program_path: str) -> None:
 
-        returned_process = _kast(file=program_path, definition_dir=f'../.build/rust-execution-kompiled')
+        returned_process = _kast(file=program_path, definition_dir=f'../.build/rust-preprocessing-kompiled')
 
         program = returned_process.stdout
         
@@ -59,3 +59,12 @@ class RustLiteManager():
             _PPRINT.pprint(top_cell)
         else:
             print('Cell is empty.')
+
+    
+    def print_constants_cell(self) -> None:
+        cell = self.cterm.cell('CONSTANTS_CELL')
+        
+        print('--------------------------------------------------')
+        print('CONSTANTS CELL ELEMENT: ')
+        _PPRINT.pprint(cell)
+        
