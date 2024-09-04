@@ -1,0 +1,9 @@
+addAccount("Owner");
+setCallee("Owner");
+
+push mxIntValue(12);
+push mxStringValue("MyKey");
+call 2 MX#storageLoad;
+push_store_data;
+check_eq mxIntValue(12);
+check_eq mxWrappedEmpty

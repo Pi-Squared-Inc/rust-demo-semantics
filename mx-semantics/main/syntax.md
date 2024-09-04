@@ -14,6 +14,9 @@ module MX-COMMON-SYNTAX
                       | MxEsdtTransfer
                       | mxTransfersValue(MxEsdtTransferList)
                       | mxUnitValue()
+                      | MxWrappedValue
+    syntax MxWrappedValue ::= "mxWrappedEmpty"
+
     syntax MxHookName ::= r"MX#[a-zA-Z][a-zA-Z0-9]*"  [token]
     syntax MxValueList ::= List{MxValue, ","}
     syntax HookCall ::= MxHookName "(" MxValueList ")"
@@ -40,6 +43,7 @@ module MX-COMMON-SYNTAX
                             | processBuiltinFunction(BuiltinFunction, String, String, MxCallDataCell)
                               [symbol(processBuiltinFunction)]
                             | checkBool(Bool, String)    [symbol(checkBool)]
+                            | storeHostValue(destination: MxValue, value: MxValue)
 
     syntax MxCallResult ::= ".MxCallResult"
                           | mxCallResult
@@ -62,6 +66,8 @@ module MX-COMMON-SYNTAX
                            | "ExecutionFailed"          [symbol(ExecutionFailed)]
                            | "UpgradeFailed"            [symbol(UpgradeFailed)]
                            | "SimulateFailed"           [symbol(SimulateFailed)]
+
+    syntax String ::= getCallee()  [function, total]
 endmodule
 
 ```
