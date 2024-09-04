@@ -6,8 +6,8 @@ module RUST-CONFIGURATION
 
     configuration
         <rust>
-            <execution/>
             <preprocessed/>
+            <execution/>
         </rust>
 
 endmodule
