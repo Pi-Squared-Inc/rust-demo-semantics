@@ -17,6 +17,7 @@ module RUST-PREPROCESSING-CONFIGURATION
             <traits>
                 <trait multiplicity="*" type="Map">
                     <trait-path> my_identifier:TypePath </trait-path>
+                    <method-list> .List </method-list>  // List of Identifier
                     <methods>
                         <method multiplicity="*" type="Map">
                             <method-name> .Identifier </method-name>
