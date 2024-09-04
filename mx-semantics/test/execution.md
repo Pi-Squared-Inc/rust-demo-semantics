@@ -9,17 +9,22 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
                               | "push" MxValue
                               | "call" argcount:Int MxHookName
                               | "get_big_int"
+                              | "push_store_data"
                               | getBigint(Int)
                               | "check_eq" MxValue
                               | setCallee(String)
                               | setCaller(String)
+                              | setCallee(String)
                               | addAccount(String)
                               | setBalance(account:String, token:String, nonce:Int, value:Int)
+                              | setStorage(account:String, key:String, value:MxValue)
                               | setBlockTimestamp(Int)
 
     syntax MxTest ::= NeList{TestInstruction, ";"}
 
     syntax MxValueStack ::= List{MxValue, ","}
+
+    syntax MxWrappedValue ::= wrappedMx(MxValue)
 endmodule
 
 module MX-TEST-EXECUTION
@@ -50,6 +55,14 @@ module MX-TEST-EXECUTION
     rule
         <k> get_big_int => testGetBigInt(IntId) ... </k>
         <mx-test-stack> mxIntValue(IntId) , L:MxValueStack => L </mx-test-stack>
+
+    rule
+        <k> storeHostValue (... destination: Destination:MxValue, value: Value:MxValue)
+                ~> push_store_data ; Is
+            => Is
+            ...
+        </k>
+        <mx-test-stack> L:MxValueStack => Destination, Value, L </mx-test-stack>
 
     rule
         <k> check_eq V => .K ... </k>
@@ -101,6 +114,10 @@ module MX-CALL-TEST
     rule
         <k> setCaller(S:String) => .K ... </k>
         <mx-caller> _ => S </mx-caller>
+
+    rule
+        <k> setCallee(S:String) => .K ... </k>
+        <mx-callee> _ => S </mx-callee>
 endmodule
 
 module MX-ACCOUNTS-TEST
@@ -119,6 +136,7 @@ module MX-ACCOUNTS-TEST
             =>  <mx-account>
                     <mx-account-address> S </mx-account-address>
                     <mx-esdt-datas> .Bag </mx-esdt-datas>
+                    <mx-account-storage> .Bag </mx-account-storage>
                 </mx-account>
             ...
         </mx-accounts>
@@ -165,6 +183,37 @@ module MX-ACCOUNTS-TEST
 
     rule (.K => error) ~> setBalance(...)
         [priority(200)]
+
+    rule
+        <k> setStorage
+                (... account: Account:String
+                , key: Key:String
+                , value: Value:MxValue
+                ) => .K
+            ...
+        </k>
+        <mx-account-address> Account </mx-account-address>
+        <mx-account-storage-key> Key </mx-account-storage-key>
+        <mx-account-storage-value> _ => Value </mx-account-storage-value>
+        [priority(50)]
+
+    rule
+        <k> setStorage
+                (... account: Account:String
+                , key: Key:String
+                , value: Value:MxValue
+                ) => .K
+            ...
+        </k>
+        <mx-account-address> Account </mx-account-address>
+        <mx-account-storage>
+            .Bag =>
+            <mx-account-storage-item>
+                <mx-account-storage-key> Key </mx-account-storage-key>
+                <mx-account-storage-value> wrappedMx(Value) </mx-account-storage-value>
+            </mx-account-storage-item>
+        </mx-account-storage>
+        [priority(100)]
 
 endmodule
 
