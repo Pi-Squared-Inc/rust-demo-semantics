@@ -15,7 +15,7 @@ module INITIALIZATION
             .Bag
             =>  <trait>
                     <trait-path> Name </trait-path>
-                    <methods> .Bag </methods>
+                    ...
                 </trait>
         </traits>
 
@@ -33,7 +33,7 @@ module INITIALIZATION
         <k> #addMethod(
                 Trait:TypePath,
                 Name:Identifier, P:NormalizedFunctionParameterList,
-                R:Type, B:BlockExpression,
+                R:Type, B:BlockExpressionOrSemicolon,
                 A:OuterAttributes
             ) => .K
             ...
@@ -41,18 +41,23 @@ module INITIALIZATION
         <trait>
           ...
           <trait-path> Trait </trait-path>
+          <method-list> L:List => ListItem(Name) L </method-list>
           <methods>
             .Bag =>
               <method>
                 <method-name> Name:Identifier </method-name>
                 <method-params> P </method-params>
                 <method-return-type> R </method-return-type>
-                <method-implementation> block(B) </method-implementation>
+                <method-implementation> toFBR(B) </method-implementation>
                 <method-outer-attributes> A </method-outer-attributes>
               </method>
             ...
           </methods>
         </trait>
+
+    syntax FunctionBodyRepresentation ::= toFBR(BlockExpressionOrSemicolon)  [function, total]
+    rule toFBR(B:BlockExpression) => block(B)
+    rule toFBR(;) => empty
 
 endmodule
 
