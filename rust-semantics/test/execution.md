@@ -27,7 +27,7 @@ module RUST-EXECUTION-TEST
 
     rule
         <k> new P:TypePath => .K ... </k>
-        <test-stack> .List => ListItem(NVI) ... </test-stack>
+        <test-stack> .List => ListItem(ptr(NVI)) ... </test-stack>
         <trait-path> P </trait-path>
         <values> VALUES:Map => VALUES[NVI <- struct(P, .Map)] </values>
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>

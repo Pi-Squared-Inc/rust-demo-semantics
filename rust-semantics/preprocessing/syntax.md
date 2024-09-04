@@ -28,8 +28,6 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
                                 OuterAttributes
                             )
 
-    // TODO: Move to a more generic place
-    syntax Identifier ::= "self"  [token]
 endmodule
 
 ```
