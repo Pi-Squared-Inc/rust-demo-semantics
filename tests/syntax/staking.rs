@@ -9,7 +9,7 @@ use multiversx_sc::imports::*;
 pub const YEARLY_INTEREST: u64 = 7_000;
 pub const BPS: u64 = 100_000; 
 pub const SECONDS_IN_DAY: u64 = 24 * 60 * 60;
-pub const SECONDS_IN_YEAR: u64 = 365 * SECONDS_IN_DAY;
+pub const SECONDS_IN_YEAR: u64 = 365_u64 * SECONDS_IN_DAY;
 
 #[multiversx_sc::contract]
 pub trait Staking {

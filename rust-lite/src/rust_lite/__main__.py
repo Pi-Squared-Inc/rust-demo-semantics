@@ -76,11 +76,11 @@ def exec_erc20() -> None:
     trigger_exec_run(stripped_args)
 
 def exec_staking() -> None:
-    stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/lending.rs')}
+    stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/staking.rs')}
     trigger_exec_run(stripped_args)
 
 def exec_lending() -> None:
-    stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/staking.rs')}
+    stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/lending.rs')}
     trigger_exec_run(stripped_args)
 
 
