@@ -94,5 +94,4 @@ module RUST-EXPRESSION-INTEGER-LITERALS
     rule startsWith(_, _) => false [owise]
 
 endmodule
-
 ```

@@ -257,7 +257,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                               | ByteLiteral | ByteStringLiteral | RawByteStringLiteral
                               | CStringLiteral | RawCStringLiteral
                               | IntegerLiteral | FloatLiteral
-                              
+
   syntax CharLiteral ::= "TODO: not needed yet, not implementing"
   // TODO: Not implemented properly
   syntax StringLiteral ::= String
