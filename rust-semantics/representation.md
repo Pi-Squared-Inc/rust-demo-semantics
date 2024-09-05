@@ -59,6 +59,8 @@ module RUST-REPRESENTATION
                         | "u32"  [token]
                         | "i64"  [token]
                         | "u64"  [token]
+                        | "bool" [token]
+                        
     syntax MaybeIdentifier ::= ".Identifier" | Identifier
 
 endmodule

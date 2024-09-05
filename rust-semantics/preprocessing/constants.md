@@ -10,11 +10,11 @@ module RUST-CONSTANTS
 
     rule
         (const Name:Identifier : T:Type = V:Value;):ConstantItem:KItem
-        => setConstant(Name, implicitCast(V, T)) [priority(100)]
-
-    rule
-        (const Name:Identifier : _:Type = V:Bool;):ConstantItem:KItem
-        => setConstant(Name, V) [priority(50)]
+        => setConstant(Name, implicitCast(V, T)) 
+        
+    // rule
+    //     (const Name:Identifier : _:Type = V:Bool;):ConstantItem:KItem
+    //     => setConstant(Name, V) [priority(50)]
 
     rule
         <k>
