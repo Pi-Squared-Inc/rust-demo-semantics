@@ -34,8 +34,33 @@ module MX-CALLS-HOOKS
             , mxStringValue(FunctionName:String)
             , mxListValue(Args:MxValueList)
             )
-        => executeOnDestContext(Destination, 0, Transfers, GasLimit, FunctionName, Args)
+        => executeOnDestContext
+            (... destination: Destination
+            , egldValue: 0
+            , esdtTransfers: Transfers
+            , gasLimit: GasLimit
+            , function: FunctionName
+            , args: Args)
         requires 0 <Int lengthString(FunctionName)
+
+    rule MX#managedExecuteOnDestContext
+            ( mxStringValue(Destination:String)
+            , mxIntValue(EgldValue:Int)
+            , mxTransfersValue(Transfers:MxEsdtTransferList)
+            , mxIntValue(GasLimit:Int)
+            , mxStringValue(FunctionName:String)
+            , mxListValue(Args:MxValueList)
+            )
+        => executeOnDestContext
+            (... destination: Destination
+            , egldValue: EgldValue
+            , esdtTransfers: Transfers
+            , gasLimit: GasLimit
+            , function: FunctionName
+            , args: Args
+            )
+
+    rule MX#finish ( V:MxValue ) => returnCallData(V)
 endmodule
 
 ```

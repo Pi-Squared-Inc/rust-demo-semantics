@@ -24,4 +24,11 @@ module MX-CALL-RESULT-CONFIGURATION
         <mx-call-result> .MxCallResult </mx-call-result>
 endmodule
 
+module MX-CALL-RETURN-VALUE-CONFIGURATION
+    imports MX-COMMON-SYNTAX
+
+    configuration
+        <mx-return-values> .MxValueList </mx-return-values>
+endmodule
+
 ```

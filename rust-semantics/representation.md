@@ -43,7 +43,6 @@ module RUST-REPRESENTATION
 
     syntax FunctionBodyRepresentation ::= block(BlockExpression)
                                         | "empty"
-                                        | storageAccessor(StringLiteral)
     syntax NormalizedFunctionParameter ::= Identifier ":" Type
     syntax NormalizedFunctionParameterList ::= List{NormalizedFunctionParameter, ","}
 
