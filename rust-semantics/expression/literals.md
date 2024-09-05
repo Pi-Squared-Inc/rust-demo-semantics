@@ -96,10 +96,4 @@ module RUST-EXPRESSION-INTEGER-LITERALS
 
 endmodule
 
-module RUST-EXPRESSION-BOOLEAN-LITERALS
-    imports BOOL
-    imports RUST-SHARED-SYNTAX
-    
-    rule true:LiteralExpression => true:Bool
-endmodule
 ```

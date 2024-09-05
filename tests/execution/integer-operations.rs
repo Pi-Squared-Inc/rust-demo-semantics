@@ -4,7 +4,7 @@
 use multiversx_sc::imports::*;
 
 #[multiversx_sc::contract]
-pub trait ArithmeticExpression {
+pub trait IntegerOperations {
     #[init]
     fn init(&self) {
     }
@@ -21,5 +21,20 @@ pub trait ArithmeticExpression {
     fn arithmetic_expression_sub_constant(&self) -> u64 { 100_u64 - 1_u64  }
 
     fn arithmetic_expression_mod_constant(&self) -> u64 { 5_u64 % 3_u64 }
+
+    fn relational_expression_equals(&self) -> bool {
+        let x = 5_u64 == 5_u64;
+        x
+    }
+
+    fn relational_expression_diff(&self) -> bool { 5_i64 != 5_i64 }
+
+    fn relational_expression_smaller_or_equal(&self) -> bool { 70_u128 <= 7_u128 }
+
+    fn relational_expression_greater_or_equal(&self) -> bool { 70_u128 >= 7_u128 }
+
+    fn relational_expression_smaller(&self) -> bool { 5_u32 < 7_u32 }
+
+    fn relational_expression_greater(&self) -> bool { 5_i32 < 7_i32 }
 
 }

@@ -1,0 +1,4 @@
+new IntegerOperations;
+call IntegerOperations.arithmetic_expression_sum_constant;
+return_value;
+check_eq 101_u64
