@@ -41,19 +41,29 @@ module RUST-CALLS
         </k>
         <locals> _ => .Map </locals>
 
+    rule setArgs
+            ( (CP:Ptr, CPs:NormalizedCallParams)
+            , (P:NormalizedFunctionParameter, Ps:NormalizedFunctionParameterList)
+            )
+        => setArg(CP, P) ~> setArgs(CPs, Ps)
+
+    rule setArgs(.NormalizedCallParams, .NormalizedFunctionParameterList) => .K
+
+    syntax Instruction ::= setArg(Ptr, NormalizedFunctionParameter)
+
     rule
         <k>
-            setArgs(
-                (ValueId:Int , Ids:NormalizedCallParams) => Ids,
-                ((Name:Identifier : T:Type) , Ps:NormalizedFunctionParameterList) => Ps
-            )
+            setArg
+                ( ptr(ValueId:Int)
+                , Name:ValueName : T:Type
+                )
+            => .K
             ...
         </k>
         <locals> Locals:Map => Locals[Name <- ValueId] </locals>
         <values> ValueId |-> Value ... </values>
-        requires notBool Name in_keys(Locals) andBool isSameType(Value, T)
-
-    rule setArgs(.NormalizedCallParams, .NormalizedFunctionParameterList) => .K
+        requires notBool Name in_keys(Locals)
+            andBool isSameType(Value, T)
 
 endmodule
 

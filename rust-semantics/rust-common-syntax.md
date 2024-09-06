@@ -81,7 +81,7 @@ module RUST-SHARED-SYNTAX
 
   syntax Visibility  ::= "pub"
                       | "pub" "(" "crate" ")"
-                      | "pub" "(" "self" ")"
+                      | "pub" "(" SelfSort ")"
                       | "pub" "(" "super" ")"
                       | "pub" "(" "in" SimplePath ")"
 
@@ -91,7 +91,7 @@ module RUST-SHARED-SYNTAX
 
   syntax SimplePath ::= SimplePathList | "::" SimplePathList
   syntax SimplePathList ::= NeList{SimplePathSegment, "::"}
-  syntax SimplePathSegment ::= Identifier | "super" | "self" | "crate" | "$crate"
+  syntax SimplePathSegment ::= Identifier | "super" | SelfSort | "crate" | "$crate"
 
 ```
   https://doc.rust-lang.org/reference/items/modules.html
@@ -153,11 +153,11 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
   syntax SelfParam ::= OuterAttributes ShorthandOrTypedSelf
   syntax ShorthandOrTypedSelf ::= ShorthandSelf | TypedSelf
-  syntax ShorthandSelf ::= MaybeReferenceOrReferenceLifetime MaybeMutable "self"
+  syntax ShorthandSelf ::= MaybeReferenceOrReferenceLifetime MaybeMutable SelfSort
   syntax MaybeReferenceOrReferenceLifetime ::= "" | ReferenceOrReferenceLifetime
   syntax ReferenceOrReferenceLifetime ::= "&" | "&" Lifetime
   syntax MaybeMutable ::= "" | "mut"
-  syntax TypedSelf ::= MaybeMutable "self" ":" Type
+  syntax TypedSelf ::= MaybeMutable SelfSort ":" Type
   syntax FunctionParam ::= OuterAttributes FunctionParamDetail
   // TODO: Missing cases
   syntax FunctionParamDetail ::= FunctionParamPattern
@@ -321,7 +321,6 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       | AsyncBlockExpression
                       | ContinueExpression
                       | BreakExpression
-                      | ReturnExpression
                       | UnderscoreExpression
 
                       | CallExpression
@@ -334,7 +333,9 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   // to make it easy to disambiguate based on priority
   syntax Expression ::= PathExpression
 
-                      > MethodCallExpression
+                      // https://doc.rust-lang.org/reference/expressions/method-call-expr.html
+                      > Expression "." PathExprSegment "(" ")"
+                      | Expression "." PathExprSegment "(" CallParams ")"
 
                       > Expression "." Identifier  // FieldExpression
 
@@ -398,6 +399,11 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       | Expression "<<=" Expression
                       | Expression ">>=" Expression
 
+                      // https://doc.rust-lang.org/reference/expressions/return-expr.html
+                      > "return"
+                      | "return" Expression
+
+
   syntax ExpressionWithBlock  ::= BlockExpression
                                 | UnsafeBlockExpression
                                 | LoopExpression
@@ -422,7 +428,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax PathInExpression ::= PathExprSegments | "::" PathExprSegments
   syntax PathExprSegments ::= NeList{PathExprSegment, "::"}
   syntax PathExprSegment ::= PathIdentSegment | PathIdentSegment "::" GenericArgs
-  syntax PathIdentSegment ::= Identifier | "super" | "self" | "Self" | "crate" | "$crate"
+  syntax PathIdentSegment ::= Identifier | "super" | SelfSort | "Self" | "crate" | "$crate"
   syntax GenericArgs ::= "<" ">" | "<" GenericArgList MaybeComma ">"
   syntax GenericArgList ::= NeList{GenericArg, ","}
   // TODO: Not implemented properly
@@ -528,16 +534,6 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```
 
-  https://doc.rust-lang.org/reference/expressions/method-call-expr.html
-
-```k
-
-  // TODO: Not implemented properly to avoid ambiguities
-  syntax MethodCallExpression ::= PathExpression "." PathExprSegment "(" MaybeCallParams ")"
-                                | MethodCallExpression "." PathExprSegment "(" MaybeCallParams ")"
-
-```
-
   https://doc.rust-lang.org/reference/expressions/closure-expr.html
 
 ```k
@@ -567,15 +563,6 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 ```k
 
   syntax BreakExpression ::= "TODO: not needed yet, not implementing"
-
-```
-
-  https://doc.rust-lang.org/reference/expressions/return-expr.html
-
-```k
-
-  syntax ReturnExpression ::= "return" MaybeExpression
-  syntax MaybeExpression ::= "" | Expression
 
 ```
 
@@ -1065,6 +1052,8 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax GenericParam ::= TypeParam
   // TODO: Not implemented properly
   syntax TypeParam ::= Identifier
+
+  syntax SelfSort ::= "self"
 
   syntax Underscore  [token]
   syntax Identifier  [token]

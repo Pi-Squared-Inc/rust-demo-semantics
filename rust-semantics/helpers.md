@@ -10,6 +10,7 @@ module RUST-HELPERS
 
     syntax Bool ::= isSameType(Value, Type)  [function, total]
     rule isSameType(_, _) => false  [owise]
+    rule isSameType(_:Value, & T => T)
     rule isSameType(_, $selftype) => true
     rule isSameType(i64(_), i64) => true
     rule isSameType(u64(_), u64) => true
