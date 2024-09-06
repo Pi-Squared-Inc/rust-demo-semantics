@@ -8,7 +8,7 @@ module RUST-EXPRESSION-VARIABLES
 
     rule
         <k>
-            Variable:Identifier :: .PathExprSegments => V
+            Variable:Identifier :: .PathExprSegments => ptrValue(ptr(VarId), V)
             ...
         </k>
         <locals> Variable |-> VarId:Int ... </locals>

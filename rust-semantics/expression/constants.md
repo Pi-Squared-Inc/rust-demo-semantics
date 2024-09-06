@@ -6,7 +6,7 @@ module RUST-EXPRESSION-CONSTANTS
     imports private RUST-REPRESENTATION
     imports private RUST-PREPROCESSING-CONFIGURATION
 
-    rule <k> Name:Identifier::.PathExprSegments => V ... </k>
+    rule <k> Name:Identifier::.PathExprSegments => ptrValue(null, V) ... </k>
         <constant-name> Name </constant-name>
         <constant-value> V:Value </constant-value>
 

@@ -38,7 +38,7 @@ module RUST-CASTS
 
     // Rewrites
 
-    rule V:Value ~> implicitCastTo(T:Type) => implicitCast(V, T)
+    rule ptrValue(P:Ptr, V:Value) ~> implicitCastTo(T:Type) => wrapPtrValueOrError(P, implicitCast(V, T))
     // We don't need a value for the unit type
     rule implicitCastTo(( )) => .K
 

@@ -25,10 +25,18 @@ module RUST-VALUE-SYNTAX
                     | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
 
     syntax ValueList ::= List{Value, ","}
-    syntax Expression ::= Value
-    syntax KResult ::= Value
-
     syntax ValueOrError ::= Value | SemanticsError
+
+    syntax Ptr ::= "null" | ptr(Int)
+    syntax PtrValue ::= ptrValue(Ptr, Value)
+    syntax PtrValueOrError ::= PtrValue | SemanticsError
+
+    syntax Expression ::= PtrValue
+    syntax KResult ::= PtrValue
+
+    syntax PtrValueOrError ::= wrapPtrValueOrError(Ptr, ValueOrError)  [function, total]
+    rule wrapPtrValueOrError(P:Ptr, V:Value) => ptrValue(P, V)
+    rule wrapPtrValueOrError(_:Ptr, E:SemanticsError) => E
 
     syntax Bool ::= mayBeDefaultTypedInt(Value)  [function, total]
     rule mayBeDefaultTypedInt(_V) => false  [owise]
