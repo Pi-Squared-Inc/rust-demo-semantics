@@ -9,7 +9,7 @@ module RUST-CONSTANTS
     syntax KItem ::= setConstant(Identifier, ValueOrError)
 
     rule
-        (const Name:Identifier : T:Type = V:Value;):ConstantItem:KItem
+        (const Name:Identifier : T:Type = ptrValue(_, V:Value);):ConstantItem:KItem
         => setConstant(Name, implicitCast(V, T))
 
     rule

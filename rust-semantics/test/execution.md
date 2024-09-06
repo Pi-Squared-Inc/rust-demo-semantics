@@ -66,12 +66,12 @@ module RUST-EXECUTION-TEST
         ) => normalizedMethodCall(TraitName, MethodName, Args)
 
     rule
-        <k> (V:Value ~> return_value ; Es:ExecutionTest) => Es ... </k>
+        <k> (V:PtrValue ~> return_value ; Es:ExecutionTest) => Es ... </k>
         <test-stack> .List => ListItem(V) ... </test-stack>
 
     rule
-        <k> check_eq V:Value => .K ... </k>
-        <test-stack> ListItem(V) => .List ... </test-stack>
+        <k> check_eq ptrValue(_, V:Value) => .K ... </k>
+        <test-stack> ListItem(ptrValue(_, V)) => .List ... </test-stack>
 
 endmodule
 
