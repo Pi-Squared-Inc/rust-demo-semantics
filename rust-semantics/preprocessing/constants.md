@@ -23,6 +23,6 @@ module RUST-CONSTANTS
                 <constant-value> V </constant-value>
             </constant>
             ...
-        </constants> 
+        </constants>
 endmodule
 ```
