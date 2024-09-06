@@ -23,6 +23,7 @@ endmodule
 
 module RUST-SHARED-SYNTAX
   imports STRING-SYNTAX
+  imports BOOL-SYNTAX
 ```
 
   https://doc.rust-lang.org/reference/crates-and-source-files.html
@@ -257,6 +258,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                               | ByteLiteral | ByteStringLiteral | RawByteStringLiteral
                               | CStringLiteral | RawCStringLiteral
                               | IntegerLiteral | FloatLiteral
+                              | Bool
 
   syntax CharLiteral ::= "TODO: not needed yet, not implementing"
   // TODO: Not implemented properly
