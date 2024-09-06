@@ -44,7 +44,6 @@ module RUST-EXPRESSION-CALLS
         <values> A |-> struct(TraitName:TypePath, _) ... </values>
         requires isValueWithPtr(Args)
 
-    // TODO: Test for this.
     rule methodCall
             (... traitName: _TraitName:TypePath
             , method: _MethodName:Identifier

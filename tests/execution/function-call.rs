@@ -36,4 +36,11 @@ pub trait FunctionCalls {
         self.get_self().one()
     }
     fn get_self(&self) -> FunctionCalls { self }
+
+    fn call_arguments(&self, x: u64, y: &u64) -> u64 {
+        self.sum_arguments(x, y)
+    }
+    fn sum_arguments(&self, x: u64, y: &u64) -> u64 {
+        x + y
+    }
 }
