@@ -26,10 +26,18 @@ module RUST-VALUE-SYNTAX
                     | Bool
 
     syntax ValueList ::= List{Value, ","}
-    syntax Expression ::= Value
-    syntax KResult ::= Value
-
     syntax ValueOrError ::= Value | SemanticsError
+
+    syntax Ptr ::= "null" | ptr(Int)
+    syntax PtrValue ::= ptrValue(Ptr, Value)
+    syntax PtrValueOrError ::= PtrValue | SemanticsError
+
+    syntax Expression ::= PtrValue
+    syntax KResult ::= PtrValue
+
+    syntax PtrValueOrError ::= wrapPtrValueOrError(Ptr, ValueOrError)  [function, total]
+    rule wrapPtrValueOrError(P:Ptr, V:Value) => ptrValue(P, V)
+    rule wrapPtrValueOrError(_:Ptr, E:SemanticsError) => E
 
     syntax Bool ::= mayBeDefaultTypedInt(Value)  [function, total]
     rule mayBeDefaultTypedInt(_V) => false  [owise]
@@ -43,13 +51,21 @@ module RUST-REPRESENTATION
 
     syntax FunctionBodyRepresentation ::= block(BlockExpression)
                                         | "empty"
-    syntax NormalizedFunctionParameter ::= Identifier ":" Type
+                                        | storageAccessor(StringLiteral)
+    syntax ValueName ::= Identifier | SelfSort
+    syntax NormalizedFunctionParameter ::= ValueName ":" Type
     syntax NormalizedFunctionParameterList ::= List{NormalizedFunctionParameter, ","}
 
-    syntax NormalizedCallParams ::=List{Int, ","}
+    syntax NormalizedCallParams ::=List{Ptr, ","}
 
     syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, NormalizedCallParams)
                           | implicitCastTo(Type)
+                          | methodCall
+                              ( self: Expression
+                              , method:Identifier
+                              , params: CallParamsList
+                              )
+                            [seqstrict(1, 3), result(ValueWithPtr)]
 
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 
@@ -62,6 +78,12 @@ module RUST-REPRESENTATION
                         | "bool" [token]
                         
     syntax MaybeIdentifier ::= ".Identifier" | Identifier
+
+    syntax ExpressionOrCallParams ::= Expression | CallParams 
+
+    syntax Bool ::= isConstant(ValueName)  [function, total]
+    syntax Bool ::= isLocalVariable(ValueName)  [function, total]
+    syntax Bool ::= isValueWithPtr(K)  [function, total, symbol(isValueWithPtr)]
 
 endmodule
 

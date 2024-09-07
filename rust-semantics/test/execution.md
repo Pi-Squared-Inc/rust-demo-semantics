@@ -10,6 +10,7 @@ module RUST-EXECUTION-TEST-PARSING-SYNTAX
                             | "call" TypePath "." Identifier
                             | "return_value"
                             | "check_eq" Expression  [strict]
+                            | "push" Expression [strict]
 endmodule
 
 module RUST-EXECUTION-TEST
@@ -27,7 +28,7 @@ module RUST-EXECUTION-TEST
 
     rule
         <k> new P:TypePath => .K ... </k>
-        <test-stack> .List => ListItem(NVI) ... </test-stack>
+        <test-stack> .List => ListItem(ptr(NVI)) ... </test-stack>
         <trait-path> P </trait-path>
         <values> VALUES:Map => VALUES[NVI <- struct(P, .Map)] </values>
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
@@ -66,12 +67,18 @@ module RUST-EXECUTION-TEST
         ) => normalizedMethodCall(TraitName, MethodName, Args)
 
     rule
-        <k> (V:Value ~> return_value ; Es:ExecutionTest) => Es ... </k>
+        <k> (V:PtrValue ~> return_value ; Es:ExecutionTest) => Es ... </k>
         <test-stack> .List => ListItem(V) ... </test-stack>
 
     rule
-        <k> check_eq V:Value => .K ... </k>
-        <test-stack> ListItem(V) => .List ... </test-stack>
+        <k> check_eq ptrValue(_, V:Value) => .K ... </k>
+        <test-stack> ListItem(ptrValue(_, V)) => .List ... </test-stack>
+
+    rule
+        <k> push ptrValue(_, V:Value) => .K ... </k>
+        <test-stack> .List => ListItem(ptr(NVI)) ... </test-stack>
+        <values> VALUES:Map => VALUES[NVI <- V] </values>
+        <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
 
 endmodule
 

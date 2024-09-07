@@ -16,7 +16,7 @@ module RUST-BLOCK
 
     // Blocks are always value expressions and evaluate the last operand in
     // value expression context.
-    rule V:Value ~> popLocalState => popLocalState ~> V
+    rule V:PtrValue ~> popLocalState => popLocalState ~> V
 endmodule
 
 ```
