@@ -17,7 +17,7 @@ module RUST-EXPRESSION-INTEGER-LITERALS
     syntax String ::= IntegerLiteralToString(IntegerLiteral)  [function, total, hook(STRING.token2string)]
 
     rule I:IntegerLiteral => wrapPtrValueOrError(null, parseInteger(I))
-    rule B:Bool:LiteralExpression => wrapPtrValueOrError(null, B:Bool:Value)
+    rule B:Bool:LiteralExpression => ptrValue(null, B:Bool:Value)
 
     syntax ValueOrError ::= parseInteger(IntegerLiteral)  [function, total]
                           | parseInteger(String)  [function, total]
