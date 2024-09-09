@@ -36,6 +36,8 @@ module RUST-CASTS
     rule implicitCast(u128(Value), i64) => i64(Int2MInt(MInt2Unsigned(Value)))
     rule implicitCast(u128(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
 
+    rule implicitCast(V:Bool, bool) => V
+
     rule implicitCast(struct(T, _) #as V, T) => V
 
     // Rewrites

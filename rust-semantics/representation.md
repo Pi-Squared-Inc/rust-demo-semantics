@@ -23,6 +23,7 @@ module RUST-VALUE-SYNTAX
                     | u128(MInt{128})
                     | tuple(ValueList)
                     | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
+                    | Bool
 
     syntax ValueList ::= List{Value, ","}
     syntax ValueOrError ::= Value | SemanticsError
@@ -74,6 +75,8 @@ module RUST-REPRESENTATION
                         | "u32"  [token]
                         | "i64"  [token]
                         | "u64"  [token]
+                        | "bool" [token]
+                        
     syntax MaybeIdentifier ::= ".Identifier" | Identifier
 
     syntax ExpressionOrCallParams ::= Expression | CallParams 

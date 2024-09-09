@@ -1,0 +1,4 @@
+new IntegerOperations;
+call IntegerOperations.arithmetic_expression_mod_constant;
+return_value;
+check_eq 2_u64
