@@ -41,6 +41,8 @@ module MX-RUST-MODULES-BIGUINT
                 )
             )
 
+    rule mxRustEmptyValue(BigUint) => mxRustBigIntNew(0)
+
 endmodule
 
 ```

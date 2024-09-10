@@ -10,13 +10,25 @@ module MX-RUST-GLUE
   rule
       <k>
           storeHostValue
-              (... destination: rustDestination(ValueId)
+              (... destination: rustDestination(ValueId, _:MxRustType)
               , value: wrappedRust(V:Value)
               )
           => .K
           ...
       </k>
       <values> Values:Map => Values[ValueId <- V] </values>
+
+  rule
+      (.K => mxRustEmptyValue(T))
+      ~>  storeHostValue
+              (... destination: rustDestination(_, T:MxRustType)
+              , value: mxWrappedEmpty
+              )
+  rule
+      (ptrValue(_, V:Value) => .K)
+      ~>   storeHostValue
+              (... value: mxWrappedEmpty => wrappedRust(V)
+              )
 
   rule
       <k>

@@ -58,7 +58,7 @@ module MX-RUST-MODULES-STORAGE
                     , .NormalizedCallParams
                     )
                 )
-            => MX#storageLoad(mxStringValue(StorageKey), rustDestination(NextId))
+            => MX#storageLoad(mxStringValue(StorageKey), rustDestination(NextId, ResultType))
                 ~> mxRustLoadPtr(NextId)
             ...
         </k>
@@ -66,9 +66,11 @@ module MX-RUST-MODULES-STORAGE
             SelfId |-> struct
                         ( Type
                         , #token("storage_key", "Identifier"):Identifier |-> StorageKeyId:Int
+                            #token("result_type", "Identifier"):Identifier |-> ResultTypeId:Int
                             _:Map
                         )
             StorageKeyId |-> StorageKey:String
+            ResultTypeId |-> ResultType:MxRustType
             ...
         </values>
         <next-value-id> NextId:Int => NextId +Int 1 </next-value-id>

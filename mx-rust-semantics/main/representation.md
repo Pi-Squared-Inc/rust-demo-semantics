@@ -7,6 +7,7 @@ module MX-RUST-REPRESENTATION
     syntax MxRustInstruction  ::= "mxRustPreprocessTraits"
                                 | mxRustPreprocessMethods(TypePath)
                                 | mxRustNewValue(ValueOrError)
+                                | mxRustEmptyValue(MxRustType)
                                 | mxValueToRust(Type)
                                 | mxRustLoadPtr(Int)
 
@@ -21,7 +22,7 @@ module MX-RUST-REPRESENTATION
     syntax Expression ::= concatString(Expression, Expression)  [seqstrict]
                         | toString(Expression)  [strict]
 
-    syntax MxValue ::= rustDestination(Int)
+    syntax MxValue ::= rustDestination(Int, MxRustType)
 endmodule
 
 ```
