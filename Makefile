@@ -27,12 +27,19 @@ MX_TESTING_OUTPUT_DIR ::= .build/mx/output
 MX_TESTING_INPUTS ::= $(wildcard $(MX_TESTING_INPUT_DIR)/**/*.mx)
 MX_TESTING_OUTPUTS ::= $(patsubst $(MX_TESTING_INPUT_DIR)/%,$(MX_TESTING_OUTPUT_DIR)/%.executed.kore,$(MX_TESTING_INPUTS))
 
+MX_RUST_SEMANTICS_FILES ::= $(shell find mx-rust-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
+MX_RUST_KOMPILED ::= .build/mx-rust-kompiled
+MX_RUST_TIMESTAMP ::= $(MX_RUST_KOMPILED)/timestamp
+
 .PHONY: clean build test syntax-test preprocessing-test execution-test mx-test
 
 clean:
 	rm -r .build
 
-build: $(RUST_PREPROCESSING_TIMESTAMP) $(RUST_EXECUTION_TIMESTAMP) $(MX_TESTING_TIMESTAMP)
+build: $(RUST_PREPROCESSING_TIMESTAMP) \
+				$(RUST_EXECUTION_TIMESTAMP) \
+				$(MX_TESTING_TIMESTAMP) \
+				$(MX_RUST_TIMESTAMP)
 
 test: syntax-test preprocessing-test execution-test mx-test
 
@@ -58,6 +65,14 @@ $(MX_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_TESTING_KOMPILED)
 	$$(which kompile) mx-semantics/targets/testing/mx.md -o $(MX_TESTING_KOMPILED) --debug
+
+$(MX_RUST_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX_RUST_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(MX_RUST_KOMPILED)
+	$$(which kompile) mx-rust-semantics/targets/blockchain/mx-rust.md \
+			-o $(MX_RUST_KOMPILED) \
+			-I . \
+			--debug
 
 $(RUST_SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(RUST_SYNTAX_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)
 	mkdir -p $(RUST_SYNTAX_OUTPUT_DIR)
