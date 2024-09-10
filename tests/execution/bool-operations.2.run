@@ -1,0 +1,4 @@
+new BoolOperations;
+call BoolOperations.bool_logical_operation_or;
+return_value;
+check_eq true

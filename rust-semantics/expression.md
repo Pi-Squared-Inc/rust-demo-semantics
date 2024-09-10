@@ -1,6 +1,7 @@
 ```k
 requires "expression/calls.md"
 requires "expression/integer-operations.md"
+requires "expression/bool-operations.md"
 requires "expression/constants.md"
 requires "expression/casts.md"
 requires "expression/literals.md"
@@ -17,5 +18,6 @@ module RUST-EXPRESSION
     imports private RUST-EXPRESSION-TOOLS
     imports private RUST-EXPRESSION-VARIABLES
     imports private RUST-INTEGER-OPERATIONS
+    imports private RUST-BOOL-OPERATIONS
 endmodule
 ```

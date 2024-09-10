@@ -350,7 +350,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       | "&" "mut" Expression
                       | "&&" "mut" Expression
                       | "-" Expression
-                      | "!" Expression
+                      | "!" Expression [seqstrict]
                       | DereferenceExpression
 
                       // > left:
@@ -382,8 +382,8 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       | Expression "<=" Expression [seqstrict]
 
                       > left:
-                        Expression "&&" Expression
-                      | Expression "||" Expression
+                        Expression "&&" Expression [seqstrict]
+                      | Expression "||" Expression [seqstrict]
 
                       > Expression ".." Expression
 
