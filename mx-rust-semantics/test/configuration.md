@@ -8,6 +8,7 @@ module MX-RUST-EXECUTION-TEST-CONFIGURATION
         <mx-rust-test>
             <rust-test/>
             <mx-test/>
+            <test-named> .Map </test-named>
         </mx-rust-test>
 endmodule
 

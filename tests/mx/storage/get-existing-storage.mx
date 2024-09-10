@@ -1,6 +1,6 @@
 addAccount("Owner");
 setCallee("Owner");
-setStorage("Owner", "MyKey", mxStringValue("Hello"));
+setStorage("Owner", "MyKey", wrappedMx(mxStringValue("Hello")));
 
 push mxIntValue(12);
 push mxStringValue("MyKey");
