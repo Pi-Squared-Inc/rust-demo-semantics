@@ -66,6 +66,12 @@ module RUST-REPRESENTATION
                               , params: CallParamsList
                               )
                             [seqstrict(1, 3), result(ValueWithPtr)]
+                          | staticMethodCall
+                              ( trait: TypePath
+                              , method: Identifier
+                              , params: CallParamsList
+                              )
+                            [strict(3), result(ValueWithPtr)]
 
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 

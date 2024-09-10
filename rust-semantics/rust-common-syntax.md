@@ -324,7 +324,6 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       | BreakExpression
                       | UnderscoreExpression
 
-                      | CallExpression
                       | ErrorPropagationExpression
                       | TypeCastExpression
                       // TODO: Removed because it causes ambiguities.
@@ -340,7 +339,11 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
                       > Expression "." Identifier  // FieldExpression
 
-                      // > CallExpression
+                      // https://doc.rust-lang.org/reference/expressions/call-expr.html
+                      // TODO: Not implemented properly to avoid ambiguities
+                      > PathExpression "(" ")"
+                      > PathExpression "(" CallParams ")"
+
                       | Expression "[" Expression "]"
 
                       // > ErrorPropagationExpression
@@ -527,9 +530,6 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  // TODO: Not implemented properly to avoid ambiguities
-  syntax CallExpression ::= PathExpression "(" MaybeCallParams ")"
-  syntax MaybeCallParams ::= "" | CallParams
   syntax CallParams ::= CallParamsList | CallParamsList ","
   syntax CallParamsList ::= NeList{Expression, ","}
 
@@ -582,6 +582,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax MacroInvocation ::= SimplePath "!" DelimTokenTree
   // TODO: Not implemented properly
   syntax DelimTokenTree ::= "(" MaybeCallParams ")"
+  syntax MaybeCallParams ::= "" | CallParams
   // TODO: Not implemented properly
   syntax MacroInvocationSemi ::= MacroInvocation ";"
 
