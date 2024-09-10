@@ -18,6 +18,7 @@ module RUST-EXPRESSION-INTEGER-LITERALS
 
     rule I:IntegerLiteral => wrapPtrValueOrError(null, parseInteger(I))
     rule B:Bool:LiteralExpression => ptrValue(null, B:Bool:Value)
+    rule S:String => ptrValue(null, S)
 
     syntax ValueOrError ::= parseInteger(IntegerLiteral)  [function, total]
                           | parseInteger(String)  [function, total]
