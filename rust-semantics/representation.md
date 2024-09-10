@@ -24,6 +24,7 @@ module RUST-VALUE-SYNTAX
                     | tuple(ValueList)
                     | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
                     | Bool
+                    | String
 
     syntax ValueList ::= List{Value, ","}
     syntax ValueOrError ::= Value | SemanticsError
