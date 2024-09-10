@@ -14,6 +14,7 @@ module RUST-PREPROCESSING-CONFIGURATION
                     <constant-value> tuple(.ValueList) </constant-value>
                 </constant>
             </constants>
+            <trait-list> .List </trait-list>  // List of TypePath
             <traits>
                 <trait multiplicity="*" type="Map">
                     <trait-path> my_identifier:TypePath </trait-path>
