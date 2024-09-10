@@ -60,7 +60,6 @@ module RUST-EXPRESSION-INTEGER-LITERALS
         [owise]
 
 
-    syntax ValueOrError ::= integerToValue(Int, Type)  [function, total]
     rule integerToValue(I:Int, i32) => i32(Int2MInt(I))
         requires sminMInt(32) <=Int I andBool I <=Int smaxMInt(32)
     rule integerToValue(I:Int, u32) => u32(Int2MInt(I))
@@ -73,6 +72,13 @@ module RUST-EXPRESSION-INTEGER-LITERALS
     rule integerToValue(I:Int, T:Type)
         => error("integerToValue: unimplemented", ListItem(I:Int:KItem) ListItem(T:Type:KItem))
         [owise]
+
+    rule valueToInteger(V:Value) => error("cannot convert to integer", ListItem(V))  [owise]
+    rule valueToInteger(i32(V:MInt{32})) => MInt2Signed(V)
+    rule valueToInteger(u32(V:MInt{32})) => MInt2Unsigned(V)
+    rule valueToInteger(i64(V:MInt{64})) => MInt2Signed(V)
+    rule valueToInteger(u64(V:MInt{64})) => MInt2Unsigned(V)
+    rule valueToInteger(u128(V:MInt{128})) => MInt2Unsigned(V)
 
     syntax Bool ::= endsWith(containing:String, contained:String)  [function, total]
     rule endsWith(Containing:String, Contained:String)

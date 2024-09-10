@@ -91,6 +91,10 @@ module RUST-REPRESENTATION
     syntax Bool ::= isLocalVariable(ValueName)  [function, total]
     syntax Bool ::= isValueWithPtr(K)  [function, total, symbol(isValueWithPtr)]
 
+    syntax IntOrError ::= Int | SemanticsError
+    syntax IntOrError ::= valueToInteger(Value)  [function, total]
+    syntax ValueOrError ::= integerToValue(Int, Type)  [function, total]
+
 endmodule
 
 ```
