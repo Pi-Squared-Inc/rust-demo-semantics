@@ -53,6 +53,38 @@ module MX-RUST-MODULES-STORAGE
         <k>
             normalizedMethodCall
                 ( #token("SingleValueMapper", "Identifier"):Identifier #as Type:Identifier
+                , #token("set_if_empty", "Identifier"):Identifier
+                ,   ( ptr(SelfId:Int)
+                    , ptr(ValueId:Int)
+                    , .NormalizedCallParams
+                    )
+                )
+            => MX#storageLoad(mxStringValue(StorageKey), rustDestination(-1, noType))
+                ~> setIfEmpty
+                ~> MX#storageStore(mxStringValue(StorageKey), wrappedRust(V))
+            ...
+        </k>
+        <values>
+            SelfId |-> struct
+                        ( Type
+                        , #token("storage_key", "Identifier"):Identifier |-> StorageKeyId:Int
+                            _:Map
+                        )
+            StorageKeyId |-> StorageKey:String
+            ValueId |-> V:Value
+            ...
+        </values>
+
+    rule mxRustEmptyValue(noType) ~> storeHostValue(...) ~> setIfEmpty
+        => .K
+    rule storeHostValue(... value: wrappedRust(_))
+          ~> setIfEmpty ~> MX#storageStore(_)
+        => .K
+
+    rule
+        <k>
+            normalizedMethodCall
+                ( #token("SingleValueMapper", "Identifier"):Identifier #as Type:Identifier
                 , #token("get", "Identifier"):Identifier
                 ,   ( ptr(SelfId:Int)
                     , .NormalizedCallParams
@@ -75,6 +107,7 @@ module MX-RUST-MODULES-STORAGE
         </values>
         <next-value-id> NextId:Int => NextId +Int 1 </next-value-id>
 
+    syntax MxRustInstruction ::= "setIfEmpty"
 endmodule
 
 ```

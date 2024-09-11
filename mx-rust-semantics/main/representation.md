@@ -11,7 +11,7 @@ module MX-RUST-REPRESENTATION
                                 | mxValueToRust(Type)
                                 | mxRustLoadPtr(Int)
 
-    syntax MxRustType ::= "BigUint"
+    syntax MxRustType ::= "noType" | "BigUint"
     syntax MxRustTypeOrError ::= MxRustType | SemanticsError
     syntax Value ::= MxRustType
 

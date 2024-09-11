@@ -17,6 +17,7 @@ module MX-RUST-GLUE
           ...
       </k>
       <values> Values:Map => Values[ValueId <- V] </values>
+      requires ValueId >=Int 0
 
   rule
       (.K => mxRustEmptyValue(T))
