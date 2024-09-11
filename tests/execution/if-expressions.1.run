@@ -1,4 +1,4 @@
 new IfExpressions;
 call IfExpressions.if_expression;
 return_value;
-check_eq true
+check_eq 1_u64
