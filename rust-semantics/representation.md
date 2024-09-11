@@ -24,6 +24,7 @@ module RUST-VALUE-SYNTAX
                     | tuple(ValueList)
                     | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
                     | Bool
+                    | String
 
     syntax ValueList ::= List{Value, ","}
     syntax ValueOrError ::= Value | SemanticsError
@@ -66,6 +67,12 @@ module RUST-REPRESENTATION
                               , params: CallParamsList
                               )
                             [seqstrict(1, 3), result(ValueWithPtr)]
+                          | staticMethodCall
+                              ( trait: TypePath
+                              , method: Identifier
+                              , params: CallParamsList
+                              )
+                            [strict(3), result(ValueWithPtr)]
 
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 
@@ -84,6 +91,10 @@ module RUST-REPRESENTATION
     syntax Bool ::= isConstant(ValueName)  [function, total]
     syntax Bool ::= isLocalVariable(ValueName)  [function, total]
     syntax Bool ::= isValueWithPtr(K)  [function, total, symbol(isValueWithPtr)]
+
+    syntax IntOrError ::= Int | SemanticsError
+    syntax IntOrError ::= valueToInteger(Value)  [function, total]
+    syntax ValueOrError ::= integerToValue(Int, Type)  [function, total]
 
 endmodule
 

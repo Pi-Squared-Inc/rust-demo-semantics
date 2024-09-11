@@ -18,7 +18,7 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
                               | setCallee(String)
                               | addAccount(String)
                               | setBalance(account:String, token:String, nonce:Int, value:Int)
-                              | setStorage(account:String, key:String, value:MxValue)
+                              | setStorage(account:String, key:String, value:MxWrappedValue)
                               | setBlockTimestamp(Int)
                               | setMockCode(String, MxValue)
 
@@ -238,7 +238,7 @@ module MX-ACCOUNTS-TEST
         <k> setStorage
                 (... account: Account:String
                 , key: Key:String
-                , value: Value:MxValue
+                , value: Value:MxWrappedValue
                 ) => .K
             ...
         </k>
@@ -251,7 +251,7 @@ module MX-ACCOUNTS-TEST
         <k> setStorage
                 (... account: Account:String
                 , key: Key:String
-                , value: Value:MxValue
+                , value: Value:MxWrappedValue
                 ) => .K
             ...
         </k>
@@ -260,7 +260,7 @@ module MX-ACCOUNTS-TEST
             .Bag =>
             <mx-account-storage-item>
                 <mx-account-storage-key> Key </mx-account-storage-key>
-                <mx-account-storage-value> wrappedMx(Value) </mx-account-storage-value>
+                <mx-account-storage-value> Value </mx-account-storage-value>
             </mx-account-storage-item>
         </mx-account-storage>
         [priority(100)]

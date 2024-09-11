@@ -1,0 +1,20 @@
+addAccount("Owner");
+setCallee("Owner");
+new Storage;
+set_named "self";
+
+push_named "self";
+push 10u64;
+call Storage.set_no_arg_if_empty;
+push_named "self";
+call Storage.get_no_arg;
+get_bigint_from_struct;
+check_eq mxIntValue(10);
+
+push_named "self";
+push 20u64;
+call Storage.set_no_arg_if_empty;
+push_named "self";
+call Storage.get_no_arg;
+get_bigint_from_struct;
+check_eq mxIntValue(10)

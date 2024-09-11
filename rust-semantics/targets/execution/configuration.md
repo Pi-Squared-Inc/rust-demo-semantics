@@ -15,9 +15,9 @@ module RUST-RUNNING-CONFIGURATION
 
     configuration
         <rust-mx>
-            <k/>
-            <rust/>
             <rust-test/>
+            <rust/>
+            <k/>
         </rust-mx>
 endmodule
 
