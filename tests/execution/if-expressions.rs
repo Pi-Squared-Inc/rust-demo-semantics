@@ -14,15 +14,13 @@ pub trait IfExpressions {
     
     fn if_expression(&self) -> bool { 
         let x = 80_u64;
-        let mut b: bool = false;
     
         if (x > 80_u64){
-            b = true;
-        } else {
-            b = false;
+            return true;
+        }
+         else {
+            return false;
         };
-        
-        b
 
     }
 
