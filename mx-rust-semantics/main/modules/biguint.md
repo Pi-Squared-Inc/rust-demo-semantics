@@ -41,8 +41,36 @@ module MX-RUST-MODULES-BIGUINT
                 )
             )
 
-    rule mxRustEmptyValue(BigUint) => mxRustBigIntNew(0)
+    rule mxRustEmptyValue(rustType(#token("BigUint", "Identifier")))
+        => mxRustBigIntNew(0)
 
+    rule mxValueToRust(#token("BigUint", "Identifier"), mxIntValue(I:Int))
+        => mxRustBigIntNew(I)
+
+    rule rustValueToMx
+            ( struct
+                ( #token("BigUint", "Identifier"):Identifier
+                , _:Map
+                ) #as S:Value
+            )
+        => mxRustGetBigIntFromStruct(S)
+
+    rule
+        <k>
+            mxRustGetBigIntFromStruct
+                ( struct
+                    ( #token("BigUint", "Identifier"):Identifier
+                    , #token("mx_biguint_id", "Identifier"):Identifier |-> BigUintIdId:Int
+                        _:Map
+                    )
+                )
+            => mxGetBigInt(MInt2Unsigned(BigUintId))
+            ...
+        </k>
+        <values>
+            BigUintIdId |-> i32(BigUintId:MInt{32})
+            ...
+        </values>
 endmodule
 
 ```

@@ -14,15 +14,6 @@ module MX-CALL-TOOLS-SYNTAX
                                   args:MxValueList
                               )
 
-    syntax MxCallDataCell ::= prepareIndirectContractCallInput(
-                                  caller: String,
-                                  callee: String,
-                                  egldValue: Int,
-                                  esdtTransfers: MxEsdtTransferList,
-                                  gasLimit: Int,
-                                  args: MxValueList
-                              )   [function, total]
-
 endmodule
 
 module MX-CALLS-TOOLS
@@ -43,12 +34,9 @@ module MX-CALLS-TOOLS
                                 , input: MxCallDataCell
                                 )
                               [symbol(callContractAux)]
-                            | callContract(function: String, input: MxCallDataCell )
-                              [symbol(callContractString)]
-                            | "finishExecuteOnDestContext"  [symbol(finishExecuteOnDestContext)]
-                            | "endCall"  [symbol(endCall)]
                             | "asyncExecute"  [symbol(asyncExecute)]
                             | "setVMOutput"  [symbol(setVMOutput)]
+                            | "clearMxReturnValues"
                             | mkCall(function: String, callData: MxCallDataCell)
 
   // -----------------------------------------------------------------------------------
@@ -83,6 +71,10 @@ module MX-CALLS-TOOLS
                     </mx-call-data> #as MxCallData
                 )
             => pushWorldState
+                // TODO: clearMxReturnValues is not part of the actual MX semantics,
+                // but it makes it easier to identify endpoints that do not
+                // return anything (see setVMOutput-no-retv).
+                ~> clearMxReturnValues
                 ~> pushCallState
                 ~> resetCallState
                 ~> transferFunds(Caller, Callee, EgldValue)
@@ -314,6 +306,10 @@ module MX-CALLS-TOOLS
         [owise]
 
   // -----------------------------------------------------------------------
+    rule
+        <k> (V:MxValue => .K) ~> endCall ... </k>
+        <mx-return-values> .MxValueList => V, .MxValueList </mx-return-values>
+
     rule [endCall]:
         endCall 
         => asyncExecute
@@ -364,6 +360,10 @@ module MX-CALLS-TOOLS
 
     rule [[getCallee() => Callee]]
         <mx-callee> Callee:String </mx-callee>
+
+    rule
+        <k> clearMxReturnValues => .K ... </k>
+        <mx-return-values> _ => .MxValueList </mx-return-values>
 
 endmodule
 

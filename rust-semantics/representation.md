@@ -73,6 +73,7 @@ module RUST-REPRESENTATION
                               , params: CallParamsList
                               )
                             [strict(3), result(ValueWithPtr)]
+                          | "Rust#newStruct" "(" type:TypePath "," fields:Map ")"
 
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 
@@ -95,6 +96,8 @@ module RUST-REPRESENTATION
     syntax IntOrError ::= Int | SemanticsError
     syntax IntOrError ::= valueToInteger(Value)  [function, total]
     syntax ValueOrError ::= integerToValue(Int, Type)  [function, total]
+
+    syntax String ::= IdentifierToString(Identifier)  [function, total, hook(STRING.token2string)]
 
 endmodule
 

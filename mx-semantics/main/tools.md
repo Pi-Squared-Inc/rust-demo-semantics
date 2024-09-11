@@ -23,6 +23,9 @@ module MX-TOOLS
     // Fix for https://github.com/runtimeverification/k/issues/4587
     rule lengthValueList(_) => 0  [owise]
 
+    rule reverse(.MxValueList, L:MxValueList) => L
+    rule reverse((E:MxValue , L1:MxValueList => L1), (L2:MxValueList => E , L2))
+
 endmodule
 
 ```

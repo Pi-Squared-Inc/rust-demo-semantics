@@ -8,6 +8,7 @@ requires "expression/casts.md"
 requires "expression/conditionals.md"
 requires "expression/literals.md"
 requires "expression/references.md"
+requires "expression/struct.md"
 requires "expression/tools.md"
 requires "expression/variables.md"
 
@@ -19,6 +20,7 @@ module RUST-EXPRESSION
     imports private RUST-CONDITIONAL-EXPRESSIONS
     imports private RUST-EXPRESSION-LITERALS
     imports private RUST-EXPRESSION-REFERENCES
+    imports private RUST-EXPRESSION-STRUCT
     imports private RUST-EXPRESSION-TOOLS
     imports private RUST-EXPRESSION-VARIABLES
     imports private RUST-INTEGER-OPERATIONS

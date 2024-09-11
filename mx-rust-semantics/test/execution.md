@@ -34,21 +34,15 @@ module MX-RUST-TEST
         <test-named> Name |-> Value ... </test-named>
 
     rule
-        <k>
-            ptrValue
-                ( _
-                , struct
-                    ( #token("BigUint", "Identifier")
-                    , #token("mx_biguint_id", "Identifier"):Identifier |-> BigUintIdId _:Map
-                    )
-                )
-            ~> get_bigint_from_struct ; Test:ExecutionTest
-            => push mxIntValue(MInt2Unsigned(BigUintId))
-                ~> get_big_int
-                ~> Test
-            ...
-        </k>
-        <values> BigUintIdId |-> i32(BigUintId:MInt{32}) ... </values>
+        ptrValue
+            ( _
+            , struct
+                ( #token("BigUint", "Identifier")
+                , _:Map
+                ) #as S:Value
+            )
+        ~> get_bigint_from_struct
+        => mxRustGetBigIntFromStruct(S)
 endmodule
 
 ```

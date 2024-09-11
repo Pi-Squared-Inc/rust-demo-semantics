@@ -14,12 +14,13 @@ module MX-COMMON-SYNTAX
                       | MxEsdtTransfer
                       | mxTransfersValue(MxEsdtTransferList)
                       | mxUnitValue()
-                      | MxWrappedValue
-    syntax MxWrappedValue ::= "mxWrappedEmpty"
+                      | MxEmptyValue
+    syntax MxEmptyValue ::= "mxEmptyValue"
 
     syntax MxHookName ::= r"MX#[a-zA-Z][a-zA-Z0-9]*"  [token]
     syntax MxValueList ::= List{MxValue, ","}
     syntax HookCall ::= MxHookName "(" MxValueList ")"
+    syntax MxValueList ::= reverse(MxValueList, MxValueList)  [function, total]
 
     syntax Int ::= lengthValueList(MxValueList)  [function, total]
     syntax String ::= getMxString(MxValue)  [function, total]
@@ -41,12 +42,17 @@ module MX-COMMON-SYNTAX
                             | "pushWorldState"  [symbol(pushWorldState)]
                             | "dropWorldState"  [symbol(dropWorldState)]
                             | "clearBigInts"  [symbol(clearBigInts)]
+                            | "endCall"  [symbol(endCall)]
+                            | "finishExecuteOnDestContext"  [symbol(finishExecuteOnDestContext)]
                             | processBuiltinFunction(BuiltinFunction, String, String, MxCallDataCell)
                               [symbol(processBuiltinFunction)]
                             | newExecutionEnvironment(contractAddress:String)
                             | checkBool(Bool, String)   [symbol(checkBool)]
                             | storeHostValue(destination: MxValue, value: MxValue)
                             | returnCallData(MxValue)  [symbol(returnCallData)]
+                            | mxGetBigInt(Int)  [symbol(mxGetBigInt)]
+                            | callContract(function: String, input: MxCallDataCell )
+                              [symbol(callContractString)]
 
     syntax MxHostInstructions ::= "host" "." "newEnvironment" "(" ContractCode ")"
                                 | "host" "." "mkCall" "(" functionName:String ")"
@@ -79,6 +85,15 @@ module MX-COMMON-SYNTAX
                            | "SimulateFailed"           [symbol(SimulateFailed)]
 
     syntax String ::= getCallee()  [function, total]
+
+    syntax MxCallDataCell ::= prepareIndirectContractCallInput(
+                                  caller: String,
+                                  callee: String,
+                                  egldValue: Int,
+                                  esdtTransfers: MxEsdtTransferList,
+                                  gasLimit: Int,
+                                  args: MxValueList
+                              )   [function, total]
 endmodule
 
 ```

@@ -23,15 +23,23 @@ module RUST-EXECUTION-TEST
     imports private RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-REPRESENTATION
 
-    rule E:ExecutionItem ; Es:ExecutionTest => E ~> Es
-    rule .ExecutionTest => .K
+    rule Es:ExecutionTest => rustChainTest(Es)
+
+    syntax K ::= rustChainTest(ExecutionTest)  [function, total]
+    rule rustChainTest(.ExecutionTest) => .K
+    rule rustChainTest(I:ExecutionItem ; Is:ExecutionTest) => I ~> rustChainTest(Is)
 
     rule
-        <k> new P:TypePath => .K ... </k>
-        <test-stack> .List => ListItem(ptr(NVI)) ... </test-stack>
+        <k>
+            (.K => Rust#newStruct(P, .Map))
+            ~> new P:TypePath
+            ...
+        </k>
         <trait-path> P </trait-path>
-        <values> VALUES:Map => VALUES[NVI <- struct(P, .Map)] </values>
-        <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
+
+    rule
+        <k> ptrValue(P:Ptr, _:Value) ~> new _:TypePath => .K ... </k>
+        <test-stack> .List => ListItem(P) ... </test-stack>
 
     rule
         <k>
@@ -67,7 +75,7 @@ module RUST-EXECUTION-TEST
         ) => normalizedMethodCall(TraitName, MethodName, Args)
 
     rule
-        <k> (V:PtrValue ~> return_value ; Es:ExecutionTest) => Es ... </k>
+        <k> (V:PtrValue ~> return_value) => .K ... </k>
         <test-stack> .List => ListItem(V) ... </test-stack>
 
     rule

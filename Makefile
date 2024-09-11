@@ -39,7 +39,15 @@ MX_RUST_TESTING_OUTPUT_DIR ::= .build/mx-rust/output
 MX_RUST_TESTING_INPUTS ::= $(wildcard $(MX_RUST_TESTING_INPUT_DIR)/*.run)
 MX_RUST_TESTING_OUTPUTS ::= $(patsubst $(MX_RUST_TESTING_INPUT_DIR)/%,$(MX_RUST_TESTING_OUTPUT_DIR)/%.executed.kore,$(MX_RUST_TESTING_INPUTS))
 
-.PHONY: clean build test syntax-test preprocessing-test execution-test mx-test mx-rust-test
+MX_RUST_CONTRACT_TESTING_SEMANTICS_FILES ::= $(shell find mx-rust-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
+MX_RUST_CONTRACT_TESTING_KOMPILED ::= .build/mx-rust-contract-testing-kompiled
+MX_RUST_CONTRACT_TESTING_TIMESTAMP ::= $(MX_RUST_CONTRACT_TESTING_KOMPILED)/timestamp
+MX_RUST_CONTRACT_TESTING_INPUT_DIR ::= tests/mx-rust-contracts
+MX_RUST_CONTRACT_TESTING_OUTPUT_DIR ::= .build/mx-rust-contarcts/output
+MX_RUST_CONTRACT_TESTING_INPUTS ::= $(wildcard $(MX_RUST_CONTRACT_TESTING_INPUT_DIR)/*.run)
+MX_RUST_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(MX_RUST_CONTRACT_TESTING_INPUT_DIR)/%,$(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(MX_RUST_CONTRACT_TESTING_INPUTS))
+
+.PHONY: clean build test syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test
 
 clean:
 	rm -r .build
@@ -48,9 +56,10 @@ build: $(RUST_PREPROCESSING_TIMESTAMP) \
 				$(RUST_EXECUTION_TIMESTAMP) \
 				$(MX_TESTING_TIMESTAMP) \
 				$(MX_RUST_TIMESTAMP) \
-				$(MX_RUST_TESTING_TIMESTAMP)
+				$(MX_RUST_TESTING_TIMESTAMP) \
+				$(MX_RUST_CONTRACT_TESTING_TIMESTAMP)
 
-test: build syntax-test preprocessing-test execution-test mx-test mx-rust-test
+test: build syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test
 
 syntax-test: $(SYNTAX_OUTPUTS)
 
@@ -61,6 +70,8 @@ execution-test: $(EXECUTION_OUTPUTS)
 mx-test: $(MX_TESTING_OUTPUTS)
 
 mx-rust-test: $(MX_RUST_TESTING_OUTPUTS)
+
+mx-rust-contract-test: $(MX_RUST_CONTRACT_TESTING_OUTPUTS)
 
 $(RUST_PREPROCESSING_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
@@ -90,6 +101,15 @@ $(MX_RUST_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX
 	-rm -r $(MX_RUST_TESTING_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/testing/mx-rust.md \
 			-o $(MX_RUST_TESTING_KOMPILED) \
+			-I . \
+			--debug
+
+
+$(MX_RUST_CONTRACT_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX_RUST_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(MX_RUST_CONTRACT_TESTING_KOMPILED)
+	$$(which kompile) mx-rust-semantics/targets/contract-testing/mx-rust.md \
+			-o $(MX_RUST_CONTRACT_TESTING_KOMPILED) \
 			-I . \
 			--debug
 
@@ -152,5 +172,25 @@ $(MX_RUST_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 		--output-file $@.tmp \
 		-cTEST='$(shell cat $<)' \
 		-pTEST=$(CURDIR)/parse-mx-rust-test.sh
+	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
+	mv -f $@.tmp $@
+
+
+# TODO: Add $(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs
+# as a dependency
+$(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
+			$(MX_RUST_CONTRACT_TESTING_INPUT_DIR)/%.run \
+			$(MX_RUST_CONTRACT_TESTING_TIMESTAMP) \
+			parse-mx-rust-contract.sh \
+			parse-mx-rust-contract-test.sh
+	mkdir -p $(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)
+	krun \
+		"$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" \
+		--definition $(MX_RUST_CONTRACT_TESTING_KOMPILED) \
+		--parser $(CURDIR)/parse-mx-rust-contract.sh \
+		--output kore \
+		--output-file $@.tmp \
+		-cTEST='$(shell cat $<)' \
+		-pTEST=$(CURDIR)/parse-mx-rust-contract-test.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@

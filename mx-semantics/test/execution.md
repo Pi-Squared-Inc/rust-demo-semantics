@@ -6,6 +6,7 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
     imports STRING-SYNTAX
 
     syntax TestInstruction  ::= "error"
+                              | "push"
                               | "push" MxValue
                               | "call" argcount:Int MxHookName
                               | "get_big_int"
@@ -18,7 +19,7 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
                               | setCallee(String)
                               | addAccount(String)
                               | setBalance(account:String, token:String, nonce:Int, value:Int)
-                              | setStorage(account:String, key:String, value:MxWrappedValue)
+                              | setStorage(account:String, key:String, value:MxValue)
                               | setBlockTimestamp(Int)
                               | setMockCode(String, MxValue)
 
@@ -26,7 +27,6 @@ module MX-TEST-EXECUTION-PARSING-SYNTAX
 
     syntax MxValueStack ::= List{MxValue, ","}
 
-    syntax MxWrappedValue ::= wrappedMx(MxValue)
 endmodule
 
 module MX-TEST-INTERNAL-SYNTAX
@@ -46,8 +46,13 @@ module MX-TEST-EXECUTION
     imports private MX-TEST-CONFIGURATION
     imports private MX-TEST-EXECUTION-PARSING-SYNTAX
 
-    rule I:TestInstruction ; Is:MxTest => I ~> Is
-    rule .MxTest => .K
+    rule Is:MxTest => mxChainTest(Is)
+
+    syntax K ::= mxChainTest(MxTest)  [function, total]
+    rule mxChainTest(.MxTest) => .K
+    rule mxChainTest(I:TestInstruction ; Is:MxTest) => I ~> mxChainTest(Is)
+
+    rule V:MxValue ~> push => push V
 
     rule
         <k> push V:MxValue => .K ... </k>
@@ -57,9 +62,10 @@ module MX-TEST-EXECUTION
         <k> call N:Int Hook:MxHookName => Hook(takeArgs(N, L)) ... </k>
         <mx-test-stack> L:MxValueStack => drop(N, L) </mx-test-stack>
 
-    rule
-        <k> V:MxValue => .K ... </k>
-        <mx-test-stack> L:MxValueStack => V , L </mx-test-stack>
+    rule V:MxValue ~> check_eq V => .K
+
+
+    rule mxIntValue(IntId) ~> get_big_int => testGetBigInt(IntId)
 
     rule
         <k> get_big_int => testGetBigInt(IntId) ... </k>
@@ -67,8 +73,8 @@ module MX-TEST-EXECUTION
 
     rule
         <k> storeHostValue (... destination: Destination:MxValue, value: Value:MxValue)
-                ~> push_store_data ; Is
-            => Is
+                ~> push_store_data
+            => .K
             ...
         </k>
         <mx-test-stack> L:MxValueStack => Destination, Value, L </mx-test-stack>
@@ -172,25 +178,10 @@ endmodule
 module MX-ACCOUNTS-TEST
     imports private COMMON-K-CELL
     imports private MX-ACCOUNTS-CONFIGURATION
+    imports private MX-SETUP-SYNTAX
     imports private MX-TEST-EXECUTION-PARSING-SYNTAX
 
-    rule
-        <k> (.K => error) ~> addAccount(S:String)  ... </k>
-        <mx-account-address> S </mx-account-address>
-        [priority(50)]
-    rule
-        <k> addAccount(S:String) => .K ... </k>
-        <mx-accounts>
-            .Bag
-            =>  <mx-account>
-                    <mx-account-address> S </mx-account-address>
-                    <mx-esdt-datas> .Bag </mx-esdt-datas>
-                    <mx-account-storage> .Bag </mx-account-storage>
-                    ...
-                </mx-account>
-            ...
-        </mx-accounts>
-        [priority(100)]
+    rule addAccount(S:String) => MXSetup#add_account(S)
 
     rule
         <k> setBalance
@@ -238,7 +229,7 @@ module MX-ACCOUNTS-TEST
         <k> setStorage
                 (... account: Account:String
                 , key: Key:String
-                , value: Value:MxWrappedValue
+                , value: Value:MxValue
                 ) => .K
             ...
         </k>
@@ -251,7 +242,7 @@ module MX-ACCOUNTS-TEST
         <k> setStorage
                 (... account: Account:String
                 , key: Key:String
-                , value: Value:MxWrappedValue
+                , value: Value:MxValue
                 ) => .K
             ...
         </k>
@@ -262,6 +253,7 @@ module MX-ACCOUNTS-TEST
                 <mx-account-storage-key> Key </mx-account-storage-key>
                 <mx-account-storage-value> Value </mx-account-storage-value>
             </mx-account-storage-item>
+            ...
         </mx-account-storage>
         [priority(100)]
 

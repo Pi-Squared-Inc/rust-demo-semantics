@@ -7,7 +7,7 @@ module MX-STORAGE-HOOKS
     rule MX#storageLoad(mxStringValue(Key:String), Destination:MxValue )
         => storageLoad(getCallee(), Key, Destination)
 
-    rule MX#storageStore(mxStringValue(Key:String), Value:MxWrappedValue)
+    rule MX#storageStore(mxStringValue(Key:String), Value:MxValue)
         => storageStore(getCallee(), Key, Value)
 
 endmodule

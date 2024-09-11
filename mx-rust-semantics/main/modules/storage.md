@@ -35,7 +35,7 @@ module MX-RUST-MODULES-STORAGE
                     , .NormalizedCallParams
                     )
                 )
-            => MX#storageStore(mxStringValue(StorageKey), wrappedRust(V))
+            => rustValuesToMx((V, .ValueList), (mxStringValue(StorageKey), .MxValueList)) ~> MX#storageStore
             ...
         </k>
         <values>
@@ -61,7 +61,8 @@ module MX-RUST-MODULES-STORAGE
                 )
             => MX#storageLoad(mxStringValue(StorageKey), rustDestination(-1, noType))
                 ~> setIfEmpty
-                ~> MX#storageStore(mxStringValue(StorageKey), wrappedRust(V))
+                ~> rustValuesToMx((V, .ValueList), (mxStringValue(StorageKey), .MxValueList))
+                ~> MX#storageStore
             ...
         </k>
         <values>
@@ -77,9 +78,10 @@ module MX-RUST-MODULES-STORAGE
 
     rule mxRustEmptyValue(noType) ~> storeHostValue(...) ~> setIfEmpty
         => .K
-    rule storeHostValue(... value: wrappedRust(_))
-          ~> setIfEmpty ~> MX#storageStore(_)
+    rule storeHostValue(... value: V:MxValue)
+          ~> setIfEmpty ~> _:KItem ~> MX#storageStore
         => .K
+        requires notBool isMxEmptyValue(V)
 
     rule
         <k>
