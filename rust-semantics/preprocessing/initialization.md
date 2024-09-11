@@ -10,6 +10,7 @@ module INITIALIZATION
         <k> traitInitializer(Name:TypePath) => .K
             ...
         </k>
+        <trait-list> .List => ListItem(Name) ...</trait-list>
         <traits>
             ...
             .Bag

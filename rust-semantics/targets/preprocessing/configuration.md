@@ -14,10 +14,10 @@ module RUST-RUNNING-CONFIGURATION
 
     configuration
         <rust-mx>
-            <k/>
             <rust>
                 <preprocessed/>
             </rust>
+            <k/>
         </rust-mx>
 endmodule
 

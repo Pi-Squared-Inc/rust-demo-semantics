@@ -17,9 +17,9 @@ module MX-CONFIGURATION
 
     configuration
         <mx-cfg>
-            <k/>
             <mx-common/>
             <mx-test/>
+            <k/>
         </mx-cfg>
 endmodule
 
