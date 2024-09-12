@@ -312,7 +312,6 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       | ExpressionWithBlock
 
   syntax Expression ::= LiteralExpression
-                      | GroupedExpression
                       | ArrayExpression
                       | AwaitExpression
                       | TupleExpression
@@ -331,7 +330,11 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
   // Several sub-expressions were included directly in Expression
   // to make it easy to disambiguate based on priority
-  syntax Expression ::= PathExpression
+  syntax Expression ::=
+                      // https://doc.rust-lang.org/reference/expressions/grouped-expr.html
+                      "(" Expression ")"  [bracket]
+
+                      > PathExpression
 
                       // https://doc.rust-lang.org/reference/expressions/method-call-expr.html
                       > Expression "." PathExprSegment "(" ")"
@@ -470,14 +473,6 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 ```k
 
   syntax TypeCastExpression ::= "TODO: not needed yet, not implementing"
-
-```
-
-  https://doc.rust-lang.org/reference/expressions/grouped-expr.html
-
-```k
-
-  syntax GroupedExpression ::= "(" Expression ")"
 
 ```
 

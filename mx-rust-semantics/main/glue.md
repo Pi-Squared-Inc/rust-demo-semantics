@@ -49,6 +49,7 @@ module MX-RUST-GLUE
     rule V:MxValue ~> mxValueToRust(T:Type)
         => mxValueToRust(T, V)
 
+    rule mxValueToRust(&T => T, _V)
     rule mxValueToRust(T:Type, mxIntValue(I:Int))
         => mxRustNewValue(integerToValue(I, T))
         requires

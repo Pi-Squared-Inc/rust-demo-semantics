@@ -6,12 +6,12 @@ use multiversx_sc::imports::*;
 #[multiversx_sc::contract]
 pub trait Storage {
     #[view(noArg)]
-    #[storage_mapper("my_value")]
+    #[storage_mapper("my_storage")]
     fn my_storage(&self) -> SingleValueMapper<BigUint>;
 
     #[init]
-    fn init(&self) {
-        self.my_storage().set_if_empty(BigUint::from(10))
+    fn init(&self, value: &BigUint) {
+        self.my_storage().set_if_empty(value)
     }
 
     #[upgrade]

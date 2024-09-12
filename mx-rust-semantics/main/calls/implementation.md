@@ -61,7 +61,8 @@ module MX-RUST-CALLS-IMPLEMENTATION
         <k>
             host.mkCall(FunctionName:String)
             => MxRust#newContractObject(TraitName)
-                ~> MxRust#partialMethodCall(Endpoint, mxArgsToRustArgs(Args))
+                ~> mxArgsToRustArgs(Args, Nfp, .CallParamsList)
+                ~> MxRust#partialMethodCall(Endpoint)
             ...
         </k>
         <mx-rust-endpoint-to-function>
@@ -72,18 +73,38 @@ module MX-RUST-CALLS-IMPLEMENTATION
             => (#token("no#path", "Identifier"):Identifier):TypePath
         </mx-rust-last-trait-name>
         <mx-call-args> Args:MxValueList </mx-call-args>
+        <trait-path> TraitName </trait-path>
+        <method-name> Endpoint </method-name>
+        <method-params> _:SelfSort : _ , Nfp:NormalizedFunctionParameterList </method-params>
 
-    rule ptrValue(...) #as SelfValue:Expression
-        ~> MxRust#partialMethodCall(Method:Identifier, Params:CallParamsList)
+    rule (ptrValue(...) #as SelfValue:Expression) , Params:CallParamsList
+        ~> MxRust#partialMethodCall(Method:Identifier)
         => methodCall(... self: SelfValue, method: Method, params: Params)
 
     syntax MxRustInstruction ::= "MxRust#newContractObject" "(" TypePath ")"
     rule MxRust#newContractObject(P:TypePath) => Rust#newStruct(P, .Map)
 
-    syntax MxRustInstruction ::= "MxRust#partialMethodCall" "(" Identifier "," CallParamsList ")"
+    syntax MxRustInstruction ::= "MxRust#partialMethodCall" "(" Identifier ")"
 
-    syntax CallParamsList ::= mxArgsToRustArgs(MxValueList)  [function, total]
-    rule mxArgsToRustArgs(.MxValueList) => .CallParamsList
+    syntax MxRustInstruction ::= mxArgsToRustArgs
+                                    ( MxValueList
+                                    , NormalizedFunctionParameterList
+                                    , CallParamsList
+                                    )
+    rule mxArgsToRustArgs(.MxValueList, .NormalizedFunctionParameterList, L:CallParamsList)
+        => reverse(L, .CallParamsList)
+    rule (.K => mxValueToRust(T, V))
+        ~> mxArgsToRustArgs
+            ( (V:MxValue , L:MxValueList) => L
+            , _ : T:Type , Nfp:NormalizedFunctionParameterList => Nfp
+            , _:CallParamsList
+            )
+    rule (V:PtrValue => .K)
+        ~> mxArgsToRustArgs
+            ( _:MxValueList
+            , _:NormalizedFunctionParameterList
+            , L:CallParamsList => V, L
+            )
 
     rule (ptrValue(_, V:Value) => rustValueToMx(V)) ~> endCall
 
