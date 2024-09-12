@@ -18,6 +18,8 @@ pub trait IfExpressions {
             1_u64
         } 
 
+
+
     }
 
     fn if_else_expression(&self) -> u64 { 
@@ -42,5 +44,21 @@ pub trait IfExpressions {
 
     }
 
+    fn test_if_instruction(&self) -> u64 {
+        if true {
+          let x = 10_u64;
+        } else {
+          let y = 11_u64;
+        };
+        11_u64
+      }
+
+      fn test_if_no_return(&self) {
+        if true {
+            let x = 10_u64;
+        } else {
+            let y = 11_u64;
+        };
+      }
 
 }
