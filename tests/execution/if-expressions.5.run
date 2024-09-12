@@ -1,0 +1,2 @@
+new IfExpressions;
+call IfExpressions.test_if_no_return
