@@ -13,10 +13,26 @@ module MX-RUST-PREPROCESSING-METHODS
 
     syntax Identifier ::= "storage_mapper"  [token]
 
-    syntax MxRustInstruction  ::= mxRustPreprocessMethods(trait: TypePath, methodNames: List)
-                                | mxRustPreprocessMethod(trait: TypePath, methodName: Identifier)
-                                | mxRustPreprocessStorage(trait: TypePath, methodName: Identifier)
-                                | mxRustPreprocessEndpoint(trait: TypePath, methodName: Identifier)
+    syntax MxRustInstruction  ::= mxRustPreprocessMethods
+                                    ( trait: TypePath
+                                    , traitType: TraitType
+                                    , methodNames: List
+                                    )
+                                | mxRustPreprocessMethod
+                                    ( trait: TypePath
+                                    , traitType: TraitType
+                                    , methodName: Identifier
+                                    )
+                                | mxRustPreprocessStorage
+                                    ( trait: TypePath
+                                    , traitType: TraitType
+                                    , methodName: Identifier
+                                    )
+                                | mxRustPreprocessEndpoint
+                                    ( trait: TypePath
+                                    , traitType: TraitType
+                                    , methodName: Identifier
+                                    )
                                 | addStorageMethodBody
                                     ( trait: TypePath
                                     , methodName: Identifier
@@ -30,24 +46,27 @@ module MX-RUST-PREPROCESSING-METHODS
                                     )
 
     rule
-        <k> mxRustPreprocessMethods(T:TypePath)
-            => mxRustPreprocessMethods(T, MethodNames)
+        <k> mxRustPreprocessMethods(T:TypePath, TType:TraitType)
+            => mxRustPreprocessMethods(T, TType, MethodNames)
             ...
         </k>
         <trait-path> T </trait-path>
         <method-list> MethodNames:List </method-list>
 
-    rule mxRustPreprocessMethods(_:TypePath, .List) => .K
-    rule mxRustPreprocessMethods(T:TypePath, ListItem(MethodName:Identifier) Names:List)
-        => mxRustPreprocessMethod(T, MethodName) ~> mxRustPreprocessMethods(T, Names)
+    rule mxRustPreprocessMethods(_:TypePath, _:TraitType, .List) => .K
+    rule mxRustPreprocessMethods
+            (T:TypePath, TType:TraitType, ListItem(MethodName:Identifier) Names:List)
+        => mxRustPreprocessMethod(T, TType, MethodName)
+            ~> mxRustPreprocessMethods(T, TType, Names)
 
-    rule mxRustPreprocessMethod(Trait:TypePath, Method:Identifier)
-        => mxRustPreprocessStorage(Trait, Method)
-            ~> mxRustPreprocessEndpoint(Trait, Method)
+    rule mxRustPreprocessMethod(Trait:TypePath, TType:TraitType, Method:Identifier)
+        => mxRustPreprocessStorage(Trait, TType, Method)
+            ~> mxRustPreprocessEndpoint(Trait, TType, Method)
 
+    rule mxRustPreprocessStorage(_Trait:TypePath, proxy, _Method:Identifier) => .K
     rule
         <k>
-            mxRustPreprocessStorage(Trait:TypePath, Method:Identifier)
+            mxRustPreprocessStorage(Trait:TypePath, contract, Method:Identifier)
             => addStorageMethodBody
                 (... trait: Trait, methodName: Method
                 , storageName: getStorageName(Atts)
@@ -64,12 +83,28 @@ module MX-RUST-PREPROCESSING-METHODS
         </method-return-type>
         requires getStorageName(Atts) =/=K ""
         [priority(50)]
-    rule mxRustPreprocessStorage(_Trait:TypePath, _Method:Identifier) => .K
+    rule mxRustPreprocessStorage(_Trait:TypePath, contract, _Method:Identifier) => .K
         [priority(100)]
 
     rule
         <k>
-            mxRustPreprocessEndpoint(Trait:TypePath, Method:Identifier)
+            mxRustPreprocessEndpoint(Trait:TypePath, proxy, Method:Identifier)
+            => .K
+            ...
+        </k>
+        <trait-path> Trait </trait-path>
+        <method-name> Method </method-name>
+        <method-implementation>
+            empty
+            => block(buildProxyEndpointMethod(Params, getEndpointName(Atts, Method)))
+        </method-implementation>
+        <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
+        <method-params> Params:NormalizedFunctionParameterList </method-params>
+        requires getEndpointName(Atts, Method) =/=K ""
+        [priority(50)]
+    rule
+        <k>
+            mxRustPreprocessEndpoint(Trait:TypePath, contract, Method:Identifier)
             => mxRustAddEndpointMapping
                 (... trait: Trait, methodName: Method
                 , endpointName: getEndpointName(Atts, Method)
@@ -81,7 +116,7 @@ module MX-RUST-PREPROCESSING-METHODS
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
         requires getEndpointName(Atts, Method) =/=K ""
         [priority(50)]
-    rule mxRustPreprocessEndpoint(_Trait:TypePath, _Method:Identifier) => .K
+    rule mxRustPreprocessEndpoint(_Trait:TypePath, contract, _Method:Identifier) => .K
         [priority(100)]
 
     rule
@@ -149,6 +184,42 @@ module MX-RUST-PREPROCESSING-METHODS
     rule getEndpointName(_:OuterAttribute Atts:NonEmptyOuterAttributes, Default:Identifier)
         => getEndpointName(Atts, Default)
         [owise]
+
+    syntax BlockExpression ::= buildProxyEndpointMethod
+                                  ( params: NormalizedFunctionParameterList
+                                  , endpointName: String
+                                  )  [function]
+    rule buildProxyEndpointMethod
+            (... params: S:SelfSort : _ , Params:NormalizedFunctionParameterList
+            , endpointName: Name
+            )
+        => { .InnerAttributes
+              S . #token("endpoint_name", "Identifier") = Name;
+              S . #token("args", "Identifier") =
+                  (paramsToMaybeTupleElements(Params)):TupleExpression;
+              S
+            }
+    syntax MaybeTupleElements ::= paramsToMaybeTupleElements(NormalizedFunctionParameterList)  [function, total]
+    rule paramsToMaybeTupleElements(.NormalizedFunctionParameterList) => `noTupleElements`(.KList)
+    rule paramsToMaybeTupleElements(Name:Identifier : _ , .NormalizedFunctionParameterList)
+        => Name ,
+    rule paramsToMaybeTupleElements
+            ( Name:Identifier : _
+            , N:NormalizedFunctionParameter
+            , Ns:NormalizedFunctionParameterList
+            )
+        => Name , paramsToTupleElementsNoEndComma(N , Ns)
+    rule paramsToMaybeTupleElements(P ,  _Ps:NormalizedFunctionParameterList)
+        => error("Unexpected param in paramsToMaybeTupleElements", ListItem(P)) , 
+
+    syntax TupleElementsNoEndComma ::= paramsToTupleElementsNoEndComma(NormalizedFunctionParameterList)  [function, total]
+    rule paramsToTupleElementsNoEndComma(.NormalizedFunctionParameterList)
+        => .TupleElementsNoEndComma
+    rule paramsToTupleElementsNoEndComma(Name:Identifier : _ , Ps:NormalizedFunctionParameterList)
+        => Name , paramsToTupleElementsNoEndComma(Ps)
+    rule paramsToTupleElementsNoEndComma(P ,  Ps:NormalizedFunctionParameterList)
+        => error("Unexpected param in paramsToTupleElementsNoEndComma", ListItem(P))
+          , paramsToTupleElementsNoEndComma(Ps) 
 
     syntax BlockExpression ::= buildStorageMethodBody
                                   ( params: NormalizedFunctionParameterList

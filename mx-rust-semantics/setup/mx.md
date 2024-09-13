@@ -16,6 +16,7 @@ module MX-RUST-SETUP-MX
                                       "," gasLimit: Int
                                       "," args: MxValueList
                                       ")"
+    syntax MXRustInstruction  ::= "MxRust#addAccountWithPreprocessedCode" "(" String ")"
     syntax MXRustInstruction  ::= "MxRust#addAccountWithPreprocessedCode" "(" String "," TypePath ")"
                                 | "MxRust#clearMxReturnValue"
 
@@ -59,7 +60,8 @@ module MX-RUST-SETUP-MX
                 , gasLimit: GasLimit:Int
                 , args: Args:MxValueList
                 )
-            => MxRust#addAccountWithPreprocessedCode(Contract, TraitName)
+            => findContractName(Traits)
+              ~> MxRust#addAccountWithPreprocessedCode(Contract)
               ~> callContract
                   ( "#init"
                   , prepareIndirectContractCallInput
@@ -75,7 +77,10 @@ module MX-RUST-SETUP-MX
               ~> MxRust#clearMxReturnValue
             ...
         </k>
-        <preprocessed> ... <trait-list> ListItem(TraitName:TypePath) </trait-list>  </preprocessed>
+        <preprocessed> ... <trait-list> Traits:List </trait-list>  </preprocessed>
+
+    rule TraitName:TypePath ~> MxRust#addAccountWithPreprocessedCode(Contract)
+        => MxRust#addAccountWithPreprocessedCode(Contract, TraitName)
 
     rule
         <k>

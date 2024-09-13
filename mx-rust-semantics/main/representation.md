@@ -6,7 +6,7 @@ module MX-RUST-REPRESENTATION
     imports RUST-SHARED-SYNTAX
 
     syntax MxRustInstruction  ::= "mxRustPreprocessTraits"
-                                | mxRustPreprocessMethods(TypePath)
+                                | mxRustPreprocessMethods(TypePath, TraitType)
                                 | mxRustCreateAccount(String)
                                 | mxRustCreateContract
                                     ( owner: String
@@ -22,6 +22,7 @@ module MX-RUST-REPRESENTATION
                                 | mxRustLoadPtr(Int)
                                 | mxRustGetBigIntFromStruct(Value)
 
+    syntax TraitType ::= "contract" | "proxy"
     syntax MxRustType ::= "noType" | rustType(Type)
     syntax MxRustTypeOrError ::= MxRustType | SemanticsError
     syntax Value ::= MxRustType
@@ -30,6 +31,7 @@ module MX-RUST-REPRESENTATION
 
     syntax Expression ::= concatString(Expression, Expression)  [seqstrict]
                         | toString(Expression)  [strict]
+                        | error(String, KItem)
 
     syntax MxValue ::= rustDestination(Int, MxRustType)
 

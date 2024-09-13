@@ -21,7 +21,32 @@ module MX-RUST-PREPROCESSING-TRAITS
     rule mxRustPreprocessTraits(ListItem(Trait:TypePath) Traits:List)
         => mxRustPreprocessTrait(Trait) ~> mxRustPreprocessTraits(Traits)
 
-    rule mxRustPreprocessTrait(Trait:TypePath) => mxRustPreprocessMethods(Trait)
+    rule
+        <k>
+            mxRustPreprocessTrait(Trait:TypePath) => mxRustPreprocessMethods(Trait, contract)
+            ...
+        </k>
+        <trait-path> Trait </trait-path>
+        <trait-attributes>
+            #[ #token("multiversx_sc", "Identifier")
+                :: #token("contract", "Identifier")
+                :: .SimplePathList
+            ]
+            .NonEmptyOuterAttributes
+        </trait-attributes>
+    rule
+        <k>
+            mxRustPreprocessTrait(Trait:TypePath) => mxRustPreprocessMethods(Trait, proxy)
+            ...
+        </k>
+        <trait-path> Trait </trait-path>
+        <trait-attributes>
+            #[ #token("multiversx_sc", "Identifier")
+                :: #token("proxy", "Identifier")
+                :: .SimplePathList
+            ]
+            .NonEmptyOuterAttributes
+        </trait-attributes>
 endmodule
 
 ```

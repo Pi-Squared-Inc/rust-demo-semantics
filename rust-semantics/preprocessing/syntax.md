@@ -12,11 +12,17 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
     imports RUST-REPRESENTATION
     imports RUST-SHARED-SYNTAX
 
-    syntax Initializer  ::= traitParser(Trait)
-                          | traitMethodsParser(AssociatedItems, traitName:Identifier)
+    syntax MaybeTypePath ::= ".TypePath" | TypePath
+
+    syntax Initializer  ::= traitParser(Trait, MaybeTypePath, OuterAttributes)
+                          | traitMethodsParser(AssociatedItems, traitName:TypePath)
                           | traitInitializer
                                 ( traitName: TypePath
+                                , atts: OuterAttributes
                                 )
+    syntax Initializer  ::= moduleParser(Module)
+                          | moduleItemsParser(Items, TypePath)
+
 
     syntax Initializer  ::= addMethod(traitName : TypePath, function: Function, atts:OuterAttributes)
                           | #addMethod(
@@ -28,6 +34,7 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
                                 OuterAttributes
                             )
 
+    syntax TypePath ::= append(MaybeTypePath, Identifier)  [function, total]
 endmodule
 
 ```
