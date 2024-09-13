@@ -20,7 +20,11 @@ module RUST
     imports private RUST-BOOL-OPERATIONS
     imports private RUST-EXPRESSION-CONSTANTS
     imports private RUST-PREPROCESSING
+    imports private RUST-REPRESENTATION
     imports private RUST-RUNNING-CONFIGURATION
+
+    // Making a warning go away
+    rule isLocalVariable(_) => false
 endmodule
 
 ```

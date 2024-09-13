@@ -1,7 +1,9 @@
 push mxIntValue(10);
 call 1 MX#bigIntNew;
+push;
 push mxIntValue(20);
 call 1 MX#bigIntNew;
+push;
 call 2 MX#bigIntAdd;
 get_big_int;
 check_eq mxIntValue(30)

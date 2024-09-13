@@ -4,6 +4,7 @@ requires "configuration.md"
 requires "../../main/mx-common.md"
 requires "../../main/communication-mocks.md"
 requires "../../main/syntax.md"
+requires "../../setup/setup.md"
 requires "../../test/execution.md"
 
 module MX-SYNTAX
@@ -15,6 +16,7 @@ module MX
     imports private MX-COMMON
     imports private MX-COMMUNICATION-MOCKS
     imports private MX-CONFIGURATION
+    imports private MX-SETUP
     imports private MX-TEST-EXECUTION
 endmodule
 

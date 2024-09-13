@@ -9,6 +9,10 @@ module MX-BIGUINT-TOOLS
         <k> clearBigInts => .K ... </k>
         <bigIntHeap> _ => .Map </bigIntHeap>
         <bigIntHeapNextId> _ => 0 </bigIntHeapNextId>
+
+    rule
+        <k> mxGetBigInt(IntId:Int) => mxIntValue(V) ... </k>
+        <bigIntHeap> IntId |-> V:Int ... </bigIntHeap>
 endmodule
 
 ```

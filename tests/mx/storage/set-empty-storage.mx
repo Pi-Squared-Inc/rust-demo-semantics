@@ -1,7 +1,7 @@
 addAccount("Owner");
 setCallee("Owner");
 
-push wrappedMx(mxStringValue("Hello"));
+push mxStringValue("Hello");
 push mxStringValue("MyKey");
 call 2 MX#storageStore;
 
@@ -10,4 +10,4 @@ push mxStringValue("MyKey");
 call 2 MX#storageLoad;
 push_store_data;
 check_eq mxIntValue(12);
-check_eq wrappedMx(mxStringValue("Hello"))
+check_eq mxStringValue("Hello")

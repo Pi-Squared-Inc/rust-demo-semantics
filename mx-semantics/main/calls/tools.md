@@ -14,15 +14,6 @@ module MX-CALL-TOOLS-SYNTAX
                                   args:MxValueList
                               )
 
-    syntax MxCallDataCell ::= prepareIndirectContractCallInput(
-                                  caller: String,
-                                  callee: String,
-                                  egldValue: Int,
-                                  esdtTransfers: MxEsdtTransferList,
-                                  gasLimit: Int,
-                                  args: MxValueList
-                              )   [function, total]
-
 endmodule
 
 module MX-CALLS-TOOLS
@@ -43,12 +34,9 @@ module MX-CALLS-TOOLS
                                 , input: MxCallDataCell
                                 )
                               [symbol(callContractAux)]
-                            | callContract(function: String, input: MxCallDataCell )
-                              [symbol(callContractString)]
-                            | "finishExecuteOnDestContext"  [symbol(finishExecuteOnDestContext)]
-                            | "endCall"  [symbol(endCall)]
                             | "asyncExecute"  [symbol(asyncExecute)]
                             | "setVMOutput"  [symbol(setVMOutput)]
+                            | "clearMxReturnValues"
                             | mkCall(function: String, callData: MxCallDataCell)
 
   // -----------------------------------------------------------------------------------
@@ -83,6 +71,24 @@ module MX-CALLS-TOOLS
                     </mx-call-data> #as MxCallData
                 )
             => pushWorldState
+                // TODO: clearMxReturnValues is not part of the actual MX semantics.
+                // The MX semantics gathers all return values and makes them
+                // available to whoever wants them. Usually, only the topmost one
+                // (i.e., the return value for the last call) is interesting to
+                // the caller.
+                //
+                // I'm unsure what happens for endpoints that do not return a
+                // value (do they return an empty result? Does it not return a
+                // result, and the caller simply does not try to read any
+                // returned result?
+                //
+                // However, this is supposed to be a mx-lite implementation,
+                // so we're assuming that nobody needs more than one return
+                // result, so we can clear the returned results before each
+                // call. At the end of the call, we check whether the results
+                // list is empty or not to know if the endpoint returned
+                // something.
+                ~> clearMxReturnValues
                 ~> pushCallState
                 ~> resetCallState
                 ~> transferFunds(Caller, Callee, EgldValue)
@@ -314,6 +320,10 @@ module MX-CALLS-TOOLS
         [owise]
 
   // -----------------------------------------------------------------------
+    rule
+        <k> (V:MxValue => .K) ~> endCall ... </k>
+        <mx-return-values> .MxValueList => V, .MxValueList </mx-return-values>
+
     rule [endCall]:
         endCall 
         => asyncExecute
@@ -364,6 +374,10 @@ module MX-CALLS-TOOLS
 
     rule [[getCallee() => Callee]]
         <mx-callee> Callee:String </mx-callee>
+
+    rule
+        <k> clearMxReturnValues => .K ... </k>
+        <mx-return-values> _ => .MxValueList </mx-return-values>
 
 endmodule
 

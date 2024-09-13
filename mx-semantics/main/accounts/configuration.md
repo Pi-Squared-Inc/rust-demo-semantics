@@ -57,7 +57,7 @@ module MX-STORAGE-CONFIGURATION
         <mx-account-storage>
             <mx-account-storage-item multiplicity="*" type="Map">
                 <mx-account-storage-key> "" </mx-account-storage-key>
-                <mx-account-storage-value> mxWrappedEmpty </mx-account-storage-value>
+                <mx-account-storage-value> mxEmptyValue:MxValue </mx-account-storage-value>
             </mx-account-storage-item>
         </mx-account-storage>
 endmodule

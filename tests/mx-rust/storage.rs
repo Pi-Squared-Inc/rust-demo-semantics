@@ -24,10 +24,10 @@ pub trait Storage {
     }
 
     fn get_no_arg(&self) -> BigUint {
-      self.no_arg_storage().get()
+        self.no_arg_storage().get()
     }
 
     fn set_no_arg_if_empty(&self, value: u64) {
-      self.no_arg_storage().set_if_empty(BigUint::from(value))
-  }
+        self.no_arg_storage().set_if_empty(BigUint::from(value))
+    }
 }

@@ -5,7 +5,7 @@ module MX-STORAGE-TOOLS-SYNTAX
     imports STRING-SYNTAX
 
     syntax MxInstructions ::= storageLoad(address: String, key: String, destination: MxValue)
-                            | storageStore(address: String, key: String, value: MxWrappedValue)
+                            | storageStore(address: String, key: String, value: MxValue)
 endmodule
 
 module MX-STORAGE-TOOLS
@@ -29,7 +29,7 @@ module MX-STORAGE-TOOLS
     rule
         <k>
             storageLoad(... address: Address:String, key: _Key:String, destination: Destination:MxValue)
-            => storeHostValue(Destination, mxWrappedEmpty)
+            => storeHostValue(Destination, mxEmptyValue)
             ...
         </k>
         <mx-account-address> Address </mx-account-address>
@@ -37,7 +37,7 @@ module MX-STORAGE-TOOLS
 
     rule
         <k>
-            storageStore(... address: Address:String, key: Key:String, value: Value:MxWrappedValue)
+            storageStore(... address: Address:String, key: Key:String, value: Value:MxValue)
             => .K
             ...
         </k>
@@ -48,7 +48,7 @@ module MX-STORAGE-TOOLS
 
     rule
         <k>
-            storageStore(... address: Address:String, key: Key:String, value: Value:MxWrappedValue)
+            storageStore(... address: Address:String, key: Key:String, value: Value:MxValue)
             => .K
             ...
         </k>
