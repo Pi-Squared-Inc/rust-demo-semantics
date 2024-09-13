@@ -1,21 +1,15 @@
 ```k
 
 requires "configuration.md"
-requires "mx-semantics/main/mx-common.md"
-requires "mx-semantics/main/syntax.md"
-requires "rust-semantics/rust-common.md"
-requires "rust-semantics/rust-common-syntax.md"
-requires "../../main/mx-rust-common.md"
+requires "../common/mx-rust.md"
 
 module MX-RUST-SYNTAX
-    imports RUST-COMMON-SYNTAX
+    imports MX-RUST-COMMON-TARGET-SYNTAX
 endmodule
 
 module MX-RUST
-    imports private MX-COMMON
-    imports private MX-RUST-COMMON
-    imports private MX-RUST-CONFIGURATION
-    imports private RUST-COMMON
+    imports private COMMON-K-CELL
+    imports private MX-RUST-COMMON-TARGET
 endmodule
 
 ```
