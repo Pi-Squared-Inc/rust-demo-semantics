@@ -14,12 +14,15 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
 
     syntax MaybeTypePath ::= ".TypePath" | TypePath
 
-    syntax Initializer  ::= traitParser(Trait, OuterAttributes)
-                          | traitMethodsParser(AssociatedItems, traitName:Identifier)
+    syntax Initializer  ::= traitParser(Trait, MaybeTypePath, OuterAttributes)
+                          | traitMethodsParser(AssociatedItems, traitName:TypePath)
                           | traitInitializer
                                 ( traitName: TypePath
                                 , atts: OuterAttributes
                                 )
+    syntax Initializer  ::= moduleParser(Module)
+                          | moduleItemsParser(Items, TypePath)
+
 
     syntax Initializer  ::= addMethod(traitName : TypePath, function: Function, atts:OuterAttributes)
                           | #addMethod(

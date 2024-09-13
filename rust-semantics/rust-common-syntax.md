@@ -394,7 +394,9 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       > Expression ".." Expression [seqstrict]
 
                       > right:
-                        Expression "=" Expression
+                        // The Rust reference says that assignments are evaluated
+                        // in reverse order.
+                        Expression "=" Expression  [seqstrict(2, 1)]
                       | Expression "+=" Expression
                       | Expression "-=" Expression
                       | Expression "*=" Expression

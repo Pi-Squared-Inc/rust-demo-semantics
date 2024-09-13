@@ -12,8 +12,13 @@ module CRATE
         ( (_Atts:InnerAttributes (_A:OuterAttributes _U:UseDeclaration):Item Is:Items):Crate
           => (.InnerAttributes Is):Crate
         )
+    rule (.K => moduleParser(M))
+        ~> crateParser
+          ( (_Atts:InnerAttributes (_ItemAtts:OuterAttributes _V:MaybeVisibility M:Module):Item Is:Items):Crate
+            => (.InnerAttributes Is):Crate
+          )
     rule
-        (.K => traitParser(T, ItemAtts))
+        (.K => traitParser(T, .TypePath, ItemAtts))
         ~> crateParser
           ( (_Atts:InnerAttributes (ItemAtts:OuterAttributes _V:MaybeVisibility T:Trait):Item Is:Items):Crate
             => (.InnerAttributes Is):Crate

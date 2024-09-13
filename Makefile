@@ -45,7 +45,14 @@ MX_RUST_CONTRACT_TESTING_OUTPUT_DIR ::= .build/mx-rust-contracts/output
 MX_RUST_CONTRACT_TESTING_INPUTS ::= $(wildcard $(MX_RUST_CONTRACT_TESTING_INPUT_DIR)/*.run)
 MX_RUST_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(MX_RUST_CONTRACT_TESTING_INPUT_DIR)/%,$(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(MX_RUST_CONTRACT_TESTING_INPUTS))
 
-.PHONY: clean build test syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test
+MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED ::= .build/mx-rust-two-contracts-testing-kompiled
+MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP ::= $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED)/timestamp
+MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR ::= tests/mx-rust-two-contracts
+MX_RUST_TWO_CONTRACTS_TESTING_OUTPUT_DIR ::= .build/mx-rust-two-contracts/output
+MX_RUST_TWO_CONTRACTS_TESTING_INPUTS ::= $(wildcard $(MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR)/*.run)
+MX_RUST_TWO_CONTRACTS_TESTING_OUTPUTS ::= $(patsubst $(MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR)/%,$(MX_RUST_TWO_CONTRACTS_TESTING_OUTPUT_DIR)/%.executed.kore,$(MX_RUST_TWO_CONTRACTS_TESTING_INPUTS))
+
+.PHONY: clean build test syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test
 
 clean:
 	rm -r .build
@@ -55,9 +62,10 @@ build: $(RUST_PREPROCESSING_TIMESTAMP) \
 				$(MX_TESTING_TIMESTAMP) \
 				$(MX_RUST_TIMESTAMP) \
 				$(MX_RUST_TESTING_TIMESTAMP) \
-				$(MX_RUST_CONTRACT_TESTING_TIMESTAMP)
+				$(MX_RUST_CONTRACT_TESTING_TIMESTAMP) \
+				$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP)
 
-test: build syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test
+test: build syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test
 
 syntax-test: $(SYNTAX_OUTPUTS)
 
@@ -70,6 +78,8 @@ mx-test: $(MX_TESTING_OUTPUTS)
 mx-rust-test: $(MX_RUST_TESTING_OUTPUTS)
 
 mx-rust-contract-test: $(MX_RUST_CONTRACT_TESTING_OUTPUTS)
+
+mx-rust-two-contracts-test: $(MX_RUST_TWO_CONTRACTS_TESTING_OUTPUTS)
 
 $(RUST_PREPROCESSING_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
@@ -107,6 +117,14 @@ $(MX_RUST_CONTRACT_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FI
 	-rm -r $(MX_RUST_CONTRACT_TESTING_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/contract-testing/mx-rust.md \
 			-o $(MX_RUST_CONTRACT_TESTING_KOMPILED) \
+			-I . \
+			--debug
+
+$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX_RUST_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED)
+	$$(which kompile) mx-rust-semantics/targets/two-contracts-testing/mx-rust.md \
+			-o $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED) \
 			-I . \
 			--debug
 
@@ -194,5 +212,33 @@ $(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 		-pTEST=$(CURDIR)/parsers/test-mx-rust-contract.sh \
 		-cARGS='$(shell cat $(patsubst %.run,%.args,$<))' \
 		-pARGS=$(CURDIR)/parsers/args-mx-rust-contract.sh
+	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
+	mv -f $@.tmp $@
+
+$(MX_RUST_TWO_CONTRACTS_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
+			$(MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR)/%.run \
+			$(MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR)/%.1.rs \
+			$(MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR)/%.1.args \
+			$(MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR)/%.2.rs \
+			$(MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR)/%.2.args \
+			$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP) \
+			parsers/contract-mx-rust-two-contracts.sh \
+			parsers/args-mx-rust-two-contracts.sh \
+			parsers/test-mx-rust-two-contracts.sh
+	mkdir -p $(MX_RUST_TWO_CONTRACTS_TESTING_OUTPUT_DIR)
+	krun \
+		--definition $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED) \
+		--output kore \
+		--output-file $@.tmp \
+		-cPGM1='$(shell cat $(patsubst %.run,%.1.rs,$<))' \
+		-pPGM1=$(CURDIR)/parsers/contract-mx-rust-two-contracts.sh \
+		-cPGM2='$(shell cat $(patsubst %.run,%.2.rs,$<))' \
+		-pPGM2=$(CURDIR)/parsers/contract-mx-rust-two-contracts.sh \
+		-cTEST='$(shell cat $<)' \
+		-pTEST=$(CURDIR)/parsers/test-mx-rust-two-contracts.sh \
+		-cARGS1='$(shell cat $(patsubst %.run,%.1.args,$<))' \
+		-pARGS1=$(CURDIR)/parsers/args-mx-rust-two-contracts.sh \
+		-cARGS2='$(shell cat $(patsubst %.run,%.2.args,$<))' \
+		-pARGS2=$(CURDIR)/parsers/args-mx-rust-two-contracts.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@

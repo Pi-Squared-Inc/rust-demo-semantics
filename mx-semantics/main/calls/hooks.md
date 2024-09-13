@@ -4,6 +4,7 @@ module MX-CALLS-HOOKS
     imports private COMMON-K-CELL
     imports private INT
     imports private MX-CALL-CONFIGURATION
+    imports private MX-CALL-RETURN-VALUE-CONFIGURATION
     imports private MX-CALL-TOOLS-SYNTAX
     imports private MX-COMMON-SYNTAX
     imports private STRING
@@ -11,6 +12,10 @@ module MX-CALLS-HOOKS
     rule
         <k> MX#getCaller ( .MxValueList ) => mxStringValue(Caller) ... </k>
         <mx-caller> Caller:String </mx-caller>
+
+    rule
+        <k> MX#popLastReturnValue ( .MxValueList ) => V ... </k>
+        <mx-return-values> (V:MxValue , L:MxValueList) => L </mx-return-values>
 
     rule
         <k>
