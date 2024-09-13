@@ -24,8 +24,6 @@ module MX-SETUP
             .Bag
             =>  <mx-account>
                     <mx-account-address> S </mx-account-address>
-                    // <mx-esdt-datas> .Bag </mx-esdt-datas>
-                    // <mx-account-storage> .Bag </mx-account-storage>
                     ...
                 </mx-account>
             ...
