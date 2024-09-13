@@ -71,9 +71,23 @@ module MX-CALLS-TOOLS
                     </mx-call-data> #as MxCallData
                 )
             => pushWorldState
-                // TODO: clearMxReturnValues is not part of the actual MX semantics,
-                // but it makes it easier to identify endpoints that do not
-                // return anything (see setVMOutput-no-retv).
+                // TODO: clearMxReturnValues is not part of the actual MX semantics.
+                // The MX semantics gathers all return values and makes them
+                // available to whoever wants them. Usually, only the topmost one
+                // (i.e., the return value for the last call) is interesting to
+                // the caller.
+                //
+                // I'm unsure what happens for endpoints that do not return a
+                // value (do they return an empty result? Does it not return a
+                // result, and the caller simply does not try to read any
+                // returned result?
+                //
+                // However, this is supposed to be a mx-lite implementation,
+                // so we're assuming that nobody needs more than one return
+                // result, so we can clear the returned results before each
+                // call. At the end of the call, we check whether the results
+                // list is empty or not to know if the endpoint returned
+                // something.
                 ~> clearMxReturnValues
                 ~> pushCallState
                 ~> resetCallState
