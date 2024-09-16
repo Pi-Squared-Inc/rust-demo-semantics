@@ -1,0 +1,34 @@
+setCallee("Owner");
+
+push mxListValue();
+push mxStringValue("getMyStorage");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxIntValue(0);
+
+push mxListValue(mxIntValue(8));
+push mxStringValue("setMyStorage");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push mxListValue();
+push mxStringValue("getMyStorage");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxIntValue(8)

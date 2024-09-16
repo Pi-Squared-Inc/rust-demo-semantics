@@ -99,6 +99,8 @@ module RUST-REPRESENTATION
 
     syntax String ::= IdentifierToString(Identifier)  [function, total, hook(STRING.token2string)]
 
+    syntax CallParamsList ::= reverse(CallParamsList, CallParamsList)  [function, total]
+
 endmodule
 
 ```

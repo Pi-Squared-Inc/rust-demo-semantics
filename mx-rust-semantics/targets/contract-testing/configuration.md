@@ -17,6 +17,7 @@ module COMMON-K-CELL
                 (... owner: "Owner"
                 , contractAccount: "TestContract"
                 , code: $PGM:Crate
+                , args: $ARGS:MxValueList
                 )
             ~> ($TEST:MxRustTest):KItem
         </k>
