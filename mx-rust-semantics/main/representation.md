@@ -8,7 +8,11 @@ module MX-RUST-REPRESENTATION
     syntax MxRustInstruction  ::= "mxRustPreprocessTraits"
                                 | mxRustPreprocessMethods(TypePath)
                                 | mxRustCreateAccount(String)
-                                | mxRustCreateContract(owner: String, contractAccount: String, code: Crate)
+                                | mxRustCreateContract
+                                    ( owner: String
+                                    , contractAccount: String
+                                    , code: Crate
+                                    , args: MxValueList)
                                 | mxRustNewValue(ValueOrError)
                                 | mxRustEmptyValue(MxRustType)
                                 | mxValueToRust(Type)

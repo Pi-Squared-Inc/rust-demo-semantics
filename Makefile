@@ -191,6 +191,8 @@ $(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 		--output kore \
 		--output-file $@.tmp \
 		-cTEST='$(shell cat $<)' \
-		-pTEST=$(CURDIR)/parse-mx-rust-contract-test.sh
+		-pTEST=$(CURDIR)/parse-mx-rust-contract-test.sh \
+		-cARGS='$(shell cat $(patsubst %.run,%.args,$<))' \
+		-pARGS=$(CURDIR)/parse-mx-rust-contract-args.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@

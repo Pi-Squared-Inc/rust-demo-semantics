@@ -4,7 +4,7 @@ module RUST-EXPRESSION-CALLS
     imports private COMMON-K-CELL
     imports private RUST-SHARED-SYNTAX
     imports private RUST-EXECUTION-CONFIGURATION
-    imports private RUST-EXPRESSION-TOOLS
+    imports private RUST-PREPROCESSING-TOOLS
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
 

@@ -25,6 +25,7 @@ module MX-RUST-SETUP-MX
             (... owner: Owner:String
             , contractAccount: Contract:String
             , code: Code:Crate
+            , args: Args:MxValueList
             )
         => crateParser(Code)
             ~> mxRustPreprocessTraits
@@ -33,7 +34,7 @@ module MX-RUST-SETUP-MX
                 , newAddress: Contract
                 , egldValue: 0
                 , gasLimit: 0
-                , args: .MxValueList
+                , args: Args
                 )
 
     // Trying to put the following three rules in one causes this kind of error:
