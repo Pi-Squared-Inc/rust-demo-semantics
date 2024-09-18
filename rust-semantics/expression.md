@@ -6,6 +6,7 @@ requires "expression/bool-operations.md"
 requires "expression/constants.md"
 requires "expression/casts.md"
 requires "expression/conditionals.md"
+requires "expression/loops.md"
 requires "expression/literals.md"
 requires "expression/references.md"
 requires "expression/struct.md"
@@ -17,6 +18,7 @@ module RUST-EXPRESSION
     imports private RUST-EXPRESSION-CONSTANTS
     imports private RUST-BLOCK-EXPRESSIONS
     imports private RUST-CONDITIONAL-EXPRESSIONS
+    imports private RUST-LOOP-EXPRESSIONS
     imports private RUST-EXPRESSION-LITERALS
     imports private RUST-EXPRESSION-REFERENCES
     imports private RUST-EXPRESSION-STRUCT

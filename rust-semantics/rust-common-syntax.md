@@ -663,7 +663,8 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax IteratorLoopExpression ::= "for" Pattern "in" ExpressionExceptStructExpression BlockExpression
+  syntax IteratorLoopExpression ::= "for" Identifier "in" ExpressionExceptStructExpression BlockExpression 
+                                  | "while" ExpressionExceptStructExpression BlockExpression
 
 ```
 
@@ -680,6 +681,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 ```k
 
   syntax IfExpression ::= "if" ExpressionExceptStructExpression BlockExpression  MaybeIfElseExpression [strict(1)] 
+                        | "if" ExpressionExceptStructExpression BlockExpression  IteratorLoopExpression [strict(1)] // Needed for the evaluation of while loops
   syntax MaybeIfElseExpression ::= "" 
                                  | "else" IfElseExpression
   syntax IfElseExpression ::= BlockExpression 
@@ -769,7 +771,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax RangePattern ::= "TODO: not needed yet, not implementing"
+  syntax RangePattern ::= IntegerLiteral ".." IntegerLiteral // "TODO: not needed yet, not implementing"
 
 ```
 
