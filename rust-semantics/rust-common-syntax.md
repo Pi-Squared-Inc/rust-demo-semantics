@@ -663,7 +663,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax IteratorLoopExpression ::= "for" Identifier "in" ExpressionExceptStructExpression BlockExpression 
+  syntax IteratorLoopExpression ::= "for" Pattern "in" ExpressionExceptStructExpression BlockExpression 
                                   | "while" ExpressionExceptStructExpression BlockExpression
 
 ```
