@@ -8,9 +8,11 @@ module RUST-LOOP-EXPRESSIONS
 
     syntax IteratorLoopExpression ::=  "forAux" Pattern "in" ExpressionExceptStructExpression BlockExpression
 
+    rule for Patt:Identifier:PatternNoTopAlt | Patt:Identifier:PatternNoTopAlt | R:PatternNoTopAlts in First..Last B:BlockExpression => for Patt:Identifier:PatternNoTopAlt | R:PatternNoTopAlts in First..Last B:BlockExpression // Covers the cases of "for x | x in range" 
+
     rule for Patt:Identifier:PatternNoTopAlt | .PatternNoTopAlts in First..Last B:BlockExpression => 
-               let Patt = First; 
-            ~> if (Patt :: .PathExprSegments):PathExprSegments < Last B (forAux Patt:Identifier:PatternNoTopAlt | .PatternNoTopAlts in First..Last B):IteratorLoopExpression
+                let Patt = First; 
+                if (Patt :: .PathExprSegments):PathExprSegments < Last B (forAux Patt:Identifier:PatternNoTopAlt | .PatternNoTopAlts in First..Last B):IteratorLoopExpression
 
     rule forAux Patt:Identifier:PatternNoTopAlt | .PatternNoTopAlts in First..Last B:BlockExpression => 
             let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u64(Int2MInt(1:Int)));
