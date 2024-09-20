@@ -1,3 +1,2 @@
 new LoopExpressions;
-call LoopExpressions.iterator_evaluation;
-return_value
+call LoopExpressions.iterator_evaluation
