@@ -681,7 +681,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 ```k
 
   syntax IfExpression ::= "if" ExpressionExceptStructExpression BlockExpression  MaybeIfElseExpression [strict(1)] 
-                        | "if" ExpressionExceptStructExpression BlockExpression  IteratorLoopExpression [strict(1)] // Needed for the evaluation of while loops
+
   syntax MaybeIfElseExpression ::= "" 
                                  | "else" IfElseExpression
   syntax IfElseExpression ::= BlockExpression 

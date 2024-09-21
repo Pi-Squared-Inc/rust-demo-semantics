@@ -13,7 +13,7 @@ pub trait LoopExpressions {
     fn upgrade(&self) {}
     
     fn iterator_evaluation(&self){ 
-      for i | i in 1_u64..10_u64 {
+      for i in 1_u64..10_u64 {
         let x = i * 2_u64;
       };
     }
