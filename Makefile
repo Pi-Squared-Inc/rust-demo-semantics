@@ -132,17 +132,18 @@ $(PREPROCESSING_OUTPUT_DIR)/%.rs.preprocessed.kore: $(PREPROCESSING_INPUT_DIR)/%
 $(EXECUTION_OUTPUT_DIR)/%.run.executed.kore: \
 			$(EXECUTION_INPUT_DIR)/%.run \
 			$(RUST_EXECUTION_TIMESTAMP) \
-			parse-rust.sh \
-			parse-test.sh
+			parsers/inc-*.sh \
+			parsers/contract-rust.sh \
+			parsers/test-rust.sh
 	mkdir -p $(EXECUTION_OUTPUT_DIR)
 	krun \
 		"$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" \
 		--definition $(RUST_EXECUTION_KOMPILED) \
-		--parser $(CURDIR)/parse-rust.sh \
+		--parser $(CURDIR)/parsers/contract-rust.sh \
 		--output kore \
 		--output-file $@.tmp \
 		-cTEST="$(shell cat $<)" \
-		-pTEST=$(CURDIR)/parse-test.sh
+		-pTEST=$(CURDIR)/parsers/test-rust.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@
 
@@ -161,17 +162,18 @@ $(MX_TESTING_OUTPUT_DIR)/%.mx.executed.kore: $(MX_TESTING_INPUT_DIR)/%.mx $(MX_T
 $(MX_RUST_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 			$(MX_RUST_TESTING_INPUT_DIR)/%.run \
 			$(MX_RUST_TESTING_TIMESTAMP) \
-			parse-mx-rust.sh \
-			parse-mx-rust-test.sh
+			parsers/inc-*.sh \
+			parsers/contract-mx-rust.sh \
+			parsers/test-mx-rust.sh
 	mkdir -p $(MX_RUST_TESTING_OUTPUT_DIR)
 	krun \
 		"$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" \
 		--definition $(MX_RUST_TESTING_KOMPILED) \
-		--parser $(CURDIR)/parse-mx-rust.sh \
+		--parser $(CURDIR)/parsers/contract-mx-rust.sh \
 		--output kore \
 		--output-file $@.tmp \
 		-cTEST='$(shell cat $<)' \
-		-pTEST=$(CURDIR)/parse-mx-rust-test.sh
+		-pTEST=$(CURDIR)/parsers/test-mx-rust.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@
 
@@ -181,18 +183,20 @@ $(MX_RUST_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 $(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 			$(MX_RUST_CONTRACT_TESTING_INPUT_DIR)/%.run \
 			$(MX_RUST_CONTRACT_TESTING_TIMESTAMP) \
-			parse-mx-rust-contract.sh \
-			parse-mx-rust-contract-test.sh
+			parsers/inc-*.sh \
+			parsers/args-mx-rust-contract.sh \
+			parsers/contract-mx-rust-contract.sh \
+			parsers/test-mx-rust-contract.sh
 	mkdir -p $(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)
 	krun \
 		"$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" \
 		--definition $(MX_RUST_CONTRACT_TESTING_KOMPILED) \
-		--parser $(CURDIR)/parse-mx-rust-contract.sh \
+		--parser $(CURDIR)/parsers/contract-mx-rust-contract.sh \
 		--output kore \
 		--output-file $@.tmp \
 		-cTEST='$(shell cat $<)' \
-		-pTEST=$(CURDIR)/parse-mx-rust-contract-test.sh \
+		-pTEST=$(CURDIR)/parsers/test-mx-rust-contract.sh \
 		-cARGS='$(shell cat $(patsubst %.run,%.args,$<))' \
-		-pARGS=$(CURDIR)/parse-mx-rust-contract-args.sh
+		-pARGS=$(CURDIR)/parsers/args-mx-rust-contract.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@
