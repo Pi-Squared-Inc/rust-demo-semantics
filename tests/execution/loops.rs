@@ -33,4 +33,11 @@ pub trait LoopExpressions {
       };
     }
 
+    fn iterator_with_same_pattern(&self) { 
+      let i = 1_u64;
+      for i in i..i+3_u64 {
+        let x = i * 2_u64;
+      };
+    }
+
 }
