@@ -13,9 +13,9 @@ module CRATE
           => (.InnerAttributes Is):Crate
         )
     rule
-        (.K => traitParser(T))
+        (.K => traitParser(T, ItemAtts))
         ~> crateParser
-          ( (_Atts:InnerAttributes (_ItemAtts:OuterAttributes _V:MaybeVisibility T:Trait):Item Is:Items):Crate
+          ( (_Atts:InnerAttributes (ItemAtts:OuterAttributes _V:MaybeVisibility T:Trait):Item Is:Items):Crate
             => (.InnerAttributes Is):Crate
           )
     rule (.K => CI:ConstantItem:KItem)
