@@ -1,5 +1,6 @@
 ```k
 requires "config.md"
+requires "conversions.md"
 requires "error.md"
 requires "execution.md"
 requires "expression.md"
@@ -9,6 +10,7 @@ requires "representation.md"
 requires "rust-common-syntax.md"
 
 module RUST-COMMON
+  imports RUST-CONVERSIONS
   imports RUST-ERROR
   imports RUST-EXECUTION
   imports RUST-EXPRESSION

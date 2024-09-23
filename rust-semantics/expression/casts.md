@@ -1,6 +1,7 @@
 ```k
 
 module RUST-CASTS
+    imports private RUST-ERROR-SYNTAX
     imports private RUST-REPRESENTATION
 
     syntax ValueOrError ::= implicitCast(Value, Type)  [function, total]

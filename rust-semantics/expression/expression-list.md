@@ -1,8 +1,9 @@
 ```k
 
 module RUST-EXPRESSION-EXPRESSION-LIST
-    imports RUST-REPRESENTATION
-    imports RUST-VALUE-SYNTAX
+    imports private RUST-ERROR-SYNTAX
+    imports private RUST-REPRESENTATION
+    imports private RUST-VALUE-SYNTAX
 
     rule evaluate(L:ExpressionList) => evaluate(expressionListToValueList(L))
 
