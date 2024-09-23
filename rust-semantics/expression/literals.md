@@ -4,12 +4,13 @@ module RUST-EXPRESSION-LITERALS
 endmodule
 
 module RUST-EXPRESSION-INTEGER-LITERALS
-    imports BOOL
-    imports INT
-    imports K-EQUAL-SYNTAX
-    imports STRING
+    imports private BOOL
+    imports private INT
+    imports private K-EQUAL-SYNTAX
+    imports private STRING
+    imports private RUST-ERROR-SYNTAX
     imports private RUST-REPRESENTATION
-    imports RUST-SHARED-SYNTAX
+    imports private RUST-SHARED-SYNTAX
 
     // https://doc.rust-lang.org/stable/reference/expressions/literal-expr.html#integer-literal-expressions
     // https://doc.rust-lang.org/stable/reference/tokens.html#number-literals
