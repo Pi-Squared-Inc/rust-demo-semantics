@@ -18,6 +18,7 @@ module RUST-PREPROCESSING-CONFIGURATION
             <traits>
                 <trait multiplicity="*" type="Map">
                     <trait-path> my_identifier:TypePath </trait-path>
+                    <trait-attributes> `emptyOuterAttributes`(.KList):OuterAttributes </trait-attributes>
                     <method-list> .List </method-list>  // List of Identifier
                     <methods>
                         <method multiplicity="*" type="Map">

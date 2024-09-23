@@ -12,10 +12,11 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
     imports RUST-REPRESENTATION
     imports RUST-SHARED-SYNTAX
 
-    syntax Initializer  ::= traitParser(Trait)
+    syntax Initializer  ::= traitParser(Trait, OuterAttributes)
                           | traitMethodsParser(AssociatedItems, traitName:Identifier)
                           | traitInitializer
                                 ( traitName: TypePath
+                                , atts: OuterAttributes
                                 )
 
     syntax Initializer  ::= addMethod(traitName : TypePath, function: Function, atts:OuterAttributes)

@@ -33,8 +33,9 @@ module MX-RUST-REPRESENTATION
 
     syntax MxValue ::= rustDestination(Int, MxRustType)
 
+    syntax MxRustPreprocessedCell
     syntax PreprocessedCell
-    syntax ContractCode ::= rustCode(endpointToFunction: Map, type: TypePath, preprocessed: PreprocessedCell)
+    syntax ContractCode ::= rustCode(MxRustPreprocessedCell,  PreprocessedCell)
 endmodule
 
 ```
