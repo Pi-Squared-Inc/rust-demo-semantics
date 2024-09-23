@@ -57,9 +57,9 @@ module RUST-REPRESENTATION
     syntax NormalizedFunctionParameter ::= ValueName ":" Type
     syntax NormalizedFunctionParameterList ::= List{NormalizedFunctionParameter, ","}
 
-    syntax NormalizedCallParams ::=List{Ptr, ","}
+    syntax PtrList ::=List{Ptr, ","}
 
-    syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, NormalizedCallParams)
+    syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, PtrList)
                           | implicitCastTo(Type)
                           | methodCall
                               ( self: Expression

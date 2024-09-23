@@ -14,7 +14,7 @@ module MX-RUST-MODULES-BIGUINT
                 ( #token("BigUint", "Identifier"):Identifier
                 , #token("from", "Identifier"):Identifier
                 ,   ( ptr(ValueId:Int)
-                    , .NormalizedCallParams
+                    , .PtrList
                     )
                 )
             // TODO: Should check that V >= 0
