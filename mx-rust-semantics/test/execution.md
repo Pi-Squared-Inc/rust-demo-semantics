@@ -11,6 +11,7 @@ module MX-RUST-TESTING-PARSING-SYNTAX
     syntax MxRustTest ::= ExecutionTest
     syntax ExecutionItem  ::= "set_named" String
                             | "push_named" String
+                            | "catch_error" String
                             | "get_bigint_from_struct"
                             | "check_eq" Int
                             | TestInstruction
@@ -19,6 +20,7 @@ endmodule
 
 module MX-RUST-TEST
     imports private COMMON-K-CELL
+    imports private K-EQUAL-SYNTAX
     imports private MX-RUST-EXECUTION-TEST-CONFIGURATION
     imports private MX-RUST-TESTING-PARSING-SYNTAX
     imports private RUST-EXECUTION-CONFIGURATION
@@ -43,6 +45,12 @@ module MX-RUST-TEST
             )
         ~> get_bigint_from_struct
         => mxRustGetBigIntFromStruct(S)
+
+    rule #exception(_, Message) ~> catch_error Message => .K  [priority(30)]
+    rule (#exception(_, Message1) #as E:MxInstructions) ~> (catch_error Message2 #as C)
+        => catch_error C ~> E
+        requires Message1 =/=K Message2
+        [priority(30)]
 endmodule
 
 ```

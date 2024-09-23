@@ -145,6 +145,10 @@ module MX-ACCOUNTS-TOOLS
     rule [dropWorldState]:
          <k> dropWorldState => .K ... </k>
          <mx-world-stack> (ListItem(_) => .List) ... </mx-world-stack>
+    rule [popWorldState]:
+         <k> popWorldState => .K ... </k>
+         <mx-world-stack> (ListItem(ACCTDATA) => .List) ... </mx-world-stack>
+         <mx-accounts> _ => ACCTDATA </mx-accounts>
 
   // ------------------------------------------------------
     rule transferFunds(... from: From:String, to: To:String, amount: 0)

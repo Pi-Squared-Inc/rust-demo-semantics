@@ -41,6 +41,7 @@ module MX-COMMON-SYNTAX
                             | "resetCallState"  [symbol(resetCallState)]
                             | "pushWorldState"  [symbol(pushWorldState)]
                             | "dropWorldState"  [symbol(dropWorldState)]
+                            | "popWorldState"  [symbol(popWorldState)]
                             | "clearBigInts"  [symbol(clearBigInts)]
                             | "endCall"  [symbol(endCall)]
                             | "finishExecuteOnDestContext"  [symbol(finishExecuteOnDestContext)]

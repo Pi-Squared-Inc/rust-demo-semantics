@@ -1,0 +1,12 @@
+setCallee("Owner");
+
+push mxListValue();
+push mxStringValue("callRequireFailsInstr");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(7000);
+
+catch_error "error signalled by smartcontract: Require failure"
