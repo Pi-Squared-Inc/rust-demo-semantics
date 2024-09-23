@@ -38,6 +38,8 @@ module RUST-CASTS
 
     rule implicitCast(V:Bool, bool) => V
 
+    rule implicitCast(tuple(.ValueList) #as V, ():Type) => V
+
     rule implicitCast(struct(T, _) #as V, T) => V
     rule implicitCast(struct(T, _) #as V, T < _ >) => V
 
