@@ -132,7 +132,7 @@ $(PREPROCESSING_OUTPUT_DIR)/%.rs.preprocessed.kore: $(PREPROCESSING_INPUT_DIR)/%
 $(EXECUTION_OUTPUT_DIR)/%.run.executed.kore: \
 			$(EXECUTION_INPUT_DIR)/%.run \
 			$(RUST_EXECUTION_TIMESTAMP) \
-			parsers/inc-*.sh \
+			$(wildcard parsers/inc-*.sh) \
 			parsers/contract-rust.sh \
 			parsers/test-rust.sh
 	mkdir -p $(EXECUTION_OUTPUT_DIR)
@@ -162,7 +162,7 @@ $(MX_TESTING_OUTPUT_DIR)/%.mx.executed.kore: $(MX_TESTING_INPUT_DIR)/%.mx $(MX_T
 $(MX_RUST_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 			$(MX_RUST_TESTING_INPUT_DIR)/%.run \
 			$(MX_RUST_TESTING_TIMESTAMP) \
-			parsers/inc-*.sh \
+			$(wildcard parsers/inc-*.sh) \
 			parsers/contract-mx-rust.sh \
 			parsers/test-mx-rust.sh
 	mkdir -p $(MX_RUST_TESTING_OUTPUT_DIR)
@@ -183,7 +183,7 @@ $(MX_RUST_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 $(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 			$(MX_RUST_CONTRACT_TESTING_INPUT_DIR)/%.run \
 			$(MX_RUST_CONTRACT_TESTING_TIMESTAMP) \
-			parsers/inc-*.sh \
+			$(wildcard parsers/inc-*.sh) \
 			parsers/args-mx-rust-contract.sh \
 			parsers/contract-mx-rust-contract.sh \
 			parsers/test-mx-rust-contract.sh
