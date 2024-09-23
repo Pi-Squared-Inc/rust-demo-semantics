@@ -29,6 +29,9 @@ module RUST-VALUE-SYNTAX
     syntax ValueList ::= List{Value, ","}
     syntax ValueOrError ::= Value | SemanticsError
 
+    syntax ValueListOrError ::= ValueList | SemanticsError
+    syntax ValueListOrError ::= concat(ValueOrError, ValueListOrError)  [function, total]
+
     syntax Ptr ::= "null" | ptr(Int)
     syntax PtrValue ::= ptrValue(Ptr, Value)
     syntax PtrValueOrError ::= PtrValue | SemanticsError
@@ -57,9 +60,9 @@ module RUST-REPRESENTATION
     syntax NormalizedFunctionParameter ::= ValueName ":" Type
     syntax NormalizedFunctionParameterList ::= List{NormalizedFunctionParameter, ","}
 
-    syntax NormalizedCallParams ::=List{Ptr, ","}
+    syntax PtrList ::=List{Ptr, ","}
 
-    syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, NormalizedCallParams)
+    syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, PtrList)
                           | implicitCastTo(Type)
                           | methodCall
                               ( self: Expression
@@ -101,6 +104,10 @@ module RUST-REPRESENTATION
 
     syntax CallParamsList ::= reverse(CallParamsList, CallParamsList)  [function, total]
 
+    syntax ExpressionList ::= ".ExpressionList"
+                            | Expression "," ExpressionList  [seqstrict, result(ValueWithPtr)]
+    syntax InstructionList  ::= evaluate(ExpressionList)  [strict(1), result(ValueWithPtr)]
+                              | evaluate(ValueListOrError)
 endmodule
 
 ```

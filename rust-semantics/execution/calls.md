@@ -12,14 +12,14 @@ module RUST-CALLS
     // https://doc.rust-lang.org/stable/reference/expressions/method-call-expr.html
 
     syntax Instruction  ::= "clearLocalState"
-                          | setArgs(NormalizedCallParams, NormalizedFunctionParameterList)
+                          | setArgs(PtrList, NormalizedFunctionParameterList)
 
     rule
         <k>
             normalizedMethodCall(
                 TraitName:TypePath,
                 MethodName:Identifier,
-                Args:NormalizedCallParams
+                Args:PtrList
             ) => pushLocalState
                 ~> clearLocalState
                 ~> setArgs(Args, Params)
@@ -42,12 +42,12 @@ module RUST-CALLS
         <locals> _ => .Map </locals>
 
     rule setArgs
-            ( (CP:Ptr, CPs:NormalizedCallParams)
+            ( (CP:Ptr, CPs:PtrList)
             , (P:NormalizedFunctionParameter, Ps:NormalizedFunctionParameterList)
             )
         => setArg(CP, P) ~> setArgs(CPs, Ps)
 
-    rule setArgs(.NormalizedCallParams, .NormalizedFunctionParameterList) => .K
+    rule setArgs(.PtrList, .NormalizedFunctionParameterList) => .K
 
     syntax Instruction ::= setArg(Ptr, NormalizedFunctionParameter)
 
