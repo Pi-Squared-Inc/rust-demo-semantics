@@ -4,8 +4,6 @@ module RUST-CASTS
     imports private RUST-ERROR-SYNTAX
     imports private RUST-REPRESENTATION
 
-    syntax ValueOrError ::= implicitCast(Value, Type)  [function, total]
-
     rule implicitCast(V:Value, T:Type) => error("Unknown implicitCast.", ListItem(V) ListItem(T))
         [owise]
 

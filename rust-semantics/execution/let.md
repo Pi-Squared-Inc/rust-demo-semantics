@@ -1,11 +1,12 @@
 ```k
 
 module RUST-LET
-    imports COMMON-K-CELL
-    imports RUST-CASTS
-    imports RUST-EXECUTION-CONFIGURATION
-    imports RUST-VALUE-SYNTAX
-    imports RUST-SHARED-SYNTAX
+    imports private COMMON-K-CELL
+    imports private RUST-CASTS
+    imports private RUST-EXECUTION-CONFIGURATION
+    imports private RUST-REPRESENTATION
+    imports private RUST-SHARED-SYNTAX
+    imports private RUST-VALUE-SYNTAX
 
     // Not all cases are implemented
     rule

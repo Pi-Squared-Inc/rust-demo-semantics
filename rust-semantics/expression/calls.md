@@ -20,12 +20,7 @@ module RUST-EXPRESSION-CALLS
                 , params: CallParamsList
                 , reversedNormalizedParams: PtrList
                 )
-    syntax Instruction ::= reverseNormalizeParams
-                ( params: CallParamsList
-                , reversedNormalizedParams: PtrList
-                )
 
-    syntax PtrList ::= reverse(PtrList, PtrList)  [function, total]
     rule reverse(.PtrList, R:PtrList) => R
     rule reverse((P, Ps:PtrList), R:PtrList) => reverse(Ps, (P, R))
 

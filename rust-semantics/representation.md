@@ -72,8 +72,16 @@ module RUST-REPRESENTATION
                               , params: CallParamsList
                               )
                             [strict(3), result(ValueWithPtr)]
-                          | "Rust#newStruct" "(" type:TypePath "," fields:Map ")"
+                          | "Rust#newStruct" "(" type:TypePath "," fields:MapOrError ")"
+                          | reverseNormalizeParams
+                              ( params: CallParamsList
+                              , reversedNormalizedParams: PtrList
+                              )
 
+    syntax PtrList ::= reverse(PtrList, PtrList) [function, total]
+
+    syntax ValueOrError ::= implicitCast(Value, Type) [function, total]
+    
     syntax MapOrError ::= Map | SemanticsError
     
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
@@ -102,6 +110,14 @@ module RUST-REPRESENTATION
     syntax String ::= IdentifierToString(Identifier)  [function, total, hook(STRING.token2string)]
 
     syntax CallParamsList ::= reverse(CallParamsList, CallParamsList)  [function, total]
+
+    syntax TypePathOrError ::= TypePath | SemanticsError
+    syntax TypePathOrError ::= parentTypePath(TypePath)  [function, total]
+    
+    syntax IdentifierOrError ::= TypePath | SemanticsError
+    syntax IdentifierOrError ::= leafTypePath(TypePath)  [function, total]
+
+    syntax TypePathSegmentsOrError ::= TypePathSegments | SemanticsError
 
     syntax ExpressionList ::= ".ExpressionList"
                             | Expression "," ExpressionList  [seqstrict, result(ValueWithPtr)]
