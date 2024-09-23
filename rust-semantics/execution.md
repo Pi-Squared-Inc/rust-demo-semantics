@@ -3,16 +3,18 @@
 requires "execution/configuration.md"
 requires "execution/block.md"
 requires "execution/calls.md"
+requires "execution/expression.md"
 requires "execution/let.md"
 requires "execution/stack.md"
 requires "execution/statements.md"
 
 module RUST-EXECUTION
-    imports RUST-BLOCK
-    imports RUST-CALLS
-    imports RUST-LET
-    imports RUST-STACK
-    imports RUST-STATEMENTS
+    imports private RUST-BLOCK
+    imports private RUST-CALLS
+    imports private RUST-STATEMENT-EXPRESSION
+    imports private RUST-LET
+    imports private RUST-STACK
+    imports private RUST-STATEMENTS
 endmodule
 
 ```
