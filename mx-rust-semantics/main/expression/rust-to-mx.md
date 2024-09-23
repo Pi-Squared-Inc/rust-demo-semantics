@@ -23,7 +23,7 @@ module MX-RUST-EXPRESSION-RUST-TO-MX
             ...
         </k>
         <values> Values:Map </values>
-        [priority(200)]
+        [owise]
     rule rustToMx(S:String => mxStringValue(S))
     rule rustToMx(tuple(V:ValueList)) => rustValuesToMxListValue(V, .MxValueList)
 
