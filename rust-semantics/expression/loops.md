@@ -9,20 +9,27 @@ module RUST-LOOP-EXPRESSIONS
     syntax IteratorLoopExpression ::=  "for1" Pattern "in" ExpressionExceptStructExpression BlockExpression
                                     | "for2" Pattern "in" ExpressionExceptStructExpression BlockExpression
 
+    syntax LetStatement ::= incrementPatt(Identifier) [function]
+
+    rule incrementPatt(Patt:Identifier) => 
+            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u64(Int2MInt(1:Int)));
+
     rule for Patt:Identifier:PatternNoTopAlt | R:PatternNoTopAlts in First..Last B:BlockExpression => 
             {
                 .InnerAttributes
+                let Patt = First;
                 (for1 Patt:Identifier:PatternNoTopAlt | R:PatternNoTopAlts in First..Last B:BlockExpression):IteratorLoopExpression; // Covers the cases of "for x | x in range" 
                 .NonEmptyStatements
             };
+        // requires intOfSameType(First, Last)
 
     rule for1 Patt:Identifier:PatternNoTopAlt | .PatternNoTopAlts in First..Last B:BlockExpression => 
-                let Patt = First; ~>
                 if (Patt :: .PathExprSegments):PathExprSegments < Last { .InnerAttributes B; (for2 Patt:Identifier:PatternNoTopAlt | .PatternNoTopAlts in First..Last B):IteratorLoopExpression;  .NonEmptyStatements};
+            
 
     rule for2 Patt:Identifier:PatternNoTopAlt | .PatternNoTopAlts in _..Last B:BlockExpression => 
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u64(Int2MInt(1:Int)));
-            ~> for Patt:Identifier:PatternNoTopAlt | .PatternNoTopAlts in (Patt :: .PathExprSegments):PathExprSegments..Last B
+            incrementPatt(Patt)
+            ~> for1 Patt:Identifier:PatternNoTopAlt | .PatternNoTopAlts in (Patt :: .PathExprSegments):PathExprSegments..Last B
 
     rule while (E:ExpressionExceptStructExpression) S:BlockExpression => if E { .InnerAttributes S; while(E)S; .NonEmptyStatements};
 
