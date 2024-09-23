@@ -5,6 +5,7 @@ module MX-RUST-PREPROCESSING-METHODS
     imports private K-EQUAL-SYNTAX
     imports private LIST
     imports private MX-RUST-CALLS-CONFIGURATION
+    imports private MX-RUST-PREPROCESSED-ENDPOINTS-CONFIGURATION
     imports private MX-RUST-REPRESENTATION
     imports private RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-REPRESENTATION

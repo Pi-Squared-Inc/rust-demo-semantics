@@ -5,6 +5,8 @@ module MX-RUST-CALLS-IMPLEMENTATION
     imports private MX-CALL-CONFIGURATION
     imports private MX-COMMON-SYNTAX
     imports private MX-RUST-CALLS-CONFIGURATION
+    imports private MX-RUST-PREPROCESSED-ENDPOINTS-CONFIGURATION
+    imports private MX-RUST-PREPROCESSED-CONFIGURATION
     imports private MX-RUST-REPRESENTATION
     imports private RUST-EXECUTION-CONFIGURATION
     imports private RUST-PREPROCESSING-CONFIGURATION
@@ -45,16 +47,14 @@ module MX-RUST-CALLS-IMPLEMENTATION
         <k>
             host.newEnvironment
                 ( rustCode
-                    ( EndpointToFunction:Map
-                    , TraitName:TypePath
+                    ( MxRustPreprocessed:MxRustPreprocessedCell
                     , Preprocessed:PreprocessedCell
                     )
                 )
             => .K
             ...
         </k>
-        <mx-rust-last-trait-name> _ => TraitName </mx-rust-last-trait-name>
-        <mx-rust-endpoint-to-function> _ => EndpointToFunction </mx-rust-endpoint-to-function>
+        (_:MxRustPreprocessedCell => MxRustPreprocessed)
         (_:PreprocessedCell => Preprocessed)
 
     rule
@@ -68,10 +68,7 @@ module MX-RUST-CALLS-IMPLEMENTATION
         <mx-rust-endpoint-to-function>
             FunctionName |-> Endpoint:Identifier ...
         </mx-rust-endpoint-to-function>
-        <mx-rust-last-trait-name>
-            TraitName:TypePath
-            => (#token("no#path", "Identifier"):Identifier):TypePath
-        </mx-rust-last-trait-name>
+        <mx-rust-contract-trait> TraitName:TypePath </mx-rust-contract-trait>
         <mx-call-args> Args:MxValueList </mx-call-args>
         <trait-path> TraitName </trait-path>
         <method-name> Endpoint </method-name>
