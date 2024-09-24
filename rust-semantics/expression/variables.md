@@ -7,9 +7,11 @@ module RUST-EXPRESSION-VARIABLES
     imports private RUST-SHARED-SYNTAX
     imports private RUST-VALUE-SYNTAX
 
+    rule Thing:PathIdentSegment :: .PathExprSegments => Thing:PathIdentSegment:KItem
+
     rule
         <k>
-            Variable:Identifier :: .PathExprSegments => ptrValue(ptr(VarId), V)
+            Variable:Identifier => ptrValue(ptr(VarId), V)
             ...
         </k>
         <locals> Variable |-> VarId:Int ... </locals>
@@ -17,7 +19,7 @@ module RUST-EXPRESSION-VARIABLES
 
     rule
         <k>
-            self :: .PathExprSegments => ptrValue(ptr(VarId), V)
+            self:PathIdentSegment => ptrValue(ptr(VarId), V)
             ...
         </k>
         <locals> self:PathIdentSegment |-> VarId:Int ... </locals>
