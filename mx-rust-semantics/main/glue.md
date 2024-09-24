@@ -56,6 +56,8 @@ module MX-RUST-GLUE
             (T ==K i32 orBool T ==K u32)
             orBool (T ==K i64 orBool T ==K u64)
 
+    rule ptrValue(_, V) ~> rustValueToMx => rustValueToMx(V)
+
 endmodule
 
 ```
