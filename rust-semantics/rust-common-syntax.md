@@ -497,7 +497,8 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 ```k
 
   syntax TupleExpression ::= "(" MaybeTupleElements ")"
-  syntax MaybeTupleElements ::= "" | TupleElements
+  syntax MaybeTupleElements ::= ""  [symbol(noTupleElements)]
+                              | TupleElements
   syntax TupleElements  ::= Expression ","
                           | Expression "," TupleElementsNoEndComma
                           | Expression "," TupleElementsNoEndComma ","
