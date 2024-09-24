@@ -7,7 +7,7 @@ module INITIALIZATION
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 
     rule
-        <k> traitInitializer(Name:TypePath) => .K
+        <k> traitInitializer(Name:TypePath, Atts:OuterAttributes) => .K
             ...
         </k>
         <trait-list> .List => ListItem(Name) ...</trait-list>
@@ -16,6 +16,7 @@ module INITIALIZATION
             .Bag
             =>  <trait>
                     <trait-path> Name </trait-path>
+                    <trait-attributes> Atts </trait-attributes>
                     ...
                 </trait>
         </traits>

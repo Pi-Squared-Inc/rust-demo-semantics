@@ -3,7 +3,7 @@
 module MX-RUST-SETUP-MX
     imports private COMMON-K-CELL
     imports private MX-COMMON-SYNTAX
-    imports private MX-RUST-CALLS-CONFIGURATION
+    imports private MX-RUST-PREPROCESSED-CONFIGURATION
     imports private MX-RUST-REPRESENTATION
     imports private MX-SETUP-SYNTAX
     imports private RUST-PREPROCESSING-CONFIGURATION
@@ -16,7 +16,7 @@ module MX-RUST-SETUP-MX
                                       "," gasLimit: Int
                                       "," args: MxValueList
                                       ")"
-    syntax MXRustInstruction  ::= "MxRust#addAccountWithPreprocessedCode" "(" String "," TypePath ")"
+    syntax MXRustInstruction  ::= "MxRust#addAccountWithPreprocessedCode" "(" String ")"
                                 | "MxRust#clearMxReturnValue"
 
     rule mxRustCreateAccount(Address:String) => MXSetup#add_account(Address)
@@ -59,7 +59,7 @@ module MX-RUST-SETUP-MX
                 , gasLimit: GasLimit:Int
                 , args: Args:MxValueList
                 )
-            => MxRust#addAccountWithPreprocessedCode(Contract, TraitName)
+            => MxRust#addAccountWithPreprocessedCode(Contract)
               ~> callContract
                   ( "#init"
                   , prepareIndirectContractCallInput
@@ -75,20 +75,19 @@ module MX-RUST-SETUP-MX
               ~> MxRust#clearMxReturnValue
             ...
         </k>
-        <preprocessed> ... <trait-list> ListItem(TraitName:TypePath) </trait-list>  </preprocessed>
 
     rule
         <k>
-            MxRust#addAccountWithPreprocessedCode(Contract, TraitName)
+            MxRust#addAccountWithPreprocessedCode(Contract)
             => MxRust#clearPreprocessed
                 ~> MXSetup#add_account_with_code
                     ( Contract
-                    , rustCode(EndpointToFunction, TraitName, Preprocessed)
+                    , rustCode(MxRustPreprocessed, Preprocessed)
                     )
             ...
         </k>
         Preprocessed:PreprocessedCell
-        <mx-rust-endpoint-to-function> EndpointToFunction:Map </mx-rust-endpoint-to-function>
+        MxRustPreprocessed:MxRustPreprocessedCell
 
     syntax MXRustInstruction ::= "MxRust#clearPreprocessed"
     rule
@@ -99,7 +98,12 @@ module MX-RUST-SETUP-MX
         (_:PreprocessedCell
         => <preprocessed> ... <trait-list> .List </trait-list>  </preprocessed>
         )
-        <mx-rust-endpoint-to-function> _ => .Map </mx-rust-endpoint-to-function>
+        (_:MxRustPreprocessedCell
+        =>  <mx-rust-preprocessed>
+                <mx-rust-endpoint-to-function> .Map </mx-rust-endpoint-to-function>
+                ...
+            </mx-rust-preprocessed>
+        )
 
     rule _V:MxValue ~> MxRust#clearMxReturnValue => .K
 

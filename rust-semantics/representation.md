@@ -33,16 +33,14 @@ module RUST-VALUE-SYNTAX
     syntax ValueList ::= List{Value, ","}
     syntax ValueOrError ::= Value | SemanticsError
 
+    syntax ValueListOrError ::= ValueList | SemanticsError
+
     syntax Ptr ::= "null" | ptr(Int)
     syntax PtrValue ::= ptrValue(Ptr, Value)
     syntax PtrValueOrError ::= PtrValue | SemanticsError
 
     syntax Expression ::= PtrValue
     syntax KResult ::= PtrValue
-
-    syntax PtrValueOrError ::= wrapPtrValueOrError(Ptr, ValueOrError)  [function, total]
-    rule wrapPtrValueOrError(P:Ptr, V:Value) => ptrValue(P, V)
-    rule wrapPtrValueOrError(_:Ptr, E:SemanticsError) => E
 
     syntax Bool ::= mayBeDefaultTypedInt(Value)  [function, total]
     rule mayBeDefaultTypedInt(_V) => false  [owise]
@@ -61,9 +59,10 @@ module RUST-REPRESENTATION
     syntax NormalizedFunctionParameter ::= ValueName ":" Type
     syntax NormalizedFunctionParameterList ::= List{NormalizedFunctionParameter, ","}
 
-    syntax NormalizedCallParams ::=List{Ptr, ","}
+    syntax PtrList ::=List{Ptr, ","}
+    syntax PtrListOrError ::= PtrList | SemanticsError
 
-    syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, NormalizedCallParams)
+    syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, PtrList)
                           | implicitCastTo(Type)
                           | methodCall
                               ( self: Expression
@@ -77,8 +76,18 @@ module RUST-REPRESENTATION
                               , params: CallParamsList
                               )
                             [strict(3), result(ValueWithPtr)]
-                          | "Rust#newStruct" "(" type:TypePath "," fields:Map ")"
+                          | "Rust#newStruct" "(" type:TypePath "," fields:MapOrError ")"
+                          | reverseNormalizeParams
+                              ( params: CallParamsList
+                              , reversedNormalizedParams: PtrList
+                              )
 
+    syntax PtrList ::= reverse(PtrList, PtrList) [function, total]
+
+    syntax ValueOrError ::= implicitCast(Value, Type) [function, total]
+    
+    syntax MapOrError ::= Map | SemanticsError
+    
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 
     syntax Type ::= "$selftype"
@@ -87,8 +96,8 @@ module RUST-REPRESENTATION
                         | "u32"  [token]
                         | "i64"  [token]
                         | "u64"  [token]
-                        | "u128"  [token]
                         | "bool" [token]
+                        | "str"  [token]
                         
     syntax MaybeIdentifier ::= ".Identifier" | Identifier
 
@@ -106,8 +115,6 @@ module RUST-REPRESENTATION
 
     syntax CallParamsList ::= reverse(CallParamsList, CallParamsList)  [function, total]
 
-
-
     syntax Bool ::= checkIntOfType(Value, Type)  [function, total]
                   | checkIntOfSameType(Value, Value) [function, total]
 
@@ -124,6 +131,19 @@ module RUST-REPRESENTATION
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i64) requires checkIntOfType(B,  i64)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u128) requires checkIntOfType(B,  u128)
     rule checkIntOfSameType(_, _) => false [owise]
+
+    syntax TypePathOrError ::= TypePath | SemanticsError
+    syntax TypePathOrError ::= parentTypePath(TypePath)  [function, total]
+    
+    syntax IdentifierOrError ::= TypePath | SemanticsError
+    syntax IdentifierOrError ::= leafTypePath(TypePath)  [function, total]
+
+    syntax TypePathSegmentsOrError ::= TypePathSegments | SemanticsError
+
+    syntax ExpressionList ::= ".ExpressionList"
+                            | Expression "," ExpressionList  [seqstrict, result(ValueWithPtr)]
+    syntax InstructionList  ::= evaluate(ExpressionList)  [strict(1), result(ValueWithPtr)]
+                              | evaluate(ValueListOrError)
 endmodule
 
 ```

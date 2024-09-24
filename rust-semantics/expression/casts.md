@@ -1,9 +1,8 @@
 ```k
 
 module RUST-CASTS
+    imports private RUST-ERROR-SYNTAX
     imports private RUST-REPRESENTATION
-
-    syntax ValueOrError ::= implicitCast(Value, Type)  [function, total]
 
     rule implicitCast(V:Value, T:Type) => error("Unknown implicitCast.", ListItem(V) ListItem(T))
         [owise]
@@ -37,6 +36,8 @@ module RUST-CASTS
     rule implicitCast(u128(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
 
     rule implicitCast(V:Bool, bool) => V
+
+    rule implicitCast(tuple(.ValueList) #as V, ():Type) => V
 
     rule implicitCast(struct(T, _) #as V, T) => V
     rule implicitCast(struct(T, _) #as V, T < _ >) => V

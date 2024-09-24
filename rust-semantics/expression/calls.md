@@ -12,22 +12,17 @@ module RUST-EXPRESSION-CALLS
                 ( traitName: TypePath
                 , method: Identifier
                 , params: CallParamsList
-                , reversedNormalizedParams: NormalizedCallParams
+                , reversedNormalizedParams: PtrList
                 )
     syntax Instruction ::= staticMethodCall
                 ( traitName: TypePath
                 , method: Identifier
                 , params: CallParamsList
-                , reversedNormalizedParams: NormalizedCallParams
-                )
-    syntax Instruction ::= reverseNormalizeParams
-                ( params: CallParamsList
-                , reversedNormalizedParams: NormalizedCallParams
+                , reversedNormalizedParams: PtrList
                 )
 
-    syntax NormalizedCallParams ::= reverse(NormalizedCallParams, NormalizedCallParams)  [function, total]
-    rule reverse(.NormalizedCallParams, R:NormalizedCallParams) => R
-    rule reverse((P, Ps:NormalizedCallParams), R:NormalizedCallParams) => reverse(Ps, (P, R))
+    rule reverse(.PtrList, R:PtrList) => R
+    rule reverse((P, Ps:PtrList), R:PtrList) => reverse(Ps, (P, R))
 
     rule SelfName:Expression . MethodName:Identifier ( )
         => methodCall(... self: SelfName, method: MethodName, params: .CallParamsList)
@@ -41,7 +36,7 @@ module RUST-EXPRESSION-CALLS
             ( .K
             => reverseNormalizeParams
                     (... params: Args
-                    , reversedNormalizedParams: P, .NormalizedCallParams
+                    , reversedNormalizedParams: P, .PtrList
                     )
                 ~> TraitName
             )
@@ -58,7 +53,7 @@ module RUST-EXPRESSION-CALLS
     rule
         ( reverseNormalizeParams
                 (... params: .CallParamsList
-                , reversedNormalizedParams: Args:NormalizedCallParams
+                , reversedNormalizedParams: Args:PtrList
                 )
             ~> TraitName:TypePath
             ~> methodCall
@@ -70,19 +65,19 @@ module RUST-EXPRESSION-CALLS
         => normalizedMethodCall
             ( TraitName
             , MethodName
-            , reverse(Args, .NormalizedCallParams)
+            , reverse(Args, .PtrList)
             )
 
     rule reverseNormalizeParams
             (... params: (ptrValue(ptr(_) #as P:Ptr, _:Value) , Cps:CallParamsList) => Cps
-            , reversedNormalizedParams: Args:NormalizedCallParams
+            , reversedNormalizedParams: Args:PtrList
                 => P, Args
             )
     rule
         <k>
             reverseNormalizeParams
                 (... params: (ptrValue(null, V:Value) , Cps:CallParamsList) => Cps
-                , reversedNormalizedParams: Args:NormalizedCallParams
+                , reversedNormalizedParams: Args:PtrList
                     => ptr(NextId), Args
                 )
             ...
@@ -103,7 +98,7 @@ module RUST-EXPRESSION-CALLS
         ( .K
         => reverseNormalizeParams
                 (... params: Args
-                , reversedNormalizedParams: .NormalizedCallParams
+                , reversedNormalizedParams: .PtrList
                 )
         )
         ~> staticMethodCall
@@ -116,7 +111,7 @@ module RUST-EXPRESSION-CALLS
     rule
         ( reverseNormalizeParams
                 (... params: .CallParamsList
-                , reversedNormalizedParams: Args:NormalizedCallParams
+                , reversedNormalizedParams: Args:PtrList
                 )
             ~> staticMethodCall
                 (... trait: TraitName:TypePath
@@ -127,7 +122,7 @@ module RUST-EXPRESSION-CALLS
         => normalizedMethodCall
             ( TraitName
             , MethodName
-            , reverse(Args, .NormalizedCallParams)
+            , reverse(Args, .PtrList)
             )
 
     // Apparently contexts need the type of the HOLE to be K, and I'm not sure

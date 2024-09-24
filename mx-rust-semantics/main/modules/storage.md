@@ -14,7 +14,7 @@ module MX-RUST-MODULES-STORAGE
             , #token("new", "Identifier"):Identifier
             ,   ( ptr(KeyId:Int)
                 , ptr(ResultTypeId:Int)
-                , .NormalizedCallParams
+                , .PtrList
                 )
             )
         => mxRustNewValue
@@ -32,7 +32,7 @@ module MX-RUST-MODULES-STORAGE
                 , #token("set", "Identifier"):Identifier
                 ,   ( ptr(SelfId:Int)
                     , ptr(ValueId:Int)
-                    , .NormalizedCallParams
+                    , .PtrList
                     )
                 )
             => rustValuesToMx((V, .ValueList), (mxStringValue(StorageKey), .MxValueList)) ~> MX#storageStore
@@ -56,7 +56,7 @@ module MX-RUST-MODULES-STORAGE
                 , #token("set_if_empty", "Identifier"):Identifier
                 ,   ( ptr(SelfId:Int)
                     , ptr(ValueId:Int)
-                    , .NormalizedCallParams
+                    , .PtrList
                     )
                 )
             => MX#storageLoad(mxStringValue(StorageKey), rustDestination(-1, noType))
@@ -89,7 +89,7 @@ module MX-RUST-MODULES-STORAGE
                 ( #token("SingleValueMapper", "Identifier"):Identifier #as Type:Identifier
                 , #token("get", "Identifier"):Identifier
                 ,   ( ptr(SelfId:Int)
-                    , .NormalizedCallParams
+                    , .PtrList
                     )
                 )
             => MX#storageLoad(mxStringValue(StorageKey), rustDestination(NextId, ResultType))

@@ -44,21 +44,21 @@ module RUST-EXECUTION-TEST
     rule
         <k>
             call P:TypePath . Name:Identifier
-            => buildTestMethodCall(P, Name, .NormalizedCallParams, paramsLength(Params))
+            => buildTestMethodCall(P, Name, .PtrList, paramsLength(Params))
             ...
         </k>
         <trait-path> P </trait-path>
         <method-name> Name </method-name>
         <method-params> Params </method-params>
 
-    syntax TestExecution ::= buildTestMethodCall(TypePath, Identifier, NormalizedCallParams, Int)
+    syntax TestExecution ::= buildTestMethodCall(TypePath, Identifier, PtrList, Int)
 
     rule
         <k>
             buildTestMethodCall(
                 _TraitName:TypePath,
                 _MethodName:Identifier,
-                Args:NormalizedCallParams => (ValueId , Args),
+                Args:PtrList => (ValueId , Args),
                 ParamCount:Int => ParamCount -Int 1
             )
             ...
@@ -70,7 +70,7 @@ module RUST-EXECUTION-TEST
         buildTestMethodCall(
             TraitName:TypePath,
             MethodName:Identifier,
-            Args:NormalizedCallParams,
+            Args:PtrList,
             0
         ) => normalizedMethodCall(TraitName, MethodName, Args)
 

@@ -8,13 +8,15 @@ module MX-RUST-MODULES-BIGUINT
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
 
+    syntax MxRustType ::= "MxRust#bigInt"
+    
     rule
         <k>
             normalizedMethodCall
                 ( #token("BigUint", "Identifier"):Identifier
                 , #token("from", "Identifier"):Identifier
                 ,   ( ptr(ValueId:Int)
-                    , .NormalizedCallParams
+                    , .PtrList
                     )
                 )
             // TODO: Should check that V >= 0
@@ -24,22 +26,32 @@ module MX-RUST-MODULES-BIGUINT
         <values> ValueId |-> V:Value ... </values>
 
   // --------------------------------------
+    syntax MxRustType ::= "bigUintType"  [function, total]
+    rule bigUintType
+        => rustStructType
+            ( #token("BigUint", "Identifier"):Identifier
+            ,   ( mxRustStructField
+                    ( #token("mx_biguint_id", "Identifier"):Identifier
+                    , MxRust#bigInt
+                    )
+                , .MxRustStructFields
+                )
+            )
+  // --------------------------------------
+    rule mxToRustTyped(#token("BigUint", "Identifier"):Identifier, V:MxValue)
+        => mxToRustTyped(bigUintType, mxListValue(V))
+
+    rule (.K => MX#bigIntNew(mxIntValue(I)))
+        ~> mxToRustTyped(MxRust#bigInt, mxIntValue(I:Int))
+    rule (mxIntValue(I:Int) ~> mxToRustTyped(MxRust#bigInt, mxIntValue(_:Int)))
+        => mxToRustTyped(i32, mxIntValue(I:Int))
+  // --------------------------------------
 
     syntax MxRustInstruction  ::= mxRustBigIntNew(IntOrError)
                                 | "mxRustCreateBigUint"
 
     rule mxRustBigIntNew(V:Int)
-        => MX#bigIntNew(mxIntValue(V))
-            ~> mxValueToRust(i32)
-            ~> mxRustCreateBigUint
-
-    rule ptrValue(ptr(BigUintId:Int), _) ~> mxRustCreateBigUint
-        => mxRustNewValue
-            ( struct
-                ( #token("BigUint", "Identifier"):Identifier
-                , #token("mx_biguint_id", "Identifier"):Identifier |-> BigUintId
-                )
-            )
+        => mxToRustTyped(bigUintType, mxListValue(mxIntValue(V)))
 
     rule mxRustEmptyValue(rustType(#token("BigUint", "Identifier")))
         => mxRustBigIntNew(0)
@@ -47,6 +59,10 @@ module MX-RUST-MODULES-BIGUINT
     rule mxValueToRust(#token("BigUint", "Identifier"), mxIntValue(I:Int))
         => mxRustBigIntNew(I)
 
+    rule
+        rustToMx(struct (#token("BigUint", "Identifier"):Identifier, _) #as S)
+        => rustValueToMx(S) ~> rustToMx
+    
     rule rustValueToMx
             ( struct
                 ( #token("BigUint", "Identifier"):Identifier
