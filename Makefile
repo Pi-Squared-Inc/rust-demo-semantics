@@ -31,7 +31,6 @@ MX_RUST_SEMANTICS_FILES ::= $(shell find mx-rust-semantics/ -type f -a '(' -name
 MX_RUST_KOMPILED ::= .build/mx-rust-kompiled
 MX_RUST_TIMESTAMP ::= $(MX_RUST_KOMPILED)/timestamp
 
-MX_RUST_TESTING_SEMANTICS_FILES ::= $(shell find mx-rust-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
 MX_RUST_TESTING_KOMPILED ::= .build/mx-rust-testing-kompiled
 MX_RUST_TESTING_TIMESTAMP ::= $(MX_RUST_TESTING_KOMPILED)/timestamp
 MX_RUST_TESTING_INPUT_DIR ::= tests/mx-rust
@@ -39,11 +38,10 @@ MX_RUST_TESTING_OUTPUT_DIR ::= .build/mx-rust/output
 MX_RUST_TESTING_INPUTS ::= $(wildcard $(MX_RUST_TESTING_INPUT_DIR)/*.run)
 MX_RUST_TESTING_OUTPUTS ::= $(patsubst $(MX_RUST_TESTING_INPUT_DIR)/%,$(MX_RUST_TESTING_OUTPUT_DIR)/%.executed.kore,$(MX_RUST_TESTING_INPUTS))
 
-MX_RUST_CONTRACT_TESTING_SEMANTICS_FILES ::= $(shell find mx-rust-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
 MX_RUST_CONTRACT_TESTING_KOMPILED ::= .build/mx-rust-contract-testing-kompiled
 MX_RUST_CONTRACT_TESTING_TIMESTAMP ::= $(MX_RUST_CONTRACT_TESTING_KOMPILED)/timestamp
 MX_RUST_CONTRACT_TESTING_INPUT_DIR ::= tests/mx-rust-contracts
-MX_RUST_CONTRACT_TESTING_OUTPUT_DIR ::= .build/mx-rust-contarcts/output
+MX_RUST_CONTRACT_TESTING_OUTPUT_DIR ::= .build/mx-rust-contracts/output
 MX_RUST_CONTRACT_TESTING_INPUTS ::= $(wildcard $(MX_RUST_CONTRACT_TESTING_INPUT_DIR)/*.run)
 MX_RUST_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(MX_RUST_CONTRACT_TESTING_INPUT_DIR)/%,$(MX_RUST_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(MX_RUST_CONTRACT_TESTING_INPUTS))
 
@@ -103,7 +101,6 @@ $(MX_RUST_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX
 			-o $(MX_RUST_TESTING_KOMPILED) \
 			-I . \
 			--debug
-
 
 $(MX_RUST_CONTRACT_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX_RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
@@ -176,7 +173,6 @@ $(MX_RUST_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 		-pTEST=$(CURDIR)/parsers/test-mx-rust.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@
-
 
 # TODO: Add $(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs
 # as a dependency

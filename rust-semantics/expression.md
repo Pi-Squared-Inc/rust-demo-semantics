@@ -29,7 +29,6 @@ module RUST-EXPRESSION
     imports private RUST-EXPRESSION-STRUCT
     imports private RUST-EXPRESSION-TUPLE
     imports private RUST-EXPRESSION-VARIABLES
-    imports private RUST-EXPRESSION-TUPLE
     imports private RUST-INTEGER-OPERATIONS
     imports private RUST-BOOL-OPERATIONS
 endmodule

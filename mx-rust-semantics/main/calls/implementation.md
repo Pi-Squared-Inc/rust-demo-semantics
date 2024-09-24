@@ -13,6 +13,8 @@ module MX-RUST-CALLS-IMPLEMENTATION
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
 
+    rule rustValueToMx(tuple(.ValueList)) => mxUnitValue()
+
     rule (.K => rustValueToMx(V))
         ~> rustValuesToMx((V:Value , L:ValueList => L), _:MxValueList)
     rule (V:MxValue => .K)

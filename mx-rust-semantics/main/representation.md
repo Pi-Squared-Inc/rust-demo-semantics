@@ -39,7 +39,10 @@ module MX-RUST-REPRESENTATION
 
     syntax MxRustPreprocessedCell
     syntax PreprocessedCell
-    syntax ContractCode ::= rustCode(MxRustPreprocessedCell,  PreprocessedCell)
+    syntax ContractCode ::= rustCode
+                                ( endpointToFunction: MxRustPreprocessedCell
+                                , preprocessed: PreprocessedCell
+                                )
 endmodule
 
 module MX-RUST-REPRESENTATION-CONVERSIONS

@@ -175,7 +175,6 @@ module MX-RUST-PREPROCESSING-METHODS
     rule buildParamsConcat(Param:NormalizedFunctionParameter , L:NormalizedFunctionParameterList)
         => concatString(paramToString(Param), buildParamsConcat(L))
 
-
     syntax Expression ::= paramToString(NormalizedFunctionParameter)  [function, total]
     rule paramToString(I:Identifier : _:Type) => toString(I)
     rule paramToString(S:SelfSort : _:Type) => toString(S)
