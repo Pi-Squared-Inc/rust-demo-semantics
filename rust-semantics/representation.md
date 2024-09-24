@@ -96,6 +96,7 @@ module RUST-REPRESENTATION
                         | "u32"  [token]
                         | "i64"  [token]
                         | "u64"  [token]
+                        | "u128"  [token]
                         | "bool" [token]
                         | "str"  [token]
                         
