@@ -340,7 +340,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                       > Expression "." PathExprSegment "(" ")"
                       | Expression "." PathExprSegment "(" CallParams ")"
 
-                      > Expression "." Identifier  // FieldExpression
+                      > Expression "." Identifier  [strict(1)]  // FieldExpression
 
                       // https://doc.rust-lang.org/reference/expressions/call-expr.html
                       // TODO: Not implemented properly to avoid ambiguities
