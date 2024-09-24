@@ -1,2 +1,4 @@
 new LoopExpressions;
-call LoopExpressions.iterator_with_same_pattern
+call LoopExpressions.iterator_with_same_pattern;
+return_value;
+check_eq ()

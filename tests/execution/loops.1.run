@@ -1,2 +1,4 @@
 new LoopExpressions;
-call LoopExpressions.iterator_evaluation
+call LoopExpressions.iterator_evaluation;
+return_value;
+check_eq ()
