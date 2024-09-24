@@ -18,10 +18,13 @@ module MX-RUST-REPRESENTATION
                                 | mxRustEmptyValue(MxRustType)
                                 | mxValueToRust(Type)
                                 | mxValueToRust(Type, MxValue)
+                                | "rustValueToMx"
                                 | rustValueToMx(Value)
                                 | rustValuesToMx(ValueList, MxValueList)
                                 | mxRustLoadPtr(Int)
                                 | mxRustGetBigIntFromStruct(Value)
+                                | mxRustNewStruct(MxRustStructType, CallParamsList)
+                                  [strict(2), result(ValueWithPtr)]
 
     syntax MxRustType ::= "noType" | rustType(Type)
     syntax MxRustTypeOrError ::= MxRustType | SemanticsError
