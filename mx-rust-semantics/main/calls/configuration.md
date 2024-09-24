@@ -2,7 +2,6 @@
 
 module MX-RUST-CALLS-CONFIGURATION
     imports LIST
-    imports RUST-SHARED-SYNTAX
 
     configuration
         <mx-rust-calls>

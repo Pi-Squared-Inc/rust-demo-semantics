@@ -1,9 +1,9 @@
 ```k
 
 module RUST-EXPRESSION-STRUCT
-    imports COMMON-K-CELL
-    imports RUST-EXECUTION-CONFIGURATION
-    imports RUST-REPRESENTATION
+    imports private COMMON-K-CELL
+    imports private RUST-EXECUTION-CONFIGURATION
+    imports private RUST-REPRESENTATION
 
     rule
         <k> Rust#newStruct(P:TypePath, Fields:Map) => ptrValue(ptr(NVI), struct(P, Fields)) ... </k>

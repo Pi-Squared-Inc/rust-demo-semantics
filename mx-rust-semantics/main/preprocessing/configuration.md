@@ -24,4 +24,5 @@ module MX-RUST-PREPROCESSED-ENDPOINTS-CONFIGURATION
     configuration
         <mx-rust-endpoint-to-function> .Map </mx-rust-endpoint-to-function>  // String to Identifier
 endmodule
+
 ```

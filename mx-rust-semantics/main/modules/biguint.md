@@ -9,7 +9,7 @@ module MX-RUST-MODULES-BIGUINT
     imports private RUST-SHARED-SYNTAX
 
     syntax MxRustType ::= "MxRust#bigInt"
-    
+
     rule
         <k>
             normalizedMethodCall
@@ -62,7 +62,7 @@ module MX-RUST-MODULES-BIGUINT
     rule
         rustToMx(struct (#token("BigUint", "Identifier"):Identifier, _) #as S)
         => rustValueToMx(S) ~> rustToMx
-    
+
     rule rustValueToMx
             ( struct
                 ( #token("BigUint", "Identifier"):Identifier

@@ -25,10 +25,9 @@ module RUST-VALUE-SYNTAX
                     | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
                     | Bool
                     | String
-
-    syntax ValueList ::= List{Value, ","}
     syntax ValueOrError ::= Value | SemanticsError
 
+    syntax ValueList ::= List{Value, ","}
     syntax ValueListOrError ::= ValueList | SemanticsError
 
     syntax Ptr ::= "null" | ptr(Int)
@@ -55,7 +54,7 @@ module RUST-REPRESENTATION
     syntax NormalizedFunctionParameter ::= ValueName ":" Type
     syntax NormalizedFunctionParameterList ::= List{NormalizedFunctionParameter, ","}
 
-    syntax PtrList ::=List{Ptr, ","}
+    syntax PtrList ::= List{Ptr, ","}
     syntax PtrListOrError ::= PtrList | SemanticsError
 
     syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, PtrList)
@@ -81,9 +80,9 @@ module RUST-REPRESENTATION
     syntax PtrList ::= reverse(PtrList, PtrList) [function, total]
 
     syntax ValueOrError ::= implicitCast(Value, Type) [function, total]
-    
+
     syntax MapOrError ::= Map | SemanticsError
-    
+
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 
     syntax Type ::= "$selftype"
@@ -94,10 +93,10 @@ module RUST-REPRESENTATION
                         | "u64"  [token]
                         | "bool" [token]
                         | "str"  [token]
-                        
+
     syntax MaybeIdentifier ::= ".Identifier" | Identifier
 
-    syntax ExpressionOrCallParams ::= Expression | CallParams 
+    syntax ExpressionOrCallParams ::= Expression | CallParams
 
     syntax Bool ::= isConstant(ValueName)  [function, total]
     syntax Bool ::= isLocalVariable(ValueName)  [function, total]
@@ -113,8 +112,8 @@ module RUST-REPRESENTATION
 
     syntax TypePathOrError ::= TypePath | SemanticsError
     syntax TypePathOrError ::= parentTypePath(TypePath)  [function, total]
-    
-    syntax IdentifierOrError ::= TypePath | SemanticsError
+
+    syntax IdentifierOrError ::= Identifier | SemanticsError
     syntax IdentifierOrError ::= leafTypePath(TypePath)  [function, total]
 
     syntax TypePathSegmentsOrError ::= TypePathSegments | SemanticsError

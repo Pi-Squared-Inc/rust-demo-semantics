@@ -16,11 +16,11 @@ module RUST-SYNTAX
 endmodule
 
 module RUST
+    imports private RUST-BOOL-OPERATIONS
     imports private RUST-ERROR
+    imports private RUST-EXPRESSION-CONSTANTS
     imports private RUST-EXPRESSION-LITERALS
     imports private RUST-INTEGER-OPERATIONS
-    imports private RUST-BOOL-OPERATIONS
-    imports private RUST-EXPRESSION-CONSTANTS
     imports private RUST-PREPROCESSING
     imports private RUST-REPRESENTATION
     imports private RUST-RUNNING-CONFIGURATION

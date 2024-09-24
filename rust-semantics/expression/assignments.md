@@ -5,6 +5,7 @@ module RUST-EXPRESSION-ASSIGNMENTS
     imports private RUST-EXECUTION-CONFIGURATION
     imports private RUST-SHARED-SYNTAX
     imports private RUST-VALUE-SYNTAX
+
     rule
         <k>
             ptrValue(ptr(P:Int), _) = ptrValue(_, V:Value)
@@ -15,6 +16,7 @@ module RUST-EXPRESSION-ASSIGNMENTS
             Values:Map => Values[P <- V]
         </values>
         requires P in_keys(Values)
+
 endmodule
 
 ```
