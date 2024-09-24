@@ -93,11 +93,11 @@ module RUST-INTEGER-RANGE-OPERATIONS
     imports RUST-SHARED-SYNTAX
     imports private RUST-REPRESENTATION
 
-    rule (ptrValue(_, i32(A):Value) .. ptrValue(_, i32(B):Value)):Expression => ptrValue(null, intRange(ptrValue(null, i32(A)), ptrValue(null, i32(B))))
-    rule (ptrValue(_, u32(A):Value) .. ptrValue(_, u32(B):Value)):Expression => ptrValue(null, intRange(ptrValue(null, u32(A)), ptrValue(null, u32(B))))
-    rule (ptrValue(_, i64(A):Value) .. ptrValue(_, i64(B):Value)):Expression => ptrValue(null, intRange(ptrValue(null, i64(A)), ptrValue(null, i64(B))))
-    rule (ptrValue(_, u64(A):Value) .. ptrValue(_, u64(B):Value)):Expression => ptrValue(null, intRange(ptrValue(null, u64(A)), ptrValue(null, u64(B))))
-    rule (ptrValue(_, u128(A):Value) .. ptrValue(_, u128(B):Value)):Expression => ptrValue(null, intRange(ptrValue(null, u128(A)), ptrValue(null, u128(B))))
+    rule (ptrValue(_, i32(A):Value) .. ptrValue(_, i32(B):Value)):Expression => ptrValue(null, intRange(i32(A), i32(B)))
+    rule (ptrValue(_, u32(A):Value) .. ptrValue(_, u32(B):Value)):Expression => ptrValue(null, intRange(u32(A), u32(B)))
+    rule (ptrValue(_, i64(A):Value) .. ptrValue(_, i64(B):Value)):Expression => ptrValue(null, intRange(i64(A), i64(B)))
+    rule (ptrValue(_, u64(A):Value) .. ptrValue(_, u64(B):Value)):Expression => ptrValue(null, intRange(u64(A), u64(B)))
+    rule (ptrValue(_, u128(A):Value) .. ptrValue(_, u128(B):Value)):Expression => ptrValue(null, intRange(u128(A), u128(B)))
 
 endmodule
 

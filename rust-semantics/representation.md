@@ -28,7 +28,7 @@ module RUST-VALUE-SYNTAX
                     | String
 
 
-    syntax Range ::= intRange(PtrValue, PtrValue)
+    syntax Range ::= intRange(Value, Value) //[seqstrict]
 
     syntax ValueList ::= List{Value, ","}
     syntax ValueOrError ::= Value | SemanticsError
@@ -87,6 +87,7 @@ module RUST-REPRESENTATION
                         | "u32"  [token]
                         | "i64"  [token]
                         | "u64"  [token]
+                        | "u128"  [token]
                         | "bool" [token]
                         
     syntax MaybeIdentifier ::= ".Identifier" | Identifier
@@ -105,14 +106,23 @@ module RUST-REPRESENTATION
 
     syntax CallParamsList ::= reverse(CallParamsList, CallParamsList)  [function, total]
 
-    syntax Bool ::= checkIntOfSameType(Expression, Expression)  [function]
 
-    rule checkIntOfSameType(ptrValue(_, u32(_)), ptrValue(_, u32(_))) => true
-    rule checkIntOfSameType(ptrValue(_, i32(_)), ptrValue(_, i32(_))) => true
-    rule checkIntOfSameType(ptrValue(_, u64(_)), ptrValue(_, u64(_))) => true
-    rule checkIntOfSameType(ptrValue(_, i64(_)), ptrValue(_, i64(_))) => true
-    rule checkIntOfSameType(ptrValue(_, u128(_)), ptrValue(_, u128(_))) => true
 
+    syntax Bool ::= checkIntOfType(Value, Type)  [function, total]
+                  | checkIntOfSameType(Value, Value) [function, total]
+
+    rule checkIntOfType(u32(_),  u32) => true
+    rule checkIntOfType(i32(_),  i32) => true
+    rule checkIntOfType(u64(_),  u64) => true
+    rule checkIntOfType(i64(_),  i64) => true
+    rule checkIntOfType(i64(_),  u128) => true
+    rule checkIntOfType(_, _) => false [owise]
+
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u32) requires checkIntOfType(B,  u32) 
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i32) requires checkIntOfType(B,  i32)
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u64) requires checkIntOfType(B,  u64)
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i64) requires checkIntOfType(B,  i64)
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u128) requires checkIntOfType(B,  u128)
     rule checkIntOfSameType(_, _) => false [owise]
 endmodule
 

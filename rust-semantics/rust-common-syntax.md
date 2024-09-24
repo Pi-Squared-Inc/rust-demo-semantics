@@ -771,7 +771,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax RangePattern ::= Expression ".." Expression // "TODO: not needed yet, not implementing"
+  syntax RangePattern ::= Expression ".." Expression 
 
 ```
 
