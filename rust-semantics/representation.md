@@ -23,8 +23,12 @@ module RUST-VALUE-SYNTAX
                     | u128(MInt{128})
                     | tuple(ValueList)
                     | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
+                    | Range
                     | Bool
                     | String
+
+
+    syntax Range ::= intRange(Value, Value) //[seqstrict]
 
     syntax ValueList ::= List{Value, ","}
     syntax ValueOrError ::= Value | SemanticsError
@@ -92,6 +96,7 @@ module RUST-REPRESENTATION
                         | "u32"  [token]
                         | "i64"  [token]
                         | "u64"  [token]
+                        | "u128"  [token]
                         | "bool" [token]
                         | "str"  [token]
                         
@@ -110,6 +115,23 @@ module RUST-REPRESENTATION
     syntax String ::= IdentifierToString(Identifier)  [function, total, hook(STRING.token2string)]
 
     syntax CallParamsList ::= reverse(CallParamsList, CallParamsList)  [function, total]
+
+    syntax Bool ::= checkIntOfType(Value, Type)  [function, total]
+                  | checkIntOfSameType(Value, Value) [function, total]
+
+    rule checkIntOfType(u32(_),  u32) => true
+    rule checkIntOfType(i32(_),  i32) => true
+    rule checkIntOfType(u64(_),  u64) => true
+    rule checkIntOfType(i64(_),  i64) => true
+    rule checkIntOfType(i64(_),  u128) => true
+    rule checkIntOfType(_, _) => false [owise]
+
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u32) requires checkIntOfType(B,  u32) 
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i32) requires checkIntOfType(B,  i32)
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u64) requires checkIntOfType(B,  u64)
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i64) requires checkIntOfType(B,  i64)
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u128) requires checkIntOfType(B,  u128)
+    rule checkIntOfSameType(_, _) => false [owise]
 
     syntax TypePathOrError ::= TypePath | SemanticsError
     syntax TypePathOrError ::= parentTypePath(TypePath)  [function, total]

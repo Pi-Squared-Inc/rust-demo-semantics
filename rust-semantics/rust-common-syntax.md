@@ -391,7 +391,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                         Expression "&&" Expression [seqstrict]
                       | Expression "||" Expression [seqstrict]
 
-                      > Expression ".." Expression
+                      > Expression ".." Expression [seqstrict]
 
                       > right:
                         Expression "=" Expression
@@ -663,7 +663,8 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax IteratorLoopExpression ::= "for" Pattern "in" ExpressionExceptStructExpression BlockExpression
+  syntax IteratorLoopExpression ::= "for" Pattern "in" ExpressionExceptStructExpression BlockExpression [seqstrict(2)]
+                                  | "while" ExpressionExceptStructExpression BlockExpression
 
 ```
 
@@ -680,6 +681,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 ```k
 
   syntax IfExpression ::= "if" ExpressionExceptStructExpression BlockExpression  MaybeIfElseExpression [strict(1)] 
+
   syntax MaybeIfElseExpression ::= "" 
                                  | "else" IfElseExpression
   syntax IfElseExpression ::= BlockExpression 
@@ -769,7 +771,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax RangePattern ::= "TODO: not needed yet, not implementing"
+  syntax RangePattern ::= Expression ".." Expression 
 
 ```
 
