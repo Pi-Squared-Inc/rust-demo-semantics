@@ -64,7 +64,7 @@ module MX-RUST-PREPROCESSING-METHODS
         <trait-path> T </trait-path>
         <method-list> MethodNames:List </method-list>
 
-    rule mxRustPreprocessMethods(_:TypePath, contract, .List) => .K
+    rule mxRustPreprocessMethods(Trait:TypePath, contract, .List) => rustMxAddContractMethods(Trait)
     rule mxRustPreprocessMethods(Trait:TypePath, proxy, .List) => rustMxAddProxyMethods(Trait)
 
     rule mxRustPreprocessMethods
