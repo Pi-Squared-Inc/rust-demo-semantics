@@ -105,15 +105,15 @@ module RUST-REPRESENTATION
 
     syntax CallParamsList ::= reverse(CallParamsList, CallParamsList)  [function, total]
 
-    syntax Bool ::= intOfSameType(Expression, Expression)  [function]
+    syntax Bool ::= checkIntOfSameType(Expression, Expression)  [function]
 
-    rule intOfSameType(ptrValue(_, u32(_)), ptrValue(_, u32(_))) => true
-    rule intOfSameType(ptrValue(_, i32(_)), ptrValue(_, i32(_))) => true
-    rule intOfSameType(ptrValue(_, u64(_)), ptrValue(_, u64(_))) => true
-    rule intOfSameType(ptrValue(_, i64(_)), ptrValue(_, i64(_))) => true
-    rule intOfSameType(ptrValue(_, u128(_)), ptrValue(_, u128(_))) => true
+    rule checkIntOfSameType(ptrValue(_, u32(_)), ptrValue(_, u32(_))) => true
+    rule checkIntOfSameType(ptrValue(_, i32(_)), ptrValue(_, i32(_))) => true
+    rule checkIntOfSameType(ptrValue(_, u64(_)), ptrValue(_, u64(_))) => true
+    rule checkIntOfSameType(ptrValue(_, i64(_)), ptrValue(_, i64(_))) => true
+    rule checkIntOfSameType(ptrValue(_, u128(_)), ptrValue(_, u128(_))) => true
 
-    rule intOfSameType(_, _) => false [owise]
+    rule checkIntOfSameType(_, _) => false [owise]
 endmodule
 
 ```
