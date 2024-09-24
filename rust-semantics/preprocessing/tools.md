@@ -3,6 +3,7 @@
 module RUST-PREPROCESSING-TOOLS
     imports private BOOL
     imports private RUST-ERROR-SYNTAX
+    imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
     imports private RUST-VALUE-SYNTAX
@@ -14,6 +15,16 @@ module RUST-PREPROCESSING-TOOLS
 
     rule reverse(.CallParamsList, L:CallParamsList) => L
     rule reverse((P , Ps:CallParamsList => Ps), (L:CallParamsList => P, L))
+
+    rule append(.TypePath, Name:Identifier) => Name
+    rule append(:: T:TypePathSegments, Name:Identifier) => :: appendSegments(T, Name)
+    rule append(T:TypePathSegments, Name:Identifier) => appendSegments(T, Name)
+
+    syntax TypePathSegments ::= appendSegments(TypePathSegments, Identifier)  [function, total]
+
+    rule appendSegments(S:TypePathSegment, Name:Identifier) => S :: Name
+    rule appendSegments(S:TypePathSegment :: T:TypePathSegments, Name:Identifier)
+        => S :: appendSegments(T, Name)
 
     rule parentTypePath(:: T:TypePathSegments) => doubleColonOrError(parentTypePathSegments(T))
     rule parentTypePath(T:TypePathSegments) => injectOrError(parentTypePathSegments(T))
