@@ -1,13 +1,14 @@
+setBalance("Owner", "MyToken", 0, 1234);
 setCallee("Owner");
 
 push mxListValue();
-push mxStringValue("callRequirePassesInstr");
+push mxStringValue("getTransfer");
 push mxIntValue(0);
-push mxTransfersValue();
+push mxTransfersValue(mxTransferValue("MyToken", 0, 10));
 push mxIntValue(0);
 push mxStringValue("TestContract");
 call 6 MX#managedExecuteOnDestContext;
 check_eq mxIntValue(0);
 
 push_return_value;
-check_eq mxListValue()
+check_eq mxListValue( mxStringValue("MyToken") , mxIntValue(10))

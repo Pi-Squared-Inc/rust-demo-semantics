@@ -26,7 +26,6 @@ module MX-RUST-MODULES-BIGUINT
         <values> ValueId |-> V:Value ... </values>
 
   // --------------------------------------
-    syntax MxRustType ::= "bigUintType"  [function, total]
     rule bigUintType
         => rustStructType
             ( #token("BigUint", "Identifier"):Identifier
@@ -87,6 +86,7 @@ module MX-RUST-MODULES-BIGUINT
             BigUintIdId |-> i32(BigUintId:MInt{32})
             ...
         </values>
+
 endmodule
 
 ```

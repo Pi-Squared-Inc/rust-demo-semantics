@@ -5,14 +5,38 @@ module MX-RUST-PREPROCESSING-CONTRACT
     imports MX-RUST-REPRESENTATION
     imports RUST-PREPROCESSING-CONFIGURATION
 
-    syntax MxRustInstruction ::= rustMxAddContractSend(TypePath)
+    syntax MxRustInstruction  ::= rustMxAddContractSend(TypePath)
+                                | rustMxAddContractCallValue(TypePath)
+                                | rustMxAddContractGenericMethod
+                                    ( trait: TypePath
+                                    , method: Identifier
+                                    , struct: Identifier
+                                    )
 
     rule rustMxAddContractMethods(Trait:TypePath)
         => rustMxAddContractSend(Trait:TypePath)
+            ~> rustMxAddContractCallValue(Trait:TypePath)
+
+    rule rustMxAddContractSend(Trait:TypePath)
+        => rustMxAddContractGenericMethod
+            (... trait: Trait
+            , method: #token("send", "Identifier")
+            , struct: #token("MxRust#Send", "Identifier")
+            )
+
+    rule rustMxAddContractCallValue(Trait:TypePath)
+        => rustMxAddContractGenericMethod
+            (... trait: Trait
+            , method: #token("call_value", "Identifier")
+            , struct: #token("MxRust#CallValue", "Identifier")
+            )
 
     rule
         <k>
-            rustMxAddContractSend(Trait:TypePath)
+            rustMxAddContractGenericMethod
+                (... trait: Trait:TypePath
+                , method: Method:Identifier
+                )
             => error
                 ( "send already exists for trait"
                 , ListItem(Trait)
@@ -20,19 +44,23 @@ module MX-RUST-PREPROCESSING-CONTRACT
             ...
         </k>
         <trait-path> Trait </trait-path>
-        <method-name> #token("send", "Identifier") </method-name>
+        <method-name> Method </method-name>
         [priority(50)]
 
     rule
         <k>
-            rustMxAddContractSend(Trait:TypePath)
+            rustMxAddContractGenericMethod
+                (... trait: Trait:TypePath
+                , method: Method:Identifier
+                , struct: Struct:Identifier
+                )
             => .K
             ...
         </k>
         <trait-path> Trait </trait-path>
         ( .Bag
             =>  <method>
-                    <method-name> #token("send", "Identifier") </method-name>
+                    <method-name> Method </method-name>
                     <method-params> self : $selftype , .NormalizedFunctionParameterList </method-params>
                     <method-return-type> #token("MxRust#CallReturnType", "Identifier") </method-return-type>
                     <method-implementation>
@@ -40,7 +68,7 @@ module MX-RUST-PREPROCESSING-CONTRACT
                             .InnerAttributes
                             (
                                 (
-                                    (  #token("MxRust#Send", "Identifier")
+                                    (  Struct
                                     :: (#token("new", "Identifier"):PathExprSegment)
                                     :: .PathExprSegments
                                     )

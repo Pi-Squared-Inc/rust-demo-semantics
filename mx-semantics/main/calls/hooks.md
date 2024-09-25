@@ -66,6 +66,13 @@ module MX-CALLS-HOOKS
             )
 
     rule MX#finish ( V:MxValue ) => returnCallData(V)
+
+    rule
+        <k>
+            MX#managedGetMultiESDTCallValue(.MxValueList) => Transfers
+            ...
+        </k>
+        <mx-esdt-transfers> Transfers:MxEsdtTransferList </mx-esdt-transfers>
 endmodule
 
 ```

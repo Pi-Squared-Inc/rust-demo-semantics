@@ -58,12 +58,9 @@ module MX-RUST-GLUE
 
     rule ptrValue(_, V) ~> rustValueToMx => rustValueToMx(V)
 
-    rule rustValueToMx(tuple(.ValueList)) => mxUnitValue()
-    rule rustValueToMx(B:Bool) => mxBoolValue(B)
-    rule rustValueToMx(S:String) => mxStringValue(S)
-    
-    rule rustValueToMx(V:Value) => mxIntValue({valueToInteger(V)}:>Int)
-        requires notBool isSemanticsError(valueToInteger(V))
+    rule (.K => rustToMx(V)) ~> rustValueToMx(V:Value)
+        [owise]
+    rule (rustToMx(V:MxValue) ~> rustValueToMx(_)) => V
 
     rule mxIntValue(0) ~> mxRustCheckMxStatus => .K
 

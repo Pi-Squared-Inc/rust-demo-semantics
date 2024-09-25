@@ -36,8 +36,11 @@ module RUST-CASTS
     rule implicitCast(u128(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
 
     rule implicitCast(V:Bool, bool) => V
+    rule implicitCast(S:String, str) => S
 
     rule implicitCast(tuple(.ValueList) #as V, ():Type) => V
+    rule implicitCast(tuple(Vs:ValueList), (Ts:NonEmptyTypeCsv))
+        => tupleOrError(implicitCastList(Vs, Ts))
 
     rule implicitCast(struct(T, _) #as V, T) => V
     rule implicitCast(struct(T, _) #as V, T < _ >) => V
@@ -47,6 +50,14 @@ module RUST-CASTS
     rule ptrValue(P:Ptr, V:Value) ~> implicitCastTo(T:Type) => wrapPtrValueOrError(P, implicitCast(V, T))
     // We don't need a value for the unit type
     rule implicitCastTo(( )) => .K
+
+    syntax ValueListOrError ::= implicitCastList(ValueList, NonEmptyTypeCsv)  [function, total]
+    rule implicitCastList(V:Value , .ValueList, T:Type) => concat(implicitCast(V, T), .ValueList)
+    rule implicitCastList(V:Value , Vs:ValueList, T:Type, Ts:NonEmptyTypeCsv)
+        => concat(implicitCast(V, T), implicitCastList(Vs, Ts))
+    rule implicitCastList(Vs:ValueList, Ts:NonEmptyTypeCsv)
+        => error("implicitCastList values not paired with types", ListItem(Vs) ListItem(Ts))
+        [owise]
 
 endmodule
 

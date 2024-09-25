@@ -4,6 +4,7 @@ module MX-RUST-EXPRESSION-MX-TO-RUST
     imports private K-EQUAL-SYNTAX
     imports private MX-COMMON-SYNTAX
     imports private MX-RUST-REPRESENTATION
+    imports private RUST-ERROR-SYNTAX
     imports private RUST-HELPERS
     imports private RUST-VALUE-SYNTAX
 
@@ -11,6 +12,9 @@ module MX-RUST-EXPRESSION-MX-TO-RUST
     rule isMxToRustValue(_:K) => false [owise]
     rule isMxToRustValue(_:PtrValue) => true
     rule isMxToRustValue(mxToRustField(_, V:MxToRust)) => isMxToRustValue(V)
+    rule isMxToRustValue(.MxToRustList) => true
+    rule isMxToRustValue(V:MxToRust , Vs:MxToRustList)
+        => isMxToRustValue(V) andBool isMxToRustValue(Vs)
 
     syntax Bool ::= isMxToRustFieldValue(K)  [function, total, symbol(isMxToRustFieldValue)]
     rule isMxToRustFieldValue(_:K) => false [owise]
@@ -32,6 +36,11 @@ module MX-RUST-EXPRESSION-MX-TO-RUST
             , mxListValue(Values:MxValueList)
             )
         => mxToRustStruct(StructName, pairFields(Fields, Values))
+    rule mxToRustTyped
+            ( (Types:NonEmptyTypeCsv)
+            , mxListValue(Values:MxValueList)
+            )
+        => mxToRustTuple(pairTuple(Types, Values))
     rule mxToRustTyped(() , mxUnitValue()) => ptrValue(null, tuple(.ValueList))
 
     context HOLE:MxRustFieldValue , _:MxRustFieldValues [result(MxToRustFieldValue)]
@@ -80,6 +89,40 @@ module MX-RUST-EXPRESSION-MX-TO-RUST
     rule fieldsToMap((Field , _:MxRustFieldValues), _:Map)
         => error("Unexpected field", ListItem(Field))
         [owise]
+
+    rule (.K => mxToRustListToValueList(L)) ~> mxToRustTuple(L:MxToRustList)
+        requires isMxToRustValue(L)
+    rule (L:ValueList ~> mxToRustTuple(_:MxToRustList))
+        => mxRustNewValue(tuple(L))
+
+    syntax ValueListOrError ::= mxToRustListToValueList(MxToRustList)  [function, total]
+    rule mxToRustListToValueList(.MxToRustList) => .ValueList
+    rule mxToRustListToValueList(ptrValue(_, V:Value) , L:MxToRustList)
+        => concat(V, mxToRustListToValueList(L))
+    rule mxToRustListToValueList(L) => error("mxToRustListToValueList: not evaluated", ListItem(L))
+        [owise]
+
+    context HOLE:MxToRust , _:MxToRustList [result(MxToRustValue)]
+    context V:MxToRust , HOLE:MxToRustList requires isMxToRustValue(V)
+        [result(MxToRustValue)]
+
+    syntax MxToRustList ::= pairTuple(NonEmptyTypeCsv, MxValueList)  [function, total]
+    rule pairTuple(T:Type, V:MxValue , .MxValueList)
+        => mxToRustTyped(T, V) , .MxToRustList
+    rule pairTuple
+            ( T:Type , Ts:NonEmptyTypeCsv
+            , V:MxValue , Vs:MxValueList
+            )
+        => mxToRustTyped(T, V) , pairTuple(Ts, Vs)
+
+    rule pairTuple(Ts:NonEmptyTypeCsv, .MxValueList)
+        => error("Not enough values (pairTuple)", ListItem(Ts))
+    rule pairTuple(T:Type, (_ , _ , _:MxValueList) #as L)
+        => error("Not enough types (pairTuple)", ListItem(T) ListItem(L))
+    rule pairTuple(A, B)
+        => error("Should not happen (pairTuple)", ListItem(A) ListItem(B))
+        [owise]
+
 endmodule
 
 ```
