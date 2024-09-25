@@ -66,6 +66,28 @@ module MX-RUST-MODULES-PROXY
             ...
         </values>
 
+    rule
+        <k>
+            normalizedMethodCall
+                ( #token("MxRust#Proxy", "Identifier"):Identifier
+                    => ProxyType
+                , MethodName:Identifier
+                , (ptr(SelfId:Int) , _Params:PtrList)
+                )
+            ...
+        </k>
+        <values>
+            SelfId |-> struct
+                    ( _
+                    , #token("proxy_type", "Identifier"):Identifier |-> ProxyTypeId:Int
+                      _:Map
+                    )
+            ProxyTypeId |-> rustType(ProxyType:TypePath)
+            ...
+        </values>
+        <trait-path> ProxyType </trait-path>
+        <method-name> MethodName </method-name>
+
     syntax MxOrRustValueOrInstruction ::= MxOrRustValue | MxRustInstruction
 
     syntax RustMxInstruction ::= rustMxManagedExecuteOnDestContext
