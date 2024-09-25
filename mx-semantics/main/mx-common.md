@@ -11,6 +11,8 @@ requires "blocks/hooks.md"
 requires "call-state/tools.md"
 requires "calls/hooks.md"
 requires "calls/tools.md"
+requires "errors/hooks.md"
+requires "errors/tools.md"
 requires "tools.md"
 
 module MX-COMMON
@@ -23,6 +25,8 @@ module MX-COMMON
     imports private MX-CALL-STATE-TOOLS
     imports private MX-CALLS-HOOKS
     imports private MX-CALLS-TOOLS
+    imports private MX-ERRORS-HOOKS
+    imports private MX-ERRORS-TOOLS
     imports private MX-STORAGE-HOOKS
     imports private MX-STORAGE-TOOLS
     imports private MX-TOOLS
