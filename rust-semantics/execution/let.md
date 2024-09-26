@@ -49,15 +49,6 @@ module RUST-LET
         <values> Values:Map => Values[NextId <- V] </values>
         <mutables> M => M SetItem(NextId) </mutables> 
     requires notBool mayBeDefaultTypedInt(V)
-  
-    // Handling tuple assignments 
-    // rule
-    //     <k>
-    //         let (Variable:PatternNoTopAlt , RemainingToAssign:Patterns):TuplePattern = (Exp:Expression , RemainingExpressions:TupleElementsNoEndComma):TupleExpression ; =>
-    //                let Variable = Exp; 
-    //             ~> let (RemainingToAssign):TuplePattern = (RemainingExpressions:MaybeTupleElements);
-    //         ...
-    //     </k>
 
 endmodule
 

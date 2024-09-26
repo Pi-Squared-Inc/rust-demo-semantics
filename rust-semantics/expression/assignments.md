@@ -15,18 +15,7 @@ module RUST-EXPRESSION-ASSIGNMENTS
         <values>
             Values:Map => Values[P <- V]
         </values>
-        <mutables> Mutables:Set </mutables>
-        requires P in_keys(Values) andBool P in Mutables
-
-    rule
-        <k>
-            ptrValue(ptr(P:Int), _) = ptrValue(_, _)
-            => error("cannot assign twice to immutable variable", P)
-            ...
-        </k>
-        <values> Values:Map </values>
-        <mutables> Mutables:Set </mutables>
-        requires P in_keys(Values) andBool notBool P in Mutables
+        requires P in_keys(Values) 
 
 endmodule
 
