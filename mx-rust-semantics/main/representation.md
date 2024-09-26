@@ -9,6 +9,7 @@ module MX-RUST-REPRESENTATION
 
     syntax MxRustInstruction  ::= "mxRustPreprocessTraits"
                                 | mxRustPreprocessMethods(TypePath, TraitType)
+                                | rustMxAddContractMethods(TypePath)
                                 | rustMxAddProxyMethods(TypePath)
                                 | mxRustCreateAccount(String)
                                 | mxRustCreateContract
@@ -28,11 +29,14 @@ module MX-RUST-REPRESENTATION
                                 | mxRustGetStringFromId(Int)
                                 | mxRustNewStruct(MxRustStructType, CallParamsList)
                                   [strict(2), result(ValueWithPtr)]
+                                | "mxRustCheckMxStatus"
 
     syntax TraitType ::= "contract" | "proxy"
     syntax MxRustType ::= "noType" | rustType(Type)
     syntax MxRustTypeOrError ::= MxRustType | SemanticsError
     syntax Value ::= MxRustType
+
+    syntax MxOrRustValueOrInstruction ::= MxOrRustValue | MxRustInstruction
 
     syntax Expression ::= concatString(Expression, Expression)  [seqstrict]
                         | toString(Expression)  [strict]
@@ -77,6 +81,7 @@ module MX-RUST-REPRESENTATION-CONVERSIONS
     syntax MxOrRustValueListOrError ::= MxOrRustValueList | SemanticsError
     syntax MxRustInstruction ::= mxToRustTyped(MxRustType)
 
+    // TODO: Merge rustToMx and rustValueToMx
     syntax MxRustInstruction  ::= rustToMx(MxOrRustValue)
                                 | "rustToMx"
 endmodule

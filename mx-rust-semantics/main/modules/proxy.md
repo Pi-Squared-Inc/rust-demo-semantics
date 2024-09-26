@@ -88,8 +88,6 @@ module MX-RUST-MODULES-PROXY
         <trait-path> ProxyType </trait-path>
         <method-name> MethodName </method-name>
 
-    syntax MxOrRustValueOrInstruction ::= MxOrRustValue | MxRustInstruction
-
     syntax RustMxInstruction ::= rustMxManagedExecuteOnDestContext
                                     ( destination: MxOrRustValueOrInstruction  // MxOrRustValue
                                     , egldValue: MxOrRustValueOrInstruction  // MxOrRustValue
@@ -224,9 +222,6 @@ module MX-RUST-MODULES-PROXY
             ArgsId |-> Args:Value
             ...
         </values>
-
-    syntax MxInstructions ::= "mxRustCheckMxStatus"
-    rule mxIntValue(0) ~> mxRustCheckMxStatus => .K
 
     rule implicitCast
             ( struct(#token("MxRust#Proxy", "Identifier"):Identifier, _) #as V

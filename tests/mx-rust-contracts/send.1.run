@@ -1,0 +1,42 @@
+addAccount("Caller");
+setBalance("TestContract", "MyToken", 0, 1234);
+setCallee("Caller");
+
+push mxIntValue(0);
+push mxStringValue("MyToken");
+push mxStringValue("Caller");
+call 3 MX#bigIntGetESDTExternalBalance;
+get_big_int;
+check_eq mxIntValue(0);
+
+push mxIntValue(0);
+push mxStringValue("MyToken");
+push mxStringValue("TestContract");
+call 3 MX#bigIntGetESDTExternalBalance;
+get_big_int;
+check_eq mxIntValue(1234);
+
+push mxListValue(mxStringValue("Caller"), mxStringValue("MyToken"), mxIntValue(10));
+push mxStringValue("sendTo");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+get_big_int;
+check_eq mxIntValue(0);
+
+push mxIntValue(0);
+push mxStringValue("MyToken");
+push mxStringValue("Caller");
+call 3 MX#bigIntGetESDTExternalBalance;
+get_big_int;
+check_eq mxIntValue(10);
+
+push mxIntValue(0);
+push mxStringValue("MyToken");
+push mxStringValue("TestContract");
+call 3 MX#bigIntGetESDTExternalBalance;
+get_big_int;
+check_eq mxIntValue(1224)
+

@@ -25,6 +25,8 @@ module MX-RUST-EXPRESSION-RUST-TO-MX
         <values> Values:Map </values>
         [owise]
     rule rustToMx(S:String => mxStringValue(S))
+    rule rustToMx(V:Value => mxIntValue({valueToInteger(V)}:>Int))
+        requires notBool isSemanticsError(valueToInteger(V))
     rule rustToMx(tuple(V:ValueList)) => rustValuesToMxListValue(V, .MxValueList)
 
     syntax RustMxInstruction ::= rustValuesToMxListValue(ValueListOrError, MxValueList)
