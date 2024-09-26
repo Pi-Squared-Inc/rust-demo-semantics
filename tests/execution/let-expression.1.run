@@ -1,0 +1,4 @@
+new Let;
+call Let.let_final;
+return_value;
+check_eq 100_u64

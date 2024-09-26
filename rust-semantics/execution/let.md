@@ -48,6 +48,38 @@ module RUST-LET
         <values> Values:Map => Values[NextId <- V] </values>
     requires notBool mayBeDefaultTypedInt(V)
 
+    // Handling tuple assignments 
+    rule
+        <k>
+            let (Variable:PatternNoTopAlt | .PatternNoTopAlts , RemainingToAssign:Patterns):TuplePattern 
+                = ptrValue(_,tuple(Val:Value, ValList:ValueList)) ; 
+            =>
+                let Variable = ptrValue(null, Val); 
+                ~> let (RemainingToAssign:Patterns:TuplePatternItems):TuplePattern 
+                    = ptrValue(null, tuple(ValList));
+            ...
+        </k>
+
+    rule
+        <k>
+            let (.Patterns):TuplePattern = 
+            ptrValue(_,tuple(.ValueList))
+            ; => .K
+            ...
+        </k>
+    
+    // Handles the case where the tuple pattern on the let expression has an extra comma, removing it
+    rule
+        <k>
+            let (Variable:PatternNoTopAlt | .PatternNoTopAlts , RemainingToAssign:Patterns,):TuplePattern 
+                = ptrValue(_,tuple(Val:Value, ValList:ValueList)); 
+            => 
+                let (Variable:PatternNoTopAlt | .PatternNoTopAlts , RemainingToAssign:Patterns):TuplePattern 
+                = ptrValue(null,tuple(Val:Value, ValList:ValueList));
+            ...
+        </k>
+
+
 endmodule
 
 ```
