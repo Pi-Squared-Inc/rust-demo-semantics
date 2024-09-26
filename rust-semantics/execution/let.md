@@ -9,6 +9,8 @@ module RUST-LET
     imports private RUST-VALUE-SYNTAX
 
     // Not all cases are implemented
+
+    // Handling immutable variables
     rule
         <k>
             let Variable:Identifier : T:Type = ptrValue(_, V:Value) ; => .K
@@ -27,6 +29,7 @@ module RUST-LET
         <values> Values:Map => Values[NextId <- V] </values>
     requires notBool mayBeDefaultTypedInt(V)
 
+    // Handling mutable variables
     rule
         <k>
             let mut Variable:Identifier : T:Type = ptrValue(_, V:Value) ; => .K
