@@ -3,6 +3,7 @@ requires "expression/assignments.md"
 requires "expression/blocks.md"
 requires "expression/bool-operations.md"
 requires "expression/calls.md"
+requires "expression/comparisons.md"
 requires "expression/constants.md"
 requires "expression/casts.md"
 requires "expression/conditionals.md"
@@ -22,6 +23,7 @@ module RUST-EXPRESSION
     imports private RUST-LOOP-EXPRESSIONS
     imports private RUST-EXPRESSION-ASSIGNMENTS
     imports private RUST-EXPRESSION-CALLS
+    imports private RUST-EXPRESSION-COMPARISONS
     imports private RUST-EXPRESSION-CONSTANTS
     imports private RUST-EXPRESSION-EXPRESSION-LIST
     imports private RUST-EXPRESSION-LITERALS

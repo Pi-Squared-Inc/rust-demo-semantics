@@ -2,7 +2,6 @@
 
 module RUST-INTEGER-OPERATIONS
     imports private RUST-INTEGER-ARITHMETIC-OPERATIONS
-    imports private RUST-INTEGER-RELATIONAL-OPERATIONS
     imports private RUST-INTEGER-RANGE-OPERATIONS
 endmodule
 
@@ -43,48 +42,6 @@ module RUST-INTEGER-ARITHMETIC-OPERATIONS
     rule ptrValue(_, u128(A):Value) - ptrValue(_, u128(B):Value) => ptrValue(null, u128(A -MInt B))
     rule ptrValue(_, u128(A):Value) / ptrValue(_, u128(B):Value) => ptrValue(null, u128(A /uMInt B))
     rule ptrValue(_, u128(A):Value) % ptrValue(_, u128(B):Value) => ptrValue(null, u128(A %uMInt B))
-
-endmodule
-
-
-module RUST-INTEGER-RELATIONAL-OPERATIONS
-    imports RUST-SHARED-SYNTAX
-    imports private RUST-REPRESENTATION
-
-    rule ptrValue(_, i32(A):Value)  == ptrValue(_, i32(B):Value)  => ptrValue(null, A ==MInt  B)
-    rule ptrValue(_, i32(A):Value)  != ptrValue(_, i32(B):Value)  => ptrValue(null, A =/=MInt B)
-    rule ptrValue(_, i32(A):Value)  >  ptrValue(_, i32(B):Value)  => ptrValue(null, A >sMInt  B)
-    rule ptrValue(_, i32(A):Value)  <  ptrValue(_, i32(B):Value)  => ptrValue(null, A <sMInt  B)
-    rule ptrValue(_, i32(A):Value)  >= ptrValue(_, i32(B):Value)  => ptrValue(null, A >=sMInt B)
-    rule ptrValue(_, i32(A):Value)  <= ptrValue(_, i32(B):Value)  => ptrValue(null, A <=sMInt B)
-
-    rule ptrValue(_, u32(A):Value) == ptrValue(_, u32(B):Value)  => ptrValue(null, A ==MInt B)
-    rule ptrValue(_, u32(A):Value) != ptrValue(_, u32(B):Value)  => ptrValue(null, A =/=MInt B)
-    rule ptrValue(_, u32(A):Value) > ptrValue(_, u32(B):Value)  => ptrValue(null, A >uMInt B)
-    rule ptrValue(_, u32(A):Value) < ptrValue(_, u32(B):Value)  => ptrValue(null, A <uMInt B)
-    rule ptrValue(_, u32(A):Value) >= ptrValue(_, u32(B):Value)  => ptrValue(null, A >=uMInt B)
-    rule ptrValue(_, u32(A):Value) <= ptrValue(_, u32(B):Value)  => ptrValue(null, A <=uMInt B)
-
-    rule ptrValue(_, i64(A):Value)  == ptrValue(_, i64(B):Value)  => ptrValue(null, A ==MInt  B)
-    rule ptrValue(_, i64(A):Value)  != ptrValue(_, i64(B):Value)  => ptrValue(null, A =/=MInt B)
-    rule ptrValue(_, i64(A):Value)  >  ptrValue(_, i64(B):Value)  => ptrValue(null, A >sMInt  B)
-    rule ptrValue(_, i64(A):Value)  <  ptrValue(_, i64(B):Value)  => ptrValue(null, A <sMInt  B)
-    rule ptrValue(_, i64(A):Value)  >= ptrValue(_, i64(B):Value)  => ptrValue(null, A >=sMInt B)
-    rule ptrValue(_, i64(A):Value)  <= ptrValue(_, i64(B):Value)  => ptrValue(null, A <=sMInt B)
-
-    rule ptrValue(_, u64(A):Value)  == ptrValue(_, u64(B):Value)  => ptrValue(null, A ==MInt  B)
-    rule ptrValue(_, u64(A):Value)  != ptrValue(_, u64(B):Value)  => ptrValue(null, A =/=MInt B)
-    rule ptrValue(_, u64(A):Value)  >  ptrValue(_, u64(B):Value)  => ptrValue(null, A >uMInt  B)
-    rule ptrValue(_, u64(A):Value)  <  ptrValue(_, u64(B):Value)  => ptrValue(null, A <uMInt  B)
-    rule ptrValue(_, u64(A):Value)  >= ptrValue(_, u64(B):Value)  => ptrValue(null, A >=uMInt B)
-    rule ptrValue(_, u64(A):Value)  <= ptrValue(_, u64(B):Value)  => ptrValue(null, A <=uMInt B)
-
-    rule ptrValue(_, u128(A):Value) == ptrValue(_, u128(B):Value) => ptrValue(null, A ==MInt  B)
-    rule ptrValue(_, u128(A):Value) != ptrValue(_, u128(B):Value) => ptrValue(null, A =/=MInt B)
-    rule ptrValue(_, u128(A):Value) >  ptrValue(_, u128(B):Value) => ptrValue(null, A >uMInt  B)
-    rule ptrValue(_, u128(A):Value) <  ptrValue(_, u128(B):Value) => ptrValue(null, A <uMInt  B)
-    rule ptrValue(_, u128(A):Value) >= ptrValue(_, u128(B):Value) => ptrValue(null, A >=uMInt B)
-    rule ptrValue(_, u128(A):Value) <= ptrValue(_, u128(B):Value) => ptrValue(null, A <=uMInt B)
 
 endmodule
 

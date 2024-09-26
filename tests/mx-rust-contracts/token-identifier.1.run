@@ -1,0 +1,25 @@
+setCallee("Owner");
+
+push mxListValue(mxStringValue("MyToken"), mxStringValue("MyToken"));
+push mxStringValue("testEquality");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxBoolValue(true);
+
+push mxListValue(mxStringValue("MyToken"), mxStringValue("MyOtherToken"));
+push mxStringValue("testEquality");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxBoolValue(false)

@@ -25,6 +25,10 @@ module RUST-EXPRESSION-VARIABLES
         <locals> self:PathIdentSegment |-> VarId:Int ... </locals>
         <values> VarId |-> V:Value ... </values>
 
+    rule
+        <k> ptr(I:Int) => ptrValue(ptr(I), V) ... </k>
+        <values> I |-> V:Value ... </values>
+
     rule [[isLocalVariable(Name:ValueName) => true]]
         <locals> Locals </locals>
         requires Name in_keys(Locals)

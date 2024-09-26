@@ -9,6 +9,7 @@ module MX-COMMON-SYNTAX
     syntax MxEsdtTransferList ::= List{MxEsdtTransfer, ","}
 
     syntax MxValue  ::= mxIntValue(Int)
+                      | mxBoolValue(Bool)
                       | mxStringValue(String)
                       | mxListValue(MxValueList)
                       | MxEsdtTransfer
