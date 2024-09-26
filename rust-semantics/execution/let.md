@@ -38,7 +38,6 @@ module RUST-LET
         <next-value-id> NextId:Int => NextId +Int 1 </next-value-id>
         <locals> Locals:Map => Locals[Variable <- NextId] </locals>
         <values> Values:Map => Values[NextId <- implicitCast(V, T)] </values>
-        <mutables> M => M SetItem(NextId) </mutables> 
     rule
         <k>
             let mut Variable:Identifier = ptrValue(_, V:Value) ; => .K
@@ -47,7 +46,6 @@ module RUST-LET
         <next-value-id> NextId:Int => NextId +Int 1 </next-value-id>
         <locals> Locals:Map => Locals[Variable <- NextId] </locals>
         <values> Values:Map => Values[NextId <- V] </values>
-        <mutables> M => M SetItem(NextId) </mutables> 
     requires notBool mayBeDefaultTypedInt(V)
 
 endmodule

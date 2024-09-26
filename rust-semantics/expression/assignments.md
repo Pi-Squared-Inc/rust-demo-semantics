@@ -15,7 +15,7 @@ module RUST-EXPRESSION-ASSIGNMENTS
         <values>
             Values:Map => Values[P <- V]
         </values>
-        requires P in_keys(Values) 
+        requires P in_keys(Values)
 
 endmodule
 
