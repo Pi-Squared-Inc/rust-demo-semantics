@@ -85,6 +85,9 @@ module RUST-REPRESENTATION
 
     syntax MapOrError ::= Map | SemanticsError
 
+    syntax Expression ::= Ptr
+    syntax ExpressionOrError ::= Expression | SemanticsError
+
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 
     syntax Type ::= "$selftype"
