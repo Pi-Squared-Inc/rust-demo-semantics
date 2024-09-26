@@ -64,6 +64,12 @@ module MX-RUST-GLUE
 
     rule mxIntValue(0) ~> mxRustCheckMxStatus => .K
 
+    rule (.K => rustValuesToMxListValue(Values, .MxValueList))
+        ~> rustMxCallHook(_, Values:ValueList)
+    rule (rustToMx(mxListValue(L:MxValueList)) ~> rustMxCallHook(Hook:MxHookName, _))
+        => Hook(L)
+
+    rule L:MxValue ~> mxRustWrapInMxList => mxListValue(L)
 endmodule
 
 ```

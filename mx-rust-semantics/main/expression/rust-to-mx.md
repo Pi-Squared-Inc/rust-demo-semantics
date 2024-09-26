@@ -30,9 +30,7 @@ module MX-RUST-EXPRESSION-RUST-TO-MX
     rule rustToMx(S:String => mxStringValue(S))
     rule rustToMx(V:Value => mxIntValue({valueToInteger(V)}:>Int))
         requires notBool isSemanticsError(valueToInteger(V))
-    rule rustToMx(tuple(V:ValueList)) => rustValuesToMxListValue(V, .MxValueList)
 
-    syntax RustMxInstruction ::= rustValuesToMxListValue(ValueListOrError, MxValueList)
     rule rustValuesToMxListValue(.ValueList, L:MxValueList)
         => rustToMx(mxListValue(reverse(L, .MxValueList)))
     rule (.K => rustToMx(HOLE)) ~> rustValuesToMxListValue(((HOLE:Value , V:ValueList) => V), _:MxValueList)
