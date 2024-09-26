@@ -4,6 +4,7 @@ requires "modules/address.md"
 requires "modules/biguint.md"
 requires "modules/hooks.md"
 requires "modules/proxy.md"
+requires "modules/send.md"
 requires "modules/storage.md"
 requires "modules/token-identifier.md"
 
@@ -12,6 +13,7 @@ module MX-RUST-MODULES
     imports private MX-RUST-MODULES-BIGUINT
     imports private MX-RUST-MODULES-HOOKS
     imports private MX-RUST-MODULES-PROXY
+    imports private MX-RUST-MODULES-SEND
     imports private MX-RUST-MODULES-STORAGE
     imports private MX-RUST-MODULES-TOKEN-IDENTIFIER
 endmodule

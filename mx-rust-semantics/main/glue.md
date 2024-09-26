@@ -65,6 +65,8 @@ module MX-RUST-GLUE
     rule rustValueToMx(V:Value) => mxIntValue({valueToInteger(V)}:>Int)
         requires notBool isSemanticsError(valueToInteger(V))
 
+    rule mxIntValue(0) ~> mxRustCheckMxStatus => .K
+
 endmodule
 
 ```
