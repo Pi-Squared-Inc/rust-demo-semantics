@@ -26,6 +26,14 @@ module MX-TOOLS
     rule reverse(.MxValueList, L:MxValueList) => L
     rule reverse((E:MxValue , L1:MxValueList => L1), (L2:MxValueList => E , L2))
 
+    rule append(.MxValueList, V:MxValue) => V , .MxValueList
+    rule append(A:MxValue , L:MxValueList, V:MxValue) => A , append(L , V)
+
+    rule setAtIndex(_:MxValue , L:MxValueList, 0, V:MxValue) => V , L
+    rule setAtIndex(Vl:MxValue , L:MxValueList, Index:Int, V:MxValue)
+        => Vl , setAtIndex(L, Index -Int 1, V)
+        requires Index >Int 0
+
 endmodule
 
 ```

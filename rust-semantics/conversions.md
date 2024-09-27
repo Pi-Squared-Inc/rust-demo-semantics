@@ -6,6 +6,7 @@ module RUST-CONVERSIONS-SYNTAX
 
     syntax PtrListOrError ::= listToPtrList(List)  [function, total]
     syntax ValueListOrError ::= ptrListToValueList(PtrListOrError, Map)  [function, total]
+    syntax ValueListOrError ::= callParamsToValueList(CallParamsList)  [function, total]
 endmodule
 
 module RUST-CONVERSIONS
@@ -27,6 +28,12 @@ module RUST-CONVERSIONS
         => error("element not in map or wrong value type (ptrListToValueList)", ListItem(Ps) ListItem(M))
         [owise]
 
+    rule callParamsToValueList(.CallParamsList) => .ValueList
+    rule callParamsToValueList(ptrValue(_, V:Value) , L:CallParamsList)
+        => concat(V, callParamsToValueList(L))
+    rule callParamsToValueList(L:CallParamsList)
+        => error("callParamsToValueList: Unexpected value", ListItem(L))
+        [owise]
 endmodule
 
 ```

@@ -3,10 +3,13 @@
 module MX-COMMON-SYNTAX
     imports BOOL-SYNTAX
     imports INT-SYNTAX
+    imports LIST
     imports STRING-SYNTAX
 
     syntax MxEsdtTransfer ::= mxTransferValue(token:String, nonce:Int, value:Int)
     syntax MxEsdtTransferList ::= List{MxEsdtTransfer, ","}
+
+    syntax SemanticsError ::= mxError(String, List)
 
     syntax MxValue  ::= mxIntValue(Int)
                       | mxBoolValue(Bool)
@@ -17,11 +20,15 @@ module MX-COMMON-SYNTAX
                       | mxUnitValue()
                       | MxEmptyValue
     syntax MxEmptyValue ::= "mxEmptyValue"
+    syntax MxValueOrError ::= MxValue | SemanticsError
 
     syntax MxHookName ::= r"MX#[a-zA-Z][a-zA-Z0-9]*"  [token]
     syntax MxValueList ::= List{MxValue, ","}
     syntax HookCall ::= MxHookName "(" MxValueList ")"
     syntax MxValueList ::= reverse(MxValueList, MxValueList)  [function, total]
+    syntax MxValueList ::= append(MxValueList, MxValue)  [function, total]
+    // TODO: Make this function total
+    syntax MxValueList ::= setAtIndex(MxValueList, Int, MxValue)  [function]
 
     syntax Int ::= lengthValueList(MxValueList)  [function, total]
     syntax String ::= getMxString(MxValue)  [function, total]

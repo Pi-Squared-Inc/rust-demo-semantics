@@ -9,8 +9,7 @@ module MX-RUST-MODULES-PROXY
     imports RUST-REPRESENTATION
     imports RUST-SHARED-SYNTAX
 
-    syntax MxRustType ::= "MxRust#Type"
-                        | "MxRust#Identifier"
+    syntax MxRustType ::= "MxRust#Identifier"
                         | "MxRust#Tuple"
 
     syntax MxRustStructType ::= "proxyType"  [function, total]

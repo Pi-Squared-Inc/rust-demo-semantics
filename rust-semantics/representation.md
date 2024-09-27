@@ -78,6 +78,7 @@ module RUST-REPRESENTATION
                               ( params: CallParamsList
                               , reversedNormalizedParams: PtrList
                               )
+                          | "clearValue"
 
     syntax PtrList ::= reverse(PtrList, PtrList) [function, total]
 

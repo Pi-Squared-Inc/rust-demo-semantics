@@ -24,6 +24,11 @@ module MX-RUST-EXPRESSION-MX-TO-RUST
     rule isMxToRustFieldValue(A:MxRustFieldValue , As:MxRustFieldValues)
         => isMxToRustFieldValue(A) andBool isMxToRustFieldValue(As)
 
+    rule V:MxValue ~> mxToRustTypedExpression(E:Expression)
+        => mxToRustTypedExpression(E, V)
+    rule mxToRustTypedExpression(ptrValue(_, rustType(T:Type)), V:MxValue) => mxToRustTyped(T, V)
+    rule mxToRustTypedExpression(ptrValue(_, T:Type), V:MxValue) => mxToRustTyped(T, V)
+
     rule V:MxValue ~> mxToRustTyped(T:Type) => mxToRustTyped(T, V)
 
     rule mxToRustTyped(T:Type, mxIntValue(I:Int)) => mxRustNewValue(integerToValue(I, T))
@@ -41,7 +46,12 @@ module MX-RUST-EXPRESSION-MX-TO-RUST
             , mxListValue(Values:MxValueList)
             )
         => mxToRustTuple(pairTuple(Types, Values))
-    rule mxToRustTyped(() , mxUnitValue()) => ptrValue(null, tuple(.ValueList))
+    rule mxToRustTyped
+            ( ()
+            , mxUnitValue()
+            )
+        => mxRustNewValue(tuple(.ValueList))
+    rule mxToRustTyped(MxRust#Type, mxRustType(T:Type)) => mxRustNewValue(T)
 
     context HOLE:MxRustFieldValue , _:MxRustFieldValues [result(MxToRustFieldValue)]
     context V:MxRustFieldValue , HOLE:MxRustFieldValues requires isMxToRustFieldValue(V)
@@ -86,8 +96,8 @@ module MX-RUST-EXPRESSION-MX-TO-RUST
             )
         => error("Field name already in map", ListItem(Field) ListItem(M))
         requires Name in_keys(M)
-    rule fieldsToMap((Field , _:MxRustFieldValues), _:Map)
-        => error("Unexpected field", ListItem(Field))
+    rule fieldsToMap((Field , _:MxRustFieldValues), M:Map)
+        => error("Unexpected field", ListItem(Field) ListItem(M))
         [owise]
 
     rule (.K => mxToRustListToValueList(L)) ~> mxToRustTuple(L:MxToRustList)
