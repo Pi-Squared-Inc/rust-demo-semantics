@@ -89,62 +89,62 @@ module MX-RUST-MODULES-PROXY
         <method-name> MethodName </method-name>
 
     syntax RustMxInstruction ::= rustMxManagedExecuteOnDestContext
-                                    ( destination: MxOrRustValueOrInstruction  // MxOrRustValue
-                                    , egldValue: MxOrRustValueOrInstruction  // MxOrRustValue
-                                    , mxTransfers: MxOrRustValueOrInstruction  // MxOrRustValue
-                                    , gasLimit: MxOrRustValueOrInstruction  // MxOrRustValue
-                                    , function: MxOrRustValueOrInstruction  // MxOrRustValue
-                                    , args: MxOrRustValueOrInstruction  // MxOrRustValue
+                                    ( destination: RustToMxOrInstruction  // RustToMx
+                                    , egldValue: RustToMxOrInstruction  // RustToMx
+                                    , mxTransfers: RustToMxOrInstruction  // RustToMx
+                                    , gasLimit: RustToMxOrInstruction  // RustToMx
+                                    , function: RustToMxOrInstruction  // RustToMx
+                                    , args: RustToMxOrInstruction  // RustToMx
                                     )
     context rustMxManagedExecuteOnDestContext
-        (... destination: HOLE:MxOrRustValue => rustToMx(HOLE)
-        , egldValue: _:MxOrRustValue
-        , mxTransfers: _:MxOrRustValue
-        , gasLimit: _:MxOrRustValue
-        , function: _:MxOrRustValue
-        , args: _:MxOrRustValue
+        (... destination: HOLE:RustToMx => rustToMx(HOLE)
+        , egldValue: _:RustToMx
+        , mxTransfers: _:RustToMx
+        , gasLimit: _:RustToMx
+        , function: _:RustToMx
+        , args: _:RustToMx
         )
         [result(MxValue)]
     context rustMxManagedExecuteOnDestContext
-        (... destination: Destination:MxOrRustValue
-        , egldValue: HOLE:MxOrRustValue => rustToMx(HOLE)
-        , mxTransfers: _:MxOrRustValue
-        , gasLimit: _:MxOrRustValue
-        , function: _:MxOrRustValue
-        , args: _:MxOrRustValue
+        (... destination: Destination:RustToMx
+        , egldValue: HOLE:RustToMx => rustToMx(HOLE)
+        , mxTransfers: _:RustToMx
+        , gasLimit: _:RustToMx
+        , function: _:RustToMx
+        , args: _:RustToMx
         )
         requires isMxValue(Destination)
         [result(MxValue)]
     context rustMxManagedExecuteOnDestContext
-        (... destination: Destination:MxOrRustValue
-        , egldValue: EgldValue:MxOrRustValue
-        , mxTransfers: HOLE:MxOrRustValue => rustToMx(HOLE)
-        , gasLimit: _:MxOrRustValue
-        , function: _:MxOrRustValue
-        , args: _:MxOrRustValue
+        (... destination: Destination:RustToMx
+        , egldValue: EgldValue:RustToMx
+        , mxTransfers: HOLE:RustToMx => rustToMx(HOLE)
+        , gasLimit: _:RustToMx
+        , function: _:RustToMx
+        , args: _:RustToMx
         )
         requires isMxValue(Destination)
             andBool isMxValue(EgldValue)
         [result(MxValue)]
     context rustMxManagedExecuteOnDestContext
-        (... destination: Destination:MxOrRustValue
-        , egldValue: EgldValue:MxOrRustValue
-        , mxTransfers: MxTransfers:MxOrRustValue
-        , gasLimit: HOLE:MxOrRustValue => rustToMx(HOLE)
-        , function: _:MxOrRustValue
-        , args: _:MxOrRustValue
+        (... destination: Destination:RustToMx
+        , egldValue: EgldValue:RustToMx
+        , mxTransfers: MxTransfers:RustToMx
+        , gasLimit: HOLE:RustToMx => rustToMx(HOLE)
+        , function: _:RustToMx
+        , args: _:RustToMx
         )
         requires isMxValue(Destination)
             andBool isMxValue(EgldValue)
             andBool isMxValue(MxTransfers)
         [result(MxValue)]
     context rustMxManagedExecuteOnDestContext
-        (... destination: Destination:MxOrRustValue
-        , egldValue: EgldValue:MxOrRustValue
-        , mxTransfers: MxTransfers:MxOrRustValue
-        , gasLimit: GasLimit:MxOrRustValue
-        , function: HOLE:MxOrRustValue => rustToMx(HOLE)
-        , args: _:MxOrRustValue
+        (... destination: Destination:RustToMx
+        , egldValue: EgldValue:RustToMx
+        , mxTransfers: MxTransfers:RustToMx
+        , gasLimit: GasLimit:RustToMx
+        , function: HOLE:RustToMx => rustToMx(HOLE)
+        , args: _:RustToMx
         )
         requires isMxValue(Destination)
             andBool isMxValue(EgldValue)
@@ -152,12 +152,12 @@ module MX-RUST-MODULES-PROXY
             andBool isMxValue(GasLimit)
         [result(MxValue)]
     context rustMxManagedExecuteOnDestContext
-        (... destination: Destination:MxOrRustValue
-        , egldValue: EgldValue:MxOrRustValue
-        , mxTransfers: MxTransfers:MxOrRustValue
-        , gasLimit: GasLimit:MxOrRustValue
-        , function: Function:MxOrRustValue
-        , args: HOLE:MxOrRustValue => rustToMx(HOLE)
+        (... destination: Destination:RustToMx
+        , egldValue: EgldValue:RustToMx
+        , mxTransfers: MxTransfers:RustToMx
+        , gasLimit: GasLimit:RustToMx
+        , function: Function:RustToMx
+        , args: HOLE:RustToMx => rustToMx(HOLE)
         )
         requires isMxValue(Destination)
             andBool isMxValue(EgldValue)

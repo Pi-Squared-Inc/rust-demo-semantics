@@ -27,6 +27,7 @@ module RUST-EXPRESSION-STRUCT-COMPARISONS
             ( listToPtrList(values(FirstFields))
             , listToPtrList(values(SecondFields))
             )
+        [owise]
 
     syntax ExpressionOrError ::= allPtrEquality(PtrListOrError, PtrListOrError)
                                   [function, total]

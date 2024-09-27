@@ -1,0 +1,8 @@
+addAccount("Owner");
+setCallee("Owner");
+new BigUintTest;
+push 15u64;
+push 3u64;
+call BigUintTest.mul;
+get_bigint_from_struct;
+check_eq mxIntValue(45)

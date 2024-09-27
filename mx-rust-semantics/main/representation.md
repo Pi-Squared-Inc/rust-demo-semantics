@@ -31,15 +31,18 @@ module MX-RUST-REPRESENTATION
                                 | mxRustNewStruct(MxRustStructType, CallParamsList)
                                   [strict(2), result(ValueWithPtr)]
                                 | "mxRustCheckMxStatus"
+                                | rustMxCallHook(MxHookName, ValueList)
+                                | "mxRustWrapInMxList"
 
     syntax TraitType ::= "contract" | "proxy"
     syntax MxRustType ::= "noType"
                         | rustType(Type)
     syntax MxRustTypeOrError ::= MxRustType | SemanticsError
     syntax Value ::= MxRustType
-    syntax Type ::= "bigUintType"  [function, total]
+    syntax Type ::= "bigUintFromValueType"  [function, total]
+    syntax Type ::= "bigUintFromIdType"  [function, total]
 
-    syntax MxOrRustValueOrInstruction ::= MxOrRustValue | MxRustInstruction
+    syntax RustToMxOrInstruction ::= RustToMx | MxRustInstruction
 
     syntax Expression ::= concatString(Expression, Expression)  [seqstrict]
                         | toString(Expression)  [strict]
@@ -84,14 +87,13 @@ module MX-RUST-REPRESENTATION-CONVERSIONS
     syntax MxToRustOrError ::= MxToRust | SemanticsError
     syntax MxToRustList ::= List{MxToRustOrError, ","}
 
-    syntax MxOrRustValue ::= MxValue | Value
-    syntax MxOrRustValueList ::= List{MxOrRustValue, ","}
-    syntax MxOrRustValueListOrError ::= MxOrRustValueList | SemanticsError
+    syntax RustToMx ::= MxValue | Value
     syntax MxRustInstruction ::= mxToRustTyped(MxRustType)
 
     // TODO: Merge rustToMx and rustValueToMx
-    syntax MxRustInstruction  ::= rustToMx(MxOrRustValue)
+    syntax MxRustInstruction  ::= rustToMx(RustToMx)
                                 | "rustToMx"
+                                | rustValuesToMxListValue(ValueListOrError, MxValueList)
 endmodule
 
 ```

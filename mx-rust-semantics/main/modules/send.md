@@ -60,40 +60,40 @@ module MX-RUST-MODULES-SEND
         </values>
 
     syntax RustMxInstruction ::= rustMxDirectEsdt
-                                    ( destination: MxOrRustValueOrInstruction  // MxOrRustValue
-                                    , tokenId: MxOrRustValueOrInstruction  // MxOrRustValue
-                                    , nonce: MxOrRustValueOrInstruction  // MxOrRustValue
-                                    , amount: MxOrRustValueOrInstruction  // MxOrRustValue
+                                    ( destination: RustToMxOrInstruction  // RustToMx
+                                    , tokenId: RustToMxOrInstruction  // RustToMx
+                                    , nonce: RustToMxOrInstruction  // RustToMx
+                                    , amount: RustToMxOrInstruction  // RustToMx
                                     )
     context rustMxDirectEsdt
-                (... destination: HOLE:MxOrRustValue => rustToMx(HOLE)
-                , tokenId: _:MxOrRustValue
-                , nonce: _:MxOrRustValue
-                , amount: _:MxOrRustValue
+                (... destination: HOLE:RustToMx => rustToMx(HOLE)
+                , tokenId: _:RustToMx
+                , nonce: _:RustToMx
+                , amount: _:RustToMx
                 )
         [result(MxValue)]
     context rustMxDirectEsdt
-                (... destination: Destination:MxOrRustValue
-                , tokenId: HOLE:MxOrRustValue => rustToMx(HOLE)
-                , nonce: _:MxOrRustValue
-                , amount: _:MxOrRustValue
+                (... destination: Destination:RustToMx
+                , tokenId: HOLE:RustToMx => rustToMx(HOLE)
+                , nonce: _:RustToMx
+                , amount: _:RustToMx
                 )
         requires isMxValue(Destination)
         [result(MxValue)]
     context rustMxDirectEsdt
-                (... destination: Destination:MxOrRustValue
-                , tokenId: TokenId:MxOrRustValue
-                , nonce: HOLE:MxOrRustValue => rustToMx(HOLE)
-                , amount: _:MxOrRustValue
+                (... destination: Destination:RustToMx
+                , tokenId: TokenId:RustToMx
+                , nonce: HOLE:RustToMx => rustToMx(HOLE)
+                , amount: _:RustToMx
                 )
         requires isMxValue(Destination)
             andBool isMxValue(TokenId)
         [result(MxValue)]
     context rustMxDirectEsdt
-                (... destination: Destination:MxOrRustValue
-                , tokenId: TokenId:MxOrRustValue
-                , nonce: Nonce:MxOrRustValue
-                , amount: HOLE:MxOrRustValue => rustToMx(HOLE)
+                (... destination: Destination:RustToMx
+                , tokenId: TokenId:RustToMx
+                , nonce: Nonce:RustToMx
+                , amount: HOLE:RustToMx => rustToMx(HOLE)
                 )
         requires isMxValue(Destination)
             andBool isMxValue(TokenId)
