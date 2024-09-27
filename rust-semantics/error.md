@@ -10,6 +10,7 @@ module RUST-ERROR-SYNTAX
     syntax TypePathOrError ::= injectOrError(TypePathSegmentsOrError) [function, total]
     syntax TypePathSegmentsOrError ::= concat(TypePathSegment, TypePathSegmentsOrError)  [function, total]
     syntax ExpressionOrError ::= andOrError(ExpressionOrError, ExpressionOrError)  [function, total]
+    syntax ValueOrError ::= tupleOrError(ValueListOrError)  [function, total]
 endmodule
 
 module RUST-ERROR
@@ -40,6 +41,9 @@ module RUST-ERROR
     rule andOrError(_:ExpressionOrError, E:SemanticsError) => E
     rule andOrError(E:SemanticsError, _:Expression) => E
     rule andOrError(E1:Expression, E2:Expression) => E1 && E2
+
+    rule tupleOrError(L:ValueList) => tuple(L)
+    rule tupleOrError(E:SemanticsError) => E
 endmodule
 
 ```

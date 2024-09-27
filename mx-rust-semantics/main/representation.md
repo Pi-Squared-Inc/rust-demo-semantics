@@ -20,6 +20,7 @@ module MX-RUST-REPRESENTATION
                                 | mxRustNewValue(ValueOrError)
                                 | mxRustEmptyValue(MxRustType)
                                 | mxValueToRust(Type)
+                                // TODO: Replace with mxToRustTyped
                                 | mxValueToRust(Type, MxValue)
                                 | "rustValueToMx"
                                 | rustValueToMx(Value)
@@ -32,9 +33,11 @@ module MX-RUST-REPRESENTATION
                                 | "mxRustCheckMxStatus"
 
     syntax TraitType ::= "contract" | "proxy"
-    syntax MxRustType ::= "noType" | rustType(Type)
+    syntax MxRustType ::= "noType"
+                        | rustType(Type)
     syntax MxRustTypeOrError ::= MxRustType | SemanticsError
     syntax Value ::= MxRustType
+    syntax Type ::= "bigUintType"  [function, total]
 
     syntax MxOrRustValueOrInstruction ::= MxOrRustValue | MxRustInstruction
 
@@ -61,8 +64,8 @@ module MX-RUST-REPRESENTATION-CONVERSIONS
     syntax MxRustStructField ::= mxRustStructField(Identifier, MxRustType)
     syntax MxRustStructFields ::= List{MxRustStructField, ","}
     syntax MxRustStructType ::= rustStructType(TypePath, MxRustStructFields)
+    syntax Type ::= MxRustStructType
     syntax MxRustType ::= Type  // TODO: Remove and use `rustType(_)`
-                        | MxRustStructType
 
     syntax MxRustFieldValue ::= mxToRustField(Identifier, MxToRust)  [strict(2)]
     syntax MxRustFieldValueOrError ::= MxRustFieldValue | SemanticsError
@@ -71,10 +74,15 @@ module MX-RUST-REPRESENTATION-CONVERSIONS
     syntax MxToRustIntermediate ::= mxToRustStruct(structName:TypePath, MxRustFieldValues)
                                     [strict(2), result(MxToRustFieldValue)]
 
+    syntax MxToRustIntermediate ::= mxToRustTuple(MxToRustList)
+                                    [strict, result(MxToRustValue)]
+
     syntax MxToRust ::= mxToRustTyped(MxRustType, MxValue)
                       | MxValue
                       | PtrValue
                       | SemanticsError
+    syntax MxToRustOrError ::= MxToRust | SemanticsError
+    syntax MxToRustList ::= List{MxToRustOrError, ","}
 
     syntax MxOrRustValue ::= MxValue | Value
     syntax MxOrRustValueList ::= List{MxOrRustValue, ","}
