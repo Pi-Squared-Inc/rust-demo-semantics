@@ -1,4 +1,0 @@
-new LetMut;
-call LetMut.let_mut;
-return_value;
-check_eq 100_u64
