@@ -1,7 +1,7 @@
 setCallee("Owner");
 
-push mxListValue();
-push mxStringValue("callRequirePassesInstr");
+push mxListValue(mxStringValue("MyToken"));
+push mxStringValue("testClone");
 push mxIntValue(0);
 push mxTransfersValue();
 push mxIntValue(0);
@@ -10,4 +10,4 @@ call 6 MX#managedExecuteOnDestContext;
 check_eq mxIntValue(0);
 
 push_return_value;
-check_eq mxListValue()
+check_eq mxStringValue("MyToken")

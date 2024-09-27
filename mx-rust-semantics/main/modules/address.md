@@ -28,7 +28,7 @@ module MX-RUST-MODULES-ADDRESS
             ( struct
                 ( #token("ManagedAddress", "Identifier"):Identifier
                 , #token("mx_address_value", "Identifier"):Identifier |-> AddressValueId:Int
-                  _:Map
+                  .Map
                 )
             )
         => ptr(AddressValueId) ~> rustValueToMx

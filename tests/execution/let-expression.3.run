@@ -1,0 +1,4 @@
+new Let;
+call Let.let_tuple;
+return_value;
+check_eq 100_u64

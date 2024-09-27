@@ -3,6 +3,7 @@
 module MX-RUST-MODULES-BIGUINT
     imports private COMMON-K-CELL
     imports private MX-COMMON-SYNTAX
+    imports private MX-RUST-BIGUINT-OPERATORS
     imports private MX-RUST-REPRESENTATION
     imports private RUST-EXECUTION-CONFIGURATION
     imports private RUST-REPRESENTATION
@@ -25,9 +26,15 @@ module MX-RUST-MODULES-BIGUINT
         </k>
         <values> ValueId |-> V:Value ... </values>
 
+    rule normalizedMethodCall
+            ( #token("BigUint", "Identifier"):Identifier
+            , #token("zero", "Identifier"):Identifier
+            , .PtrList
+            )
+        => mxRustBigIntNew(0)
+
   // --------------------------------------
-    syntax MxRustType ::= "bigUintType"  [function, total]
-    rule bigUintType
+    rule bigUintFromValueType
         => rustStructType
             ( #token("BigUint", "Identifier"):Identifier
             ,   ( mxRustStructField
@@ -37,9 +44,19 @@ module MX-RUST-MODULES-BIGUINT
                 , .MxRustStructFields
                 )
             )
+    rule bigUintFromIdType
+        => rustStructType
+            ( #token("BigUint", "Identifier"):Identifier
+            ,   ( mxRustStructField
+                    ( #token("mx_biguint_id", "Identifier"):Identifier
+                    , i32
+                    )
+                , .MxRustStructFields
+                )
+            )
   // --------------------------------------
     rule mxToRustTyped(#token("BigUint", "Identifier"):Identifier, V:MxValue)
-        => mxToRustTyped(bigUintType, mxListValue(V))
+        => mxToRustTyped(bigUintFromValueType, mxListValue(V))
 
     rule (.K => MX#bigIntNew(mxIntValue(I)))
         ~> mxToRustTyped(MxRust#bigInt, mxIntValue(I:Int))
@@ -51,7 +68,7 @@ module MX-RUST-MODULES-BIGUINT
                                 | "mxRustCreateBigUint"
 
     rule mxRustBigIntNew(V:Int)
-        => mxToRustTyped(bigUintType, mxListValue(mxIntValue(V)))
+        => mxToRustTyped(bigUintFromValueType, mxListValue(mxIntValue(V)))
 
     rule mxRustEmptyValue(rustType(#token("BigUint", "Identifier")))
         => mxRustBigIntNew(0)
@@ -87,6 +104,163 @@ module MX-RUST-MODULES-BIGUINT
             BigUintIdId |-> i32(BigUintId:MInt{32})
             ...
         </values>
+
+endmodule
+
+module MX-RUST-BIGUINT-OPERATORS
+    imports private COMMON-K-CELL
+    imports private MX-RUST-REPRESENTATION
+    imports private RUST-EXECUTION-CONFIGURATION
+
+    syntax MxRustInstruction ::= rustMxBinaryBigUintOperator(MxHookName, Value, Value)
+    rule
+        <k>
+            rustMxBinaryBigUintOperator
+                ( Hook:MxHookName
+                , struct
+                    ( #token("BigUint", "Identifier"):Identifier #as BigUint:TypePath
+                    , #token("mx_biguint_id", "Identifier"):Identifier |-> FirstId:Int
+                      _:Map
+                    )
+                , struct
+                    ( #token("BigUint", "Identifier"):Identifier #as BigUint:TypePath
+                    , #token("mx_biguint_id", "Identifier"):Identifier |-> SecondId:Int
+                      _:Map
+                    )
+                )
+            => rustMxCallHook(Hook, (V1, V2, .ValueList))
+              ~> mxRustWrapInMxList
+              ~> mxToRustTyped(bigUintFromIdType)
+            ...
+        </k>
+        <values>
+            FirstId |-> V1:Value
+            SecondId |-> V2:Value
+            ...
+        </values>
+
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            + ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)
+        => rustMxBinaryBigUintOperator(MX#bigIntAdd, V1, V2)
+
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            - ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)
+        => rustMxBinaryBigUintOperator(MX#bigIntSub, V1, V2)
+
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            * ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)
+        => rustMxBinaryBigUintOperator(MX#bigIntMul, V1, V2)
+
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            / ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)
+        => rustMxBinaryBigUintOperator(MX#bigIntDiv, V1, V2)
+
+
+
+    rule
+        (ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _)) #as V1:PtrValue)
+            + (ptrValue(_, u64(_:MInt{64})) #as V2:PtrValue)
+        => V1 + bigUintFrom(V2)
+
+    rule
+        (ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _)) #as V1:PtrValue)
+            - (ptrValue(_, u64(_:MInt{64})) #as V2:PtrValue)
+        => V1 - bigUintFrom(V2)
+
+    rule
+        (ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _)) #as V1:PtrValue)
+            * (ptrValue(_, u64(_:MInt{64})) #as V2:PtrValue)
+        => V1 * bigUintFrom(V2)
+
+    rule
+        (ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _)) #as V1:PtrValue)
+            / (ptrValue(_, u64(_:MInt{64})) #as V2:PtrValue)
+        => V1 / bigUintFrom(V2)
+
+    syntax Expression ::= bigUintFrom(Expression)  [function, total]
+    rule bigUintFrom(V:Expression)
+        =>  ( #token("BigUint", "Identifier"):Identifier
+            :: #token("from", "Identifier"):Identifier
+            :: .PathExprSegments
+            )
+            ( V, .CallParamsList )
+
+
+    syntax MxRustInstruction ::= rustMxBinaryBigUintComparisonOperator(MxHookName, Value, Value)
+    rule
+        <k>
+            rustMxBinaryBigUintComparisonOperator
+                ( Hook:MxHookName
+                , struct
+                    ( #token("BigUint", "Identifier"):Identifier
+                    , #token("mx_biguint_id", "Identifier"):Identifier |-> FirstId:Int
+                      _:Map
+                    )
+                , struct
+                    ( #token("BigUint", "Identifier"):Identifier
+                    , #token("mx_biguint_id", "Identifier"):Identifier |-> SecondId:Int
+                      _:Map
+                    )
+                )
+            => rustMxCallHook(Hook, (V1, V2, .ValueList))
+              ~> mxToRustTyped(i32)
+            ...
+        </k>
+        <values>
+            FirstId |-> V1:Value
+            SecondId |-> V2:Value
+            ...
+        </values>
+
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            == ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)
+        => rustMxBinaryBigUintComparisonOperator(MX#bigIntCmp, V1, V2)
+            ~> mxRustEqResult
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            != ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)
+        => rustMxBinaryBigUintComparisonOperator(MX#bigIntCmp, V1, V2)
+            ~> mxRustNeResult
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            < ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)  // >
+        => rustMxBinaryBigUintComparisonOperator(MX#bigIntCmp, V1, V2)
+            ~> mxRustLtResult
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            <= ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)
+        => rustMxBinaryBigUintComparisonOperator(MX#bigIntCmp, V1, V2)
+            ~> mxRustLeResult
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            > ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)
+        => rustMxBinaryBigUintComparisonOperator(MX#bigIntCmp, V1, V2)
+            ~> mxRustGtResult
+    rule
+        ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V1:Value)
+            >= ptrValue(_, struct(#token("BigUint", "Identifier"):Identifier, _) #as V2:Value)
+        => rustMxBinaryBigUintComparisonOperator(MX#bigIntCmp, V1, V2)
+            ~> mxRustGeResult
+
+    syntax MxRustInstruction  ::= "mxRustEqResult"
+                                | "mxRustNeResult"
+                                | "mxRustGeResult"
+                                | "mxRustGtResult"
+                                | "mxRustLeResult"
+                                | "mxRustLtResult"
+
+    rule V:PtrValue ~> mxRustEqResult => V == ptrValue(null, i32(0p32))
+    rule V:PtrValue ~> mxRustNeResult => V != ptrValue(null, i32(0p32))
+    rule V:PtrValue ~> mxRustGeResult => V >= ptrValue(null, i32(0p32))
+    rule V:PtrValue ~> mxRustGtResult => V > ptrValue(null, i32(0p32))
+    rule V:PtrValue ~> mxRustLtResult => V < ptrValue(null, i32(0p32))  // >
+    rule V:PtrValue ~> mxRustLeResult => V <= ptrValue(null, i32(0p32))
+
 endmodule
 
 ```

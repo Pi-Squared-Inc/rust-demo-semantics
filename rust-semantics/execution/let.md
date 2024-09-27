@@ -9,6 +9,8 @@ module RUST-LET
     imports private RUST-VALUE-SYNTAX
 
     // Not all cases are implemented
+
+    // Handling immutable variables
     rule
         <k>
             let Variable:Identifier : T:Type = ptrValue(_, V:Value) ; => .K
@@ -26,6 +28,46 @@ module RUST-LET
         <locals> Locals:Map => Locals[Variable <- NextId] </locals>
         <values> Values:Map => Values[NextId <- V] </values>
     requires notBool mayBeDefaultTypedInt(V)
+
+    // Handling mutable variables
+    rule
+        <k>
+            let mut Variable:Identifier : T:Type = ptrValue(_, V:Value) ; => .K
+            ...
+        </k>
+        <next-value-id> NextId:Int => NextId +Int 1 </next-value-id>
+        <locals> Locals:Map => Locals[Variable <- NextId] </locals>
+        <values> Values:Map => Values[NextId <- implicitCast(V, T)] </values>
+    rule
+        <k>
+            let mut Variable:Identifier = ptrValue(_, V:Value) ; => .K
+            ...
+        </k>
+        <next-value-id> NextId:Int => NextId +Int 1 </next-value-id>
+        <locals> Locals:Map => Locals[Variable <- NextId] </locals>
+        <values> Values:Map => Values[NextId <- V] </values>
+    requires notBool mayBeDefaultTypedInt(V)
+
+    // Handling tuple assignments 
+    rule
+        let (Variable:PatternNoTopAlt | .PatternNoTopAlts , RemainingToAssign:Patterns):TuplePattern 
+            = ptrValue(_,tuple(Val:Value, ValList:ValueList)) ; 
+        =>
+            let Variable = ptrValue(null, Val); 
+            ~> let (RemainingToAssign:Patterns:TuplePatternItems):TuplePattern 
+                = ptrValue(null, tuple(ValList));
+            
+
+    rule
+        let (.Patterns):TuplePattern = ptrValue(_,tuple(.ValueList)); 
+            => .K
+    
+    // Handles the case where the tuple pattern on the let expression has an extra comma, removing it
+    rule
+        let (Ps:Patterns,):TuplePattern = V:PtrValue; 
+            => let (Ps):TuplePattern = V;
+
+
 endmodule
 
 ```
