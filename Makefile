@@ -94,13 +94,13 @@ $(RUST_EXECUTION_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 $(MX_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_TESTING_KOMPILED)
-	$$(which kompile) mx-semantics/targets/testing/mx.md -o $(MX_TESTING_KOMPILED) --debug
+	$$(which kompile) mx-semantics/targets/testing/mx.md --emit-json -o $(MX_TESTING_KOMPILED) --debug
 
 $(MX_RUST_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX_RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_RUST_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/blockchain/mx-rust.md \
-			-o $(MX_RUST_KOMPILED) \
+			--emit-json -o $(MX_RUST_KOMPILED) \
 			-I . \
 			--debug
 
@@ -108,7 +108,7 @@ $(MX_RUST_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_RUST_TESTING_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/testing/mx-rust.md \
-			-o $(MX_RUST_TESTING_KOMPILED) \
+			--emit-json -o $(MX_RUST_TESTING_KOMPILED) \
 			-I . \
 			--debug
 
@@ -116,7 +116,7 @@ $(MX_RUST_CONTRACT_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FI
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_RUST_CONTRACT_TESTING_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/contract-testing/mx-rust.md \
-			-o $(MX_RUST_CONTRACT_TESTING_KOMPILED) \
+			--emit-json -o $(MX_RUST_CONTRACT_TESTING_KOMPILED) \
 			-I . \
 			--debug
 
@@ -124,7 +124,7 @@ $(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTI
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/two-contracts-testing/mx-rust.md \
-			-o $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED) \
+			--emit-json -o $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED) \
 			-I . \
 			--debug
 
