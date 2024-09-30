@@ -2,6 +2,7 @@
 
 requires "modules/address.md"
 requires "modules/biguint.md"
+requires "modules/blockchain.md"
 requires "modules/call-value.md"
 requires "modules/hooks.md"
 requires "modules/managed-vec.md"
@@ -14,6 +15,7 @@ requires "modules/token-identifier.md"
 module MX-RUST-MODULES
     imports private MX-RUST-MODULES-ADDRESS
     imports private MX-RUST-MODULES-BIGUINT
+    imports private MX-RUST-MODULES-BLOCKCHAIN
     imports private MX-RUST-MODULES-CALL-VALUE
     imports private MX-RUST-MODULES-HOOKS
     imports private MX-RUST-MODULES-MANAGED-VEC

@@ -1,0 +1,13 @@
+setCallee("Owner");
+
+push mxListValue();
+push mxStringValue("getCaller");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxStringValue("Owner")

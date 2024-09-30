@@ -7,6 +7,7 @@ module MX-RUST-PREPROCESSING-CONTRACT
 
     syntax MxRustInstruction  ::= rustMxAddContractSend(TypePath)
                                 | rustMxAddContractCallValue(TypePath)
+                                | rustMxAddContractBlockchain(TypePath)
                                 | rustMxAddContractGenericMethod
                                     ( trait: TypePath
                                     , method: Identifier
@@ -16,6 +17,7 @@ module MX-RUST-PREPROCESSING-CONTRACT
     rule rustMxAddContractMethods(Trait:TypePath)
         => rustMxAddContractSend(Trait:TypePath)
             ~> rustMxAddContractCallValue(Trait:TypePath)
+            ~> rustMxAddContractBlockchain(Trait:TypePath)
 
     rule rustMxAddContractSend(Trait:TypePath)
         => rustMxAddContractGenericMethod
@@ -29,6 +31,13 @@ module MX-RUST-PREPROCESSING-CONTRACT
             (... trait: Trait
             , method: #token("call_value", "Identifier")
             , struct: #token("MxRust#CallValue", "Identifier")
+            )
+
+    rule rustMxAddContractBlockchain(Trait:TypePath)
+        => rustMxAddContractGenericMethod
+            (... trait: Trait
+            , method: #token("blockchain", "Identifier")
+            , struct: #token("MxRust#Blockchain", "Identifier")
             )
 
     rule
