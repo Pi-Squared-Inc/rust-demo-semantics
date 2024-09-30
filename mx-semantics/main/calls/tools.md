@@ -360,7 +360,7 @@ module MX-CALLS-TOOLS
                 (... function: FunctionName:String
                 , callData: CallData:MxCallDataCell
                 )
-            => clearBigInts ~> host.mkCall(FunctionName)
+            => clearMxInternalState ~> host.mkCall(FunctionName)
             ...
         </k>
         (_:MxCallDataCell => CallData)

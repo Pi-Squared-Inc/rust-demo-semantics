@@ -20,8 +20,8 @@ module MX-BUFFERS-HOOKS
 
  // extern int32_t   mBufferNewFromBytes(void* context, int32_t dataOffset, int32_t dataLength);
     rule
-        <k> MX#mBufferNewFromValue(V:MxValue, .MxValueList) => mxIntValue(NextId) ... </k>
-        <buffer-heap> Values:Map => Values[NextId <- mxListValue(V, .MxValueList)] </buffer-heap>
+        <k> MX#mBufferNewFromValue((mxListValue(_) #as V:MxValue), .MxValueList) => mxIntValue(NextId) ... </k>
+        <buffer-heap> Values:Map => Values[NextId <- V] </buffer-heap>
         <buffer-heap-next-id> NextId => NextId +Int 1 </buffer-heap-next-id>
 
  // extern int32_t   mBufferSetBytes(void* context, int32_t mBufferHandle, int32_t dataOffset, int32_t dataLength);

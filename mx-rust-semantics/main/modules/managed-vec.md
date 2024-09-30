@@ -81,6 +81,14 @@ module MX-RUST-MODULES-MANAGED-VEC
             ~> clearValue
             ~> ptrValue(null, tuple(.ValueList))
 
+    rule
+        normalizedMethodCall
+            ( #token("ManagedVec", "Identifier"):Identifier
+            , #token("into", "Identifier"):Identifier
+            , ( ptr(SelfId) , .PtrList)
+            )
+        => into(ptr(SelfId))
+
   // --------------------------------------
 
     syntax MxRustType ::= "managedVecType"  [function, total]
@@ -102,7 +110,7 @@ module MX-RUST-MODULES-MANAGED-VEC
     rule mxRustEmptyValue(rustType(#token("ManagedVec", "Identifier")))
         => mxToRustTyped
             ( managedVecType
-            , mxListValue(mxUnitValue() , mxRustType(()) , .MxValueList)
+            , mxListValue(mxListValue(.MxValueList) , mxRustType(()) , .MxValueList)
             )
 
     rule mxValueToRust(#token("ManagedVec", "Identifier"), V:MxValue)
@@ -144,6 +152,25 @@ module MX-RUST-MODULES-MANAGED-VEC
             ...
         </values>
         [priority(20), label(xyzzy)]
+
+  // --------------------------------------
+
+    syntax MxRustInstruction ::= into(Expression)  [strict]
+
+    rule into
+            ( ptrValue
+                ( _
+                , struct
+                    ( _
+                    ,   ( #token("mx_buffer_id", "Identifier"):Identifier |-> _
+                            #token("value_type", "Identifier"):Identifier |-> _
+                            .Map
+                        ) #as M:Map
+                    )
+                )
+            )
+        => ptrValue(null, struct(#token("MultiValueEncoded", "Identifier"):Identifier , M))
+
 endmodule
 
 ```
