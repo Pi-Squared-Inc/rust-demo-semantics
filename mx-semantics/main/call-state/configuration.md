@@ -1,9 +1,11 @@
 ```k
 requires "../biguint/configuration.md"
+requires "../buffers/configuration.md"
 requires "../calls/configuration.md"
 
 module MX-CALL-STATE-CONFIGURATION
     imports MX-BIGUINT-CONFIGURATION
+    imports MX-BUFFERS-CONFIGURATION
     imports MX-CALL-CONFIGURATION
     imports MX-CALL-RETURN-VALUE-CONFIGURATION
 
@@ -12,6 +14,7 @@ module MX-CALL-STATE-CONFIGURATION
             <mx-call-data/>
             <mx-return-values/>
             <mx-biguint/>
+            <mx-buffers/>
         </mx-call-state>
 endmodule
 
