@@ -21,7 +21,7 @@ class RustLiteManager():
     cterm: CTerm
 
     def __init__(self) -> None:
-        dir_path = Path(f'../.build/rust-execution-kompiled')
+        dir_path = Path(f'../.build/mx-rust-testing-kompiled')
         self.krun = KRun(dir_path)
         self._init_cterm()
 
