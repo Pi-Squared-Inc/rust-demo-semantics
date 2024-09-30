@@ -9,6 +9,7 @@ requires "biguint/hooks.md"
 requires "biguint/tools.md"
 requires "blocks/hooks.md"
 requires "buffers/hooks.md"
+requires "buffers/tools.md"
 requires "call-state/tools.md"
 requires "calls/hooks.md"
 requires "calls/tools.md"
@@ -22,6 +23,7 @@ module MX-COMMON
     imports private MX-ACCOUNTS-TOOLS
     imports private MX-BIGUINT-HOOKS
     imports private MX-BIGUINT-TOOLS
+    imports private MX-BUFFER-TOOLS
     imports private MX-BLOCKS-HOOKS
     imports private MX-BUFFERS-HOOKS
     imports private MX-CALL-STATE-TOOLS

@@ -34,6 +34,18 @@ module MX-CALL-STATE-TOOLS
                 </mx-call-state>
         )
 
+    rule
+        <k> clearMxInternalState => .K ... </k>
+        (_:MxInternalStateCell =>
+            <mx-internal-state>
+                <mx-biguint>
+                    <bigIntHeapNextId> 0 </bigIntHeapNextId>
+                    ...
+                </mx-biguint>
+                ...
+            </mx-internal-state>
+        )
+
 endmodule
 
 ```

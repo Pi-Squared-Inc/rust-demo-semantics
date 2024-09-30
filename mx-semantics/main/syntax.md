@@ -50,7 +50,7 @@ module MX-COMMON-SYNTAX
                             | "pushWorldState"  [symbol(pushWorldState)]
                             | "dropWorldState"  [symbol(dropWorldState)]
                             | "popWorldState"  [symbol(popWorldState)]
-                            | "clearBigInts"  [symbol(clearBigInts)]
+                            | "clearMxInternalState"  [symbol(clearMxInternalState)]
                             | "endCall"  [symbol(endCall)]
                             | "finishExecuteOnDestContext"  [symbol(finishExecuteOnDestContext)]
                             | processBuiltinFunction(BuiltinFunction, String, String, MxCallDataCell)
@@ -60,6 +60,7 @@ module MX-COMMON-SYNTAX
                             | storeHostValue(destination: MxValue, value: MxValue)
                             | returnCallData(MxValue)  [symbol(returnCallData)]
                             | mxGetBigInt(Int)  [symbol(mxGetBigInt)]
+                            | mxGetBuffer(Int)  [symbol(mxGetBuffer)]
                             | callContract(function: String, input: MxCallDataCell )
                               [symbol(callContractString)]
 

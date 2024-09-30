@@ -13,8 +13,10 @@ module MX-CALL-STATE-CONFIGURATION
         <mx-call-state>
             <mx-call-data/>
             <mx-return-values/>
-            <mx-biguint/>
-            <mx-buffers/>
+            <mx-internal-state>
+                <mx-biguint/>
+                <mx-buffers/>
+            </mx-internal-state>
         </mx-call-state>
 endmodule
 
