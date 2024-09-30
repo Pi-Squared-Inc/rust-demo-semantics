@@ -1,0 +1,14 @@
+setCallee("Owner");
+setBlockTimestamp(123);
+
+push mxListValue();
+push mxStringValue("getBlockTimestamp");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxIntValue(123)
