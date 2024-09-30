@@ -336,6 +336,8 @@ module MX-RUST-PREPROCESSING-METHODS
         [owise]
     rule getMapperValueType(#token("BigUint", "Identifier") #as T:Type)
         => rustType(T)
+    rule getMapperValueType(#token("ManagedBuffer", "Identifier") #as T:Type)
+        => rustType(T)
 
     syntax BlockExpression ::= buildProxyMethodBody
                                   ( selfName: SelfSort

@@ -97,6 +97,10 @@ module MX-RUST-GLUE
     syntax MxRustInstruction ::= cloneValue(Expression)  [strict]
     // TODO: Figure out if we need to do a deeper clone for, e.g., structs
     rule cloneValue(ptrValue(_, V:Value)) => mxRustNewValue(V)
+
+    rule mxRustGetBuffer(ptrValue(_, i32(BufferId:MInt{32})))
+        => mxGetBuffer(MInt2Unsigned(BufferId))
+
 endmodule
 
 ```
