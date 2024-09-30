@@ -4,6 +4,7 @@ requires "modules/address.md"
 requires "modules/biguint.md"
 requires "modules/blockchain.md"
 requires "modules/call-value.md"
+requires "modules/egld-or-esdt-token-identifier.md"
 requires "modules/hooks.md"
 requires "modules/managed-vec.md"
 requires "modules/multi-value-encoded.md"
@@ -17,6 +18,7 @@ module MX-RUST-MODULES
     imports private MX-RUST-MODULES-BIGUINT
     imports private MX-RUST-MODULES-BLOCKCHAIN
     imports private MX-RUST-MODULES-CALL-VALUE
+    imports private MX-RUST-MODULES-EGLD-OR-ESDT-TOKEN-IDENTIFIER
     imports private MX-RUST-MODULES-HOOKS
     imports private MX-RUST-MODULES-MANAGED-VEC
     imports private MX-RUST-MODULES-MULTI-VALUE-ENCODED
