@@ -8,6 +8,25 @@
     cancel-in-progress: true
   
   jobs:
+    code-quality:
+      name: 'Code Quality Checks'
+      runs-on: [self-hosted, linux, normal]
+      steps:
+        - name: 'Check out code'
+          uses: actions/checkout@v3
+          with:
+            submodules: recursive
+        - name: 'Set up Docker'
+          uses: ./.github/actions/with-docker
+          with:
+            container-name: k-rust-demo-${{ github.sha }}
+        - name: 'Python Code Quality Checks'
+          run: docker exec -t k-rust-demo-${{ github.sha }} /bin/bash -c 'make -C rust-lite'
+        - name: 'Tear down Docker'
+          if: always()
+          run: |
+            docker stop k-rust-demo-${{ github.sha }}
+
     build-test:
       name: 'Build And Test'
       runs-on: [self-hosted, linux, normal]
