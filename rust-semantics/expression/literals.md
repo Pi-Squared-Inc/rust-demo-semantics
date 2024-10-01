@@ -32,6 +32,10 @@ module RUST-EXPRESSION-INTEGER-LITERALS
     rule parseIntegerNormalized(I:String) => parseIntegerDecimalSplit(I, findSuffix(I))  [owise]
 
     syntax IntegerSuffix ::= findSuffix(String)  [function, total]
+    rule findSuffix(S) => suffix(i8, 2) requires endsWith(S, "i8")
+    rule findSuffix(S) => suffix(u8, 2) requires endsWith(S, "u8")
+    rule findSuffix(S) => suffix(i16, 3) requires endsWith(S, "i16")
+    rule findSuffix(S) => suffix(u16, 3) requires endsWith(S, "u16")
     rule findSuffix(S) => suffix(i32, 3) requires endsWith(S, "i32")
     rule findSuffix(S) => suffix(u32, 3) requires endsWith(S, "u32")
     rule findSuffix(S) => suffix(i64, 3) requires endsWith(S, "i64")
@@ -62,6 +66,14 @@ module RUST-EXPRESSION-INTEGER-LITERALS
         [owise]
 
 
+    rule integerToValue(I:Int, i8) => i8(Int2MInt(I))
+        requires sminMInt(8) <=Int I andBool I <=Int smaxMInt(8)
+    rule integerToValue(I:Int, u8) => u8(Int2MInt(I))
+        requires uminMInt(8) <=Int I andBool I <=Int umaxMInt(8)
+    rule integerToValue(I:Int, i16) => i16(Int2MInt(I))
+        requires sminMInt(16) <=Int I andBool I <=Int smaxMInt(16)
+    rule integerToValue(I:Int, u16) => u16(Int2MInt(I))
+        requires uminMInt(16) <=Int I andBool I <=Int umaxMInt(16)
     rule integerToValue(I:Int, i32) => i32(Int2MInt(I))
         requires sminMInt(32) <=Int I andBool I <=Int smaxMInt(32)
     rule integerToValue(I:Int, u32) => u32(Int2MInt(I))
@@ -76,6 +88,10 @@ module RUST-EXPRESSION-INTEGER-LITERALS
         [owise]
 
     rule valueToInteger(V:Value) => error("cannot convert to integer", ListItem(V))  [owise]
+    rule valueToInteger(i8(V:MInt{8})) => MInt2Signed(V)
+    rule valueToInteger(u8(V:MInt{8})) => MInt2Unsigned(V)
+    rule valueToInteger(i16(V:MInt{16})) => MInt2Signed(V)
+    rule valueToInteger(u16(V:MInt{16})) => MInt2Unsigned(V)
     rule valueToInteger(i32(V:MInt{32})) => MInt2Signed(V)
     rule valueToInteger(u32(V:MInt{32})) => MInt2Unsigned(V)
     rule valueToInteger(i64(V:MInt{64})) => MInt2Signed(V)

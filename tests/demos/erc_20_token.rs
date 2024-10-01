@@ -53,23 +53,23 @@ pub trait Erc20Token {
 
     #[view(decimals)]
     fn decimals(&self) -> u8 {
-        return 18;
+        18_u8
     }
 
     // Already declared above
     // #[view(totalSupply)]
     // fn total_supply(&self) -> BigUint {
-    //     return self.s_total_supply().get();
+    //     self.s_total_supply().get()
     // }
 
     #[view(name)]
     fn name(&self) -> ManagedBuffer {
-        return self.s_name().get();
+        self.s_name().get()
     }
 
     #[view(symbol)]
     fn symbol(&self) -> ManagedBuffer {
-        return self.s_symbol().get();
+        self.s_symbol().get()
     }
 
     #[view(balanceOf)]
@@ -101,7 +101,7 @@ pub trait Erc20Token {
         let spender = self.blockchain().get_caller();
         self._spend_allowance(from, &spender, value);
         self._transfer(from, to, value);
-        return true;
+        true
     }
 
     fn _transfer(&self, from: &ManagedAddress, to: &ManagedAddress, value: &BigUint) {

@@ -244,6 +244,13 @@ module MX-RUST-PREPROCESSING-METHODS
                 _:NonEmptyOuterAttributes
             , _:Identifier
             ) => IdentifierToString(Name)
+    rule getEndpointName
+            (   (#[ #token("view", "Identifier") :: .SimplePathList
+                    ( Name:Identifier :: .PathExprSegments, .CallParamsList )
+                ])
+                _:NonEmptyOuterAttributes
+            , _:Identifier
+            ) => IdentifierToString(Name)
     rule getEndpointName(_:OuterAttribute Atts:NonEmptyOuterAttributes, Default:Identifier)
         => getEndpointName(Atts, Default)
         [owise]

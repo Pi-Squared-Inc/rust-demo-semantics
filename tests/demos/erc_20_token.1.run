@@ -22,7 +22,7 @@ call 6 MX#managedExecuteOnDestContext;
 check_eq mxIntValue(0);
 
 push_return_value;
-check_eq mxStringValue("MyToken");
+check_eq mxListValue(mxStringValue("MyToken"));
 
 push mxListValue();
 push mxStringValue("symbol");
@@ -34,4 +34,4 @@ call 6 MX#managedExecuteOnDestContext;
 check_eq mxIntValue(0);
 
 push_return_value;
-check_eq mxStringValue("MTKN")
+check_eq mxListValue(mxStringValue("MTKN"))

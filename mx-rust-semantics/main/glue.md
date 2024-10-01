@@ -55,7 +55,9 @@ module MX-RUST-GLUE
     rule mxValueToRust(T:Type, mxIntValue(I:Int))
         => mxRustNewValue(integerToValue(I, T))
         requires
-            (T ==K i32 orBool T ==K u32)
+            (T ==K i8 orBool T ==K u8)
+            orBool (T ==K i16 orBool T ==K u16)
+            orBool (T ==K i32 orBool T ==K u32)
             orBool (T ==K i64 orBool T ==K u64)
 
     rule ptrValue(_, V) ~> rustValueToMx => rustValueToMx(V)
