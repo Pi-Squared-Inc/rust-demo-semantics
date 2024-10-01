@@ -47,15 +47,15 @@ def main() -> None:
 def exec_run(options: RunOptions) -> None:
     contract_path = str(options.input_file.resolve())
 
-    _LOGGER.info('Instantiating module manager;')
+    print('Instantiating module manager;')
 
     module_manager = RustLiteManager()
 
-    _LOGGER.info('Module manager initiated; Trying to load program into K cell;')
+    print('Module manager initiated; Trying to load program into K cell;')
 
     module_manager.load_program(contract_path)
 
-    _LOGGER.info('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
+    print('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
 
     module_manager.print_k_top_element()
 
