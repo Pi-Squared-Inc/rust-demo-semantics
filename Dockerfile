@@ -9,11 +9,11 @@ FROM runtimeverificationinc/kframework-k:ubuntu-jammy-${K_COMMIT}
 
 COPY --from=Z3 /usr/bin/z3 /usr/bin/z3
 
-# RUN    apt-get update              \
-#     && apt-get upgrade --yes       \
-#     && apt-get install --yes       \
+RUN    apt-get update              \
+    && apt-get upgrade --yes       \
+    && apt-get install --yes       \
+                       curl
 #                        cmake       \
-#                        curl        \
 #                        pandoc      \
 #                        python3     \
 #                        python3-pip \
