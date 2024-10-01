@@ -3,20 +3,18 @@ from __future__ import annotations
 import logging
 import sys
 from collections.abc import Iterable
-from typing import TYPE_CHECKING
-from .cli import _create_argument_parser, generate_options, get_argument_type_setter, get_option_string_destination
-from pyk.cli.pyk import parse_toml_args
 from pathlib import Path
+from typing import TYPE_CHECKING
 
+from pyk.cli.pyk import parse_toml_args
 
+from .cli import _create_argument_parser, generate_options, get_argument_type_setter, get_option_string_destination
 from .manager import RustLiteManager
-
-from . import VERSION
 
 if TYPE_CHECKING:
     from argparse import Namespace
-    from collections.abc import Callable, Iterator
-    from typing import Any, Final, TypeVar
+    from typing import Final, TypeVar
+
     from .cli import RunOptions
 
     T = TypeVar('T')
@@ -49,17 +47,22 @@ def main() -> None:
 def exec_run(options: RunOptions) -> None:
     contract_path = str(options.input_file.resolve())
 
-    print('Instantiating module manager;')
+    _LOGGER.info('Instantiating module manager;')
 
     module_manager = RustLiteManager()
 
-    print('Module manager initiated; Trying to load program into K cell;')
+    _LOGGER.info('Module manager initiated; Trying to load program into K cell;')
 
     module_manager.load_program(contract_path)
 
-    print('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
+    _LOGGER.info('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
 
     module_manager.print_k_top_element()
+
+    _LOGGER.info('Attempting to parse commands for the testing environment.')
+
+    module_manager.load_commands('../tests/mx-rust-contracts/contract-setup.1.run')
+
 
 def trigger_exec_run(stripped_args):
     options = generate_options(stripped_args)
@@ -67,17 +70,21 @@ def trigger_exec_run(stripped_args):
     execute = globals()[executor_name]
     execute(options)
 
+
 def exec_empty() -> None:
     stripped_args = {'command': 'run', 'input_file': Path('../tests/preprocessing/empty.rs')}
     trigger_exec_run(stripped_args)
+
 
 def exec_erc20() -> None:
     stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/erc_20_token.rs')}
     trigger_exec_run(stripped_args)
 
+
 def exec_staking() -> None:
     stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/staking.rs')}
     trigger_exec_run(stripped_args)
+
 
 def exec_lending() -> None:
     stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/lending.rs')}
