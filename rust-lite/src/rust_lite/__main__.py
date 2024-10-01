@@ -4,7 +4,7 @@ import logging
 import sys
 from collections.abc import Iterable
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from pyk.cli.pyk import parse_toml_args
 
@@ -64,7 +64,7 @@ def exec_run(options: RunOptions) -> None:
     module_manager.load_commands('../tests/mx-rust-contracts/contract-setup.1.run')
 
 
-def trigger_exec_run(stripped_args):
+def trigger_exec_run(stripped_args: dict[str, Any]) -> None:
     options = generate_options(stripped_args)
     executor_name = 'exec_run'
     execute = globals()[executor_name]

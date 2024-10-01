@@ -1,12 +1,11 @@
 from __future__ import annotations
 
 import pprint
-from collections import deque
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 from pyk.cterm import CTerm
-from pyk.kast.inner import KApply, KInner, KSequence
+from pyk.kast.inner import KApply, KSequence
 from pyk.kast.manip import set_cell
 from pyk.kast.parser import KAstParser
 from pyk.kore.parser import KoreParser
@@ -15,7 +14,7 @@ from pyk.ktool.krun import KRun
 from pyk.prelude.k import GENERATED_TOP_CELL
 
 if TYPE_CHECKING:
-    from pyk.kast.inner import KToken
+    from pyk.kast.inner import KInner
 
 _PPRINT = pprint.PrettyPrinter(width=41, compact=True)
 
@@ -74,25 +73,20 @@ class RustLiteManager:
         output_kore = self.krun.run_pattern(pattern, pipe_stderr=False)
         self.cterm = CTerm.from_kast(self.krun.kore_to_kast(output_kore))
 
-    def fetch_k_cell_content(self) -> KToken:
+    def fetch_k_cell_content(self) -> KInner:
         cell = self.cterm.cell('K_CELL')
         return cell
 
     def print_k_top_element(self) -> None:
         cell = self.fetch_k_cell_content()
-        queue: deque[KInner] = deque(cell)
-
+        k_cell_contents = cell.items if isinstance(cell, KSequence) else [cell]
         print('--------------------------------------------------')
         print('K CELL TOP ELEMENT: ')
-        if len(queue) > 0:
-            top_cell = queue.popleft()
-            _PPRINT.pprint(top_cell)
-        else:
-            print('Cell is empty.')
+        for cell_content in k_cell_contents:
+            _PPRINT.pprint(cell_content)
 
     def print_constants_cell(self) -> None:
         cell = self.cterm.cell('CONSTANTS_CELL')
-
         print('--------------------------------------------------')
         print('CONSTANTS CELL ELEMENT: ')
         _PPRINT.pprint(cell)
