@@ -8,7 +8,6 @@ from pyk.cterm import CTerm
 from pyk.kast.inner import KApply, KSequence
 from pyk.kast.manip import set_cell
 from pyk.kast.parser import KAstParser
-from pyk.kore.parser import KoreParser
 from pyk.ktool.kprint import _kast
 from pyk.ktool.krun import KRun
 from pyk.prelude.k import GENERATED_TOP_CELL
@@ -49,26 +48,6 @@ class RustLiteManager:
                 KSequence(KApply('crateParser(_)_RUST-PREPROCESSING-SYNTAX_Initializer_Crate', parsed_program)),
             )
         )
-        pattern = self.krun.kast_to_kore(self.cterm.config, sort=GENERATED_TOP_CELL)
-        output_kore = self.krun.run_pattern(pattern, pipe_stderr=False)
-        self.cterm = CTerm.from_kast(self.krun.kore_to_kast(output_kore))
-
-    def load_commands(self, commands_path: str) -> None:
-
-        returned_process = _kast(
-            file=commands_path,
-            module='MX-RUST-SYNTAX',
-            sort='MxRustTest',
-            definition_dir='../.build/mx-rust-testing-kompiled',
-            output='kore',
-        )
-
-        kore_commands = KoreParser(returned_process.stdout).pattern()
-
-        kast_commands = self.krun.kore_to_kast(kore_commands)
-
-        self.cterm = CTerm.from_kast(set_cell(self.cterm.config, 'K_CELL', KSequence([kast_commands])))
-
         pattern = self.krun.kast_to_kore(self.cterm.config, sort=GENERATED_TOP_CELL)
         output_kore = self.krun.run_pattern(pattern, pipe_stderr=False)
         self.cterm = CTerm.from_kast(self.krun.kore_to_kast(output_kore))

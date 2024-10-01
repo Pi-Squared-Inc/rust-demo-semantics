@@ -59,10 +59,6 @@ def exec_run(options: RunOptions) -> None:
 
     module_manager.print_k_top_element()
 
-    _LOGGER.info('Attempting to parse commands for the testing environment.')
-
-    module_manager.load_commands('../tests/mx-rust-contracts/contract-setup.1.run')
-
 
 def trigger_exec_run(stripped_args: dict[str, Any]) -> None:
     options = generate_options(stripped_args)
