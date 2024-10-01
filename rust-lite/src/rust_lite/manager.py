@@ -12,6 +12,7 @@ from pyk.kast.manip import set_cell
 from pyk.cterm import CTerm
 from pyk.ktool.krun import KRun
 from pyk.ktool.kprint import _kast
+from pyk.kore.parser import KoreParser
 from pyk.prelude.k import GENERATED_TOP_CELL
 
 _PPRINT = pprint.PrettyPrinter(width=41, compact=True)
@@ -26,7 +27,6 @@ class RustLiteManager():
         self._init_cterm()
 
     def _init_cterm(self) -> None:
-        self.krun.definition.empty_config(GENERATED_TOP_CELL)
         init_config = self.krun.definition.init_config(GENERATED_TOP_CELL)
         self.cterm = CTerm.from_kast(init_config)
 
@@ -44,6 +44,27 @@ class RustLiteManager():
         output_kore = self.krun.run_pattern(pattern, pipe_stderr=False)
         self.cterm = CTerm.from_kast(self.krun.kore_to_kast(output_kore))
         
+    def load_commands(self, commands_path: str) -> None:
+
+        returned_process = _kast(
+                file=commands_path, 
+                module='MX-RUST-SYNTAX', 
+                sort='MxRustTest',
+                definition_dir=f'../.build/mx-rust-testing-kompiled',
+                output='kore',
+            )
+        
+        kore_commands = KoreParser(returned_process.stdout).pattern()
+
+        kast_commands = self.krun.kore_to_kast(kore_commands)
+
+        self.cterm = CTerm.from_kast(set_cell(self.cterm.config, 'K_CELL', KSequence([kast_commands])))
+
+        pattern = self.krun.kast_to_kore(self.cterm.config, sort=GENERATED_TOP_CELL)
+        output_kore = self.krun.run_pattern(pattern, pipe_stderr=False)
+        self.cterm = CTerm.from_kast(self.krun.kore_to_kast(output_kore))
+        
+
     def fetch_k_cell_content(self) -> KToken:
         cell = self.cterm.cell('K_CELL')
         return cell

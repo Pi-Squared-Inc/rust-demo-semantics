@@ -57,9 +57,14 @@ def exec_run(options: RunOptions) -> None:
 
     module_manager.load_program(contract_path)
 
+
     print('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
 
     module_manager.print_k_top_element()
+
+    print('Attempting to parse commands for the testing environment.')
+
+    module_manager.load_commands('../tests/mx-rust-contracts/sample_test_file.run')
 
 def trigger_exec_run(stripped_args):
     options = generate_options(stripped_args)
