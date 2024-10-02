@@ -171,6 +171,10 @@ decoding values, bytes substrings and concatentation.
 All functions in `BlockchainHooks` that take bytes as arguments will take the
 struct representation.
 
+For contract call data we are currently assuming Ethereum's
+[encoding](https://ethereum.org/en/developers/docs/transactions/#the-data-field
+but it would be preferable to have explicit confirmation.
+
 Contract encoding and decoding
 ------------------------------
 
