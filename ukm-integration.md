@@ -15,6 +15,57 @@ As with the Mx semantics, we are going to keep the Rust semantics as a pure Rust
 semnatics, and we are going to have a second semantics that will add the
 blockchain features.
 
+Structs
+-------
+
+Here is what is likely to be needed if we want to implement the curly-brace
+variant of structs as a rust construct and not as a K construct as we plan
+right now (we would be ignoring tuple structs):
+
+1. We would need to decide exactly what functionality do we need.
+2. For declaring structs (this part is not that hard to do, but still requires
+  some work) we would need to:
+  * Parse struct types from the input, and add them in the configuration
+  * Implement struct literals (both parsing and evaluation)
+3. For functionality based on structs, we would need to do some (all?) of the following:
+  * Preprocess `impl StructName { ... }` (add it to the configuration, index its
+    methods) - this should not be hard
+  * Implement trait implementations, e.g., the following should work
+    ```rs
+    pub trait From<T>: Sized {
+        fn from(value: T) -> Self;
+    }
+
+    impl From<int64> for StructName {
+      fn from(v: int64) -> Self { ... }
+    }
+    ```
+  * Many important traits use generics, and, if we want to be able to implement
+    them, we would also need to be able to handle generics. I'm not sure yet
+    what that would mean in practice. Besides that, we would need to figure out
+    exactly which method to call given several traits (or trait hierarchies if
+    we want to also handle that) and several implementations for a given struct
+    (or set of structs, since, e.g., the right `From` implementation depends on)
+    two structs.
+    
+    In general, this seems non-trivial, e.g., when we call `stuff.into()`, which
+    implementation we need to pick also depends on the type of the result we
+    expect from `into()`. Currently, we can't detect the expected type of an
+    expression, and this would require preprocessing each function's code.
+
+    After deciding what functionality we need, we would need to go through the
+    reference and figure out how hard it would be to implement.
+
+  * If we want to implement things like
+    `#[derive(Clone, Default, Debug, PartialEq, Eq)]`, which seem popular in
+    the Rust world, we would first need to decide what we want to do about them.
+    I think we can expand them to actual implementations if we run the input
+    source through the "expand macros" compiler phase, but that's available
+    only in nightly Rust builds, so we should decide if we want to depend on
+    them. Also, it's important to know that we can't control the generated code,
+    so we should check that it does not contain features that would be hard to
+    implement.
+
 Contracts
 ---------
 
