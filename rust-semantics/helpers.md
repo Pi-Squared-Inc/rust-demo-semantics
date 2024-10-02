@@ -16,6 +16,10 @@ module RUST-HELPERS
     rule isSameType(u64(_), u64) => true
     rule isSameType(i32(_), i32) => true
     rule isSameType(u32(_), u32) => true
+    rule isSameType(i16(_), i16) => true
+    rule isSameType(u16(_), u16) => true
+    rule isSameType(i8(_), i8) => true
+    rule isSameType(u8(_), u8) => true
     rule isSameType(struct(T, _), T:Type) => true
     rule isSameType(struct(T, _), T:Identifier _:GenericArgs ) => true
 

@@ -50,6 +50,34 @@ module RUST-INTEGER-RELATIONAL-OPERATIONS
     imports private RUST-SHARED-SYNTAX
     imports private RUST-REPRESENTATION
 
+    rule ptrValue(_, i8(A):Value)  == ptrValue(_, i8(B):Value)  => ptrValue(null, A ==MInt  B)
+    rule ptrValue(_, i8(A):Value)  != ptrValue(_, i8(B):Value)  => ptrValue(null, A =/=MInt B)
+    rule ptrValue(_, i8(A):Value)  >  ptrValue(_, i8(B):Value)  => ptrValue(null, A >sMInt  B)
+    rule ptrValue(_, i8(A):Value)  <  ptrValue(_, i8(B):Value)  => ptrValue(null, A <sMInt  B)
+    rule ptrValue(_, i8(A):Value)  >= ptrValue(_, i8(B):Value)  => ptrValue(null, A >=sMInt B)
+    rule ptrValue(_, i8(A):Value)  <= ptrValue(_, i8(B):Value)  => ptrValue(null, A <=sMInt B)
+
+    rule ptrValue(_, u8(A):Value)  == ptrValue(_, u8(B):Value)  => ptrValue(null, A ==MInt  B)
+    rule ptrValue(_, u8(A):Value)  != ptrValue(_, u8(B):Value)  => ptrValue(null, A =/=MInt B)
+    rule ptrValue(_, u8(A):Value)  >  ptrValue(_, u8(B):Value)  => ptrValue(null, A >uMInt  B)
+    rule ptrValue(_, u8(A):Value)  <  ptrValue(_, u8(B):Value)  => ptrValue(null, A <uMInt  B)
+    rule ptrValue(_, u8(A):Value)  >= ptrValue(_, u8(B):Value)  => ptrValue(null, A >=uMInt B)
+    rule ptrValue(_, u8(A):Value)  <= ptrValue(_, u8(B):Value)  => ptrValue(null, A <=uMInt B)
+
+    rule ptrValue(_, i16(A):Value)  == ptrValue(_, i16(B):Value)  => ptrValue(null, A ==MInt  B)
+    rule ptrValue(_, i16(A):Value)  != ptrValue(_, i16(B):Value)  => ptrValue(null, A =/=MInt B)
+    rule ptrValue(_, i16(A):Value)  >  ptrValue(_, i16(B):Value)  => ptrValue(null, A >sMInt  B)
+    rule ptrValue(_, i16(A):Value)  <  ptrValue(_, i16(B):Value)  => ptrValue(null, A <sMInt  B)
+    rule ptrValue(_, i16(A):Value)  >= ptrValue(_, i16(B):Value)  => ptrValue(null, A >=sMInt B)
+    rule ptrValue(_, i16(A):Value)  <= ptrValue(_, i16(B):Value)  => ptrValue(null, A <=sMInt B)
+
+    rule ptrValue(_, u16(A):Value)  == ptrValue(_, u16(B):Value)  => ptrValue(null, A ==MInt  B)
+    rule ptrValue(_, u16(A):Value)  != ptrValue(_, u16(B):Value)  => ptrValue(null, A =/=MInt B)
+    rule ptrValue(_, u16(A):Value)  >  ptrValue(_, u16(B):Value)  => ptrValue(null, A >uMInt  B)
+    rule ptrValue(_, u16(A):Value)  <  ptrValue(_, u16(B):Value)  => ptrValue(null, A <uMInt  B)
+    rule ptrValue(_, u16(A):Value)  >= ptrValue(_, u16(B):Value)  => ptrValue(null, A >=uMInt B)
+    rule ptrValue(_, u16(A):Value)  <= ptrValue(_, u16(B):Value)  => ptrValue(null, A <=uMInt B)
+
     rule ptrValue(_, i32(A):Value)  == ptrValue(_, i32(B):Value)  => ptrValue(null, A ==MInt  B)
     rule ptrValue(_, i32(A):Value)  != ptrValue(_, i32(B):Value)  => ptrValue(null, A =/=MInt B)
     rule ptrValue(_, i32(A):Value)  >  ptrValue(_, i32(B):Value)  => ptrValue(null, A >sMInt  B)
