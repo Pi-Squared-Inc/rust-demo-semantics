@@ -221,3 +221,20 @@ must be called `Builtins`.
 
 This trait will be available everywhere, so everyone will be able to call
 things like `Builtins::helperFunction(...)`
+
+Testing
+-------
+
+For a while, we will not have access to the actual hooks, so we would need to
+mock them (which may be a good idea even if we have access to the hooks).
+
+One option for that would be to use a cell called `<mocks>` which contains
+a `Map` from `KItem` to `K` (wrapped in some constructor), and then we could
+have this rule:
+
+```
+  rule
+      <k> A:KItem => B ... </k>
+      <mocks> A |-> wrapped(B:K) ... </mocks>
+      [priority 10]
+```
