@@ -1,4 +1,0 @@
-new IntegerOperations;
-call IntegerOperations.relational_expression_smaller;
-return_value;
-check_eq true

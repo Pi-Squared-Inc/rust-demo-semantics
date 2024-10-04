@@ -1,5 +1,6 @@
 ```k
 
+requires "conversions.md"
 requires "error.md"
 requires "expression/bool-operations.md"
 requires "expression/casts.md"
@@ -12,6 +13,7 @@ requires "rust-common-syntax.md"
 
 module RUST-FULL-PREPROCESSING
     imports private RUST-BOOL-OPERATIONS
+    imports private RUST-CONVERSIONS
     imports private RUST-ERROR
     imports private RUST-EXPRESSION-CONSTANTS
     imports private RUST-EXPRESSION-LITERALS

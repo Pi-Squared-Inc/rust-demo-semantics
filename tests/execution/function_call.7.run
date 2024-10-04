@@ -1,0 +1,6 @@
+new :: function_call :: FunctionCalls;
+push 1_u64;
+push 3_u64;
+call :: function_call :: FunctionCalls.call_arguments;
+return_value;
+check_eq 4_u64

@@ -1,4 +1,0 @@
-new FinalExpression;
-call FinalExpression.constant_cast;
-return_value;
-check_eq 100_u64

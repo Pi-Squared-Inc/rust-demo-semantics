@@ -1,4 +1,4 @@
-new LoopExpressions;
-call LoopExpressions.iterator_with_variables;
+new :: loops :: LoopExpressions;
+call :: loops :: LoopExpressions.iterator_with_variables;
 return_value;
 check_eq ()

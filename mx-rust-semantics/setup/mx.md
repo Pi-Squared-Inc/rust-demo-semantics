@@ -28,7 +28,7 @@ module MX-RUST-SETUP-MX
             , args: Args:MxValueList
             )
         =>  MxRust#clearPreprocessed
-            ~> crateParser(Code)
+            ~> crateParser(Code, #token("contract", "Identifier"):Identifier)
             ~> mxRustPreprocessTraits
             ~> MxRust#addAccountWithPreprocessedCode
                 (... owner: Owner

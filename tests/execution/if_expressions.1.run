@@ -1,0 +1,4 @@
+new :: if_expressions :: IfExpressions;
+call :: if_expressions :: IfExpressions.if_expression;
+return_value;
+check_eq 1_u64

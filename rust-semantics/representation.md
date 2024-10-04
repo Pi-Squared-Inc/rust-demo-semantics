@@ -110,6 +110,7 @@ module RUST-REPRESENTATION
                         | "str"  [token]
 
     syntax MaybeIdentifier ::= ".Identifier" | Identifier
+    syntax MaybePathInExpression ::= ".PathInExpression" | PathInExpression
 
     syntax ExpressionOrCallParams ::= Expression | CallParams
 
@@ -162,6 +163,9 @@ module RUST-REPRESENTATION
                             | Expression "," ExpressionList  [seqstrict, result(ValueWithPtr)]
     syntax InstructionList  ::= evaluate(ExpressionList)  [strict(1), result(ValueWithPtr)]
                               | evaluate(ValueListOrError)
+
+    syntax MaybeTypePath ::= ".TypePath" | TypePath
+
 endmodule
 
 ```

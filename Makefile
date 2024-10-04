@@ -192,7 +192,9 @@ $(PREPROCESSING_OUTPUT_DIR)/%.rs.preprocessed.kore: $(PREPROCESSING_INPUT_DIR)/%
 		$< \
 		--definition $(RUST_PREPROCESSING_KOMPILED) \
 		--output kore \
-		--output-file $@.tmp
+		--output-file $@.tmp \
+		-cCRATE_PATH="$(shell echo "$<" | sed 's%^.*/%%' | sed 's/.rs//' | sed 's/^/::/')" \
+		-pCRATE_PATH=$(CURDIR)/parsers/type-path-rust-preprocessing.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@
 
@@ -211,6 +213,8 @@ $(EXECUTION_OUTPUT_DIR)/%.run.executed.kore: \
 		--parser $(CURDIR)/parsers/contract-rust.sh \
 		--output kore \
 		--output-file $@.tmp \
+		-cCRATE_PATH="$(shell echo "$<" | sed 's%^.*/%%' | sed 's/\..*//' | sed 's/^/::/')" \
+		-pCRATE_PATH=$(CURDIR)/parsers/type-path-rust.sh \
 		-cTEST="$(shell cat $<)" \
 		-pTEST=$(CURDIR)/parsers/test-rust.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
@@ -241,6 +245,8 @@ $(MX_RUST_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 		--parser $(CURDIR)/parsers/contract-mx-rust.sh \
 		--output kore \
 		--output-file $@.tmp \
+		-cCRATE_PATH="$(shell echo "$<" | sed 's%^.*/%%' | sed 's/\..*//' | sed 's/^/::/')" \
+		-pCRATE_PATH=$(CURDIR)/parsers/type-path-rust.sh \
 		-cTEST='$(shell cat $<)' \
 		-pTEST=$(CURDIR)/parsers/test-mx-rust.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"

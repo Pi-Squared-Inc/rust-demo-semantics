@@ -11,25 +11,30 @@ module CRATE
     rule crateParser
         ( (_Atts:InnerAttributes (_A:OuterAttributes _U:UseDeclaration):Item Is:Items):Crate
           => (.InnerAttributes Is):Crate
+        , _:TypePath
         )
-    rule (.K => moduleParser(M))
+    rule (.K => moduleParser(M, CratePath))
         ~> crateParser
           ( (_Atts:InnerAttributes (_ItemAtts:OuterAttributes _V:MaybeVisibility M:Module):Item Is:Items):Crate
             => (.InnerAttributes Is):Crate
+          , CratePath:TypePath
           )
     rule
-        (.K => traitParser(T, .TypePath, ItemAtts))
+        (.K => traitParser(T, CratePath, ItemAtts))
         ~> crateParser
           ( (_Atts:InnerAttributes (ItemAtts:OuterAttributes _V:MaybeVisibility T:Trait):Item Is:Items):Crate
             => (.InnerAttributes Is):Crate
+          , CratePath:TypePath
           )
-    rule (.K => CI:ConstantItem:KItem)
+    rule (.K => constantParser(CI:ConstantItem, CratePath))
         ~> crateParser
           ( (Atts:InnerAttributes (_ItemAtts:OuterAttributes _:MaybeVisibility CI:ConstantItem):Item Is:Items):Crate
             => (Atts Is):Crate
+          , CratePath:TypePath
           )
 
-    rule crateParser( (_Atts:InnerAttributes .Items):Crate) => .K
+    rule crateParser( (_Atts:InnerAttributes .Items):Crate, _Path:TypePath)
+        => .K //resolveCrateNames(Path)
 endmodule
 
 ```

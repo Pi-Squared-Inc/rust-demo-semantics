@@ -1,0 +1,4 @@
+new :: final_expression :: FinalExpression;
+call :: final_expression :: FinalExpression.constant;
+return_value;
+check_eq 100_u64

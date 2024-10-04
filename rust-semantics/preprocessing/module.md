@@ -3,8 +3,11 @@
 module RUST-MODULE
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 
-    rule moduleParser(mod Name:Identifier { _:InnerAttributes Contents:Items })
-        => moduleItemsParser(Contents, Name)
+    rule moduleParser
+            ( mod Name:Identifier { _:InnerAttributes Contents:Items }
+            , ParentPath:TypePath
+            )
+        => moduleItemsParser(Contents, append(ParentPath, Name))
 
     rule moduleItemsParser(.Items, _Name) => .K
     rule

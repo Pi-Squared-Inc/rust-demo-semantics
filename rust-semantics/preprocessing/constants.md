@@ -2,24 +2,31 @@
 module RUST-CONSTANTS
     imports private COMMON-K-CELL
     imports private RUST-CASTS
+    imports private RUST-CONVERSIONS-SYNTAX
     imports private RUST-PREPROCESSING-CONFIGURATION
+    imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
 
-    syntax KItem ::= setConstant(Identifier, ValueOrError)
+    syntax KItem ::= setConstant(TypePath, ValueOrError)
+
+    rule isKResult((const _:Identifier : _T:Type = ptrValue(_, _);):ConstantItem:KItem) => true
 
     rule
-        (const Name:Identifier : T:Type = ptrValue(_, V:Value);):ConstantItem:KItem
-        => setConstant(Name, implicitCast(V, T))
+        constantParser
+            ( const Name:Identifier : T:Type = ptrValue(_, V:Value);
+            , ParentPath:TypePath
+            )
+        => setConstant(append(ParentPath, Name), implicitCast(V, T))
 
     rule
         <k>
-            setConstant(Name, V:Value) => .K
+            setConstant(Path, V:Value) => .K
             ...
         </k>
         <constants>
             .Bag => <constant>
-                <constant-name> Name </constant-name>
+                <constant-name> typePathToPathInExpression(Path) </constant-name>
                 <constant-value> V </constant-value>
             </constant>
             ...

@@ -1,4 +1,0 @@
-new FunctionCalls;
-call FunctionCalls.call_ref;
-return_value;
-check_eq 3_u64

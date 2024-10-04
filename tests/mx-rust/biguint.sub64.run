@@ -1,8 +1,8 @@
 addAccount("Owner");
 setCallee("Owner");
-new BigUintTest;
+new :: biguint :: BigUintTest;
 push 50u64;
 push 3u64;
-call BigUintTest.sub64;
+call :: biguint :: BigUintTest.sub64;
 get_bigint_from_struct;
 check_eq mxIntValue(47)
