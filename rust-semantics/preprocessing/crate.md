@@ -8,6 +8,10 @@ module CRATE
     imports private RUST-PREPROCESSING-SYNTAX
     imports private RUST-REPRESENTATION
 
+    rule cratesParser(.WrappedCrateList) => .K
+    rule cratesParser(<(< Path:TypePath <|> Crate:Crate >)> Crates:WrappedCrateList)
+        => crateParser(Crate, Path) ~> cratesParser(Crates)
+
     rule crateParser
         ( (_Atts:InnerAttributes (_A:OuterAttributes _U:UseDeclaration):Item Is:Items):Crate
           => (.InnerAttributes Is):Crate

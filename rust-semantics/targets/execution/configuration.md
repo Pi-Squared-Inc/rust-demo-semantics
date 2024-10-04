@@ -5,7 +5,7 @@ module COMMON-K-CELL
     imports private RUST-PREPROCESSING-SYNTAX
 
     configuration
-        <k> crateParser($PGM:Crate, $CRATE_PATH:TypePath)
+        <k> cratesParser($PGM:WrappedCrateList)
             ~> $TEST:ExecutionTest
         </k>
 endmodule
