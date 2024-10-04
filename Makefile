@@ -59,7 +59,18 @@ DEMOS_TESTING_OUTPUT_DIR ::= .build/demos/output
 DEMOS_TESTING_INPUTS ::= $(wildcard $(DEMOS_TESTING_INPUT_DIR)/*.run)
 DEMOS_TESTING_OUTPUTS ::= $(patsubst $(DEMOS_TESTING_INPUT_DIR)/%,$(DEMOS_TESTING_OUTPUT_DIR)/%.executed.kore,$(DEMOS_TESTING_INPUTS))
 
-.PHONY: clean build test syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test
+UKM_SEMANTICS_FILES ::= $(shell find mx-rust-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
+
+UKM_EXECUTION_KOMPILED ::= .build/ukm-execution-kompiled
+UKM_EXECUTION_TIMESTAMP ::= $(UKM_EXECUTION_KOMPILED)/timestamp
+
+UKM_PREPROCESSING_KOMPILED ::= .build/ukm-preprocessing-kompiled
+UKM_PREPROCESSING_TIMESTAMP ::= $(UKM_PREPROCESSING_KOMPILED)/timestamp
+
+UKM_TESTING_KOMPILED ::= .build/ukm-testing-kompiled
+UKM_TESTING_TIMESTAMP ::= $(UKM_TESTING_KOMPILED)/timestamp
+
+.PHONY: clean build build-legacy test test-legacy syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test
 
 all: build test
 
@@ -68,13 +79,21 @@ clean:
 
 build: $(RUST_PREPROCESSING_TIMESTAMP) \
 				$(RUST_EXECUTION_TIMESTAMP) \
-				$(MX_TESTING_TIMESTAMP) \
-				$(MX_RUST_TIMESTAMP) \
-				$(MX_RUST_TESTING_TIMESTAMP) \
-				$(MX_RUST_CONTRACT_TESTING_TIMESTAMP) \
-				$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP)
+				$(UKM_EXECUTION_TIMESTAMP) \
+				$(UKM_PREPROCESSING_TIMESTAMP) \
+				$(UKM_TESTING_TIMESTAMP)
 
-test: build syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test
+build-legacy: \
+		$(MX_TESTING_TIMESTAMP) \
+		$(MX_RUST_TIMESTAMP) \
+		$(MX_RUST_TESTING_TIMESTAMP) \
+		$(MX_RUST_CONTRACT_TESTING_TIMESTAMP) \
+		$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP)
+
+
+test: build syntax-test preprocessing-test execution-test
+
+test-legacy: mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test
 
 syntax-test: $(SYNTAX_OUTPUTS)
 
@@ -136,6 +155,30 @@ $(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTI
 	-rm -r $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/two-contracts-testing/mx-rust.md \
 			--emit-json -o $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED) \
+			-I . \
+			--debug
+
+$(UKM_EXECUTION_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(UKM_EXECUTION_KOMPILED)
+	$$(which kompile) ukm-semantics/targets/execution/ukm-target.md \
+			--emit-json -o $(UKM_EXECUTION_KOMPILED) \
+			-I . \
+			--debug
+
+$(UKM_PREPROCESSING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(UKM_PREPROCESSING_KOMPILED)
+	$$(which kompile) ukm-semantics/targets/preprocessing/ukm-target.md \
+			--emit-json -o $(UKM_PREPROCESSING_KOMPILED) \
+			-I . \
+			--debug
+
+$(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(UKM_TESTING_KOMPILED)
+	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md \
+			--emit-json -o $(UKM_TESTING_KOMPILED) \
 			-I . \
 			--debug
 
