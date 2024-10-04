@@ -53,7 +53,7 @@ pub trait Erc20Token {
 
     #[view(decimals)]
     fn decimals(&self) -> u8 {
-        18
+        18_u8
     }
 
     // Already declared above

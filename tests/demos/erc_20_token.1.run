@@ -1,0 +1,37 @@
+setCallee("Owner");
+
+push mxListValue();
+push mxStringValue("decimals");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxIntValue(18);
+
+push mxListValue();
+push mxStringValue("name");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxListValue(mxStringValue("MyToken"));
+
+push mxListValue();
+push mxStringValue("symbol");
+push mxIntValue(0);
+push mxTransfersValue();
+push mxIntValue(0);
+push mxStringValue("TestContract");
+call 6 MX#managedExecuteOnDestContext;
+check_eq mxIntValue(0);
+
+push_return_value;
+check_eq mxListValue(mxStringValue("MTKN"))

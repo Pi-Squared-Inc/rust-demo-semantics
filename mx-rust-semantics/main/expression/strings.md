@@ -10,6 +10,14 @@ module MX-RUST-EXPRESSION-STRINGS
     rule concatString(ptrValue(_, S1:String), ptrValue(_, S2:String))
           => ptrValue(null, S1 +String S2)
 
+    rule toString(ptrValue(_, i8(Value:MInt{8})))
+        => ptrValue(null, padLeftString(Base2String(MInt2Unsigned(Value), 16), "0", 8 divInt 4))
+    rule toString(ptrValue(_, u8(Value:MInt{8})))
+        => ptrValue(null, padLeftString(Base2String(MInt2Unsigned(Value), 16), "0", 8 divInt 4))
+    rule toString(ptrValue(_, i16(Value:MInt{16})))
+        => ptrValue(null, padLeftString(Base2String(MInt2Unsigned(Value), 16), "0", 16 divInt 4))
+    rule toString(ptrValue(_, u16(Value:MInt{16})))
+        => ptrValue(null, padLeftString(Base2String(MInt2Unsigned(Value), 16), "0", 16 divInt 4))
     rule toString(ptrValue(_, i32(Value:MInt{32})))
         => ptrValue(null, padLeftString(Base2String(MInt2Unsigned(Value), 16), "0", 32 divInt 4))
     rule toString(ptrValue(_, u32(Value:MInt{32})))
@@ -20,7 +28,7 @@ module MX-RUST-EXPRESSION-STRINGS
         => ptrValue(null, padLeftString(Base2String(MInt2Unsigned(Value), 16), "0", 64 divInt 4))
     rule toString(ptrValue(_, u128(Value:MInt{128})))
         => ptrValue(null, padLeftString(Base2String(MInt2Unsigned(Value), 16), "0", 128 divInt 4))
-    rule toString(ptrValue(null, Value:String)) => ptrValue(null, Value)
+    rule toString(ptrValue(_, Value:String)) => ptrValue(null, Value)
     // TODO: convert all Value entries to string
 
     syntax String ::= padLeftString(value:String, padding:String, count:Int)  [function, total]

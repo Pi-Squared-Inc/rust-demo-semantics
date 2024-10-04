@@ -31,19 +31,31 @@ module RUST-LOOP-EXPRESSIONS
     // Necessary for handling all possible integer types provided in the range expression of for loops
     syntax LetStatement ::= incrementPatt(Identifier, Value) [function]
 
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) => 
+    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
+            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, i8 (Int2MInt(1:Int)));
+        requires checkIntOfType(ComparisonValue, i8 )
+    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
+            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u8 (Int2MInt(1:Int)));
+        requires checkIntOfType(ComparisonValue, u8 )
+    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
+            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, i16(Int2MInt(1:Int)));
+        requires checkIntOfType(ComparisonValue, i16)
+    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
+            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u16(Int2MInt(1:Int)));
+        requires checkIntOfType(ComparisonValue, u16)
+    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
             let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, i32(Int2MInt(1:Int)));
         requires checkIntOfType(ComparisonValue, i32)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) => 
+    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
             let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u32(Int2MInt(1:Int)));
         requires checkIntOfType(ComparisonValue, u32)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) => 
+    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
             let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u64(Int2MInt(1:Int)));
         requires checkIntOfType(ComparisonValue, u64)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) => 
+    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
             let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, i64(Int2MInt(1:Int)));
         requires checkIntOfType(ComparisonValue, i64)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) => 
+    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
             let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u128(Int2MInt(1:Int))); 
         requires checkIntOfType(ComparisonValue, u128)
 

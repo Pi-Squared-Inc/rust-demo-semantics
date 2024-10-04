@@ -28,6 +28,7 @@ module MX-RUST-REPRESENTATION
                                 | mxRustLoadPtr(Int)
                                 | mxRustGetBigIntFromStruct(Value)
                                 | mxRustGetStringFromId(Int)
+                                | mxRustGetBuffer(Expression)  [strict]
                                 | mxRustNewStruct(MxRustStructType, CallParamsList)
                                   [strict(2), result(ValueWithPtr)]
                                 | "mxRustCheckMxStatus"

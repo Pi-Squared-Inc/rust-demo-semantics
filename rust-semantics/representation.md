@@ -16,7 +16,11 @@ module RUST-VALUE-SYNTAX
 
     syntax SemanticsError ::= error(String, KItem)
 
-    syntax Value  ::= i32(MInt{32})
+    syntax Value  ::= i8(MInt{8})
+                    | u8(MInt{8})
+                    | i16(MInt{16})
+                    | u16(MInt{16})
+                    | i32(MInt{32})
                     | u32(MInt{32})
                     | i64(MInt{64})
                     | u64(MInt{64})
@@ -93,7 +97,11 @@ module RUST-REPRESENTATION
 
     syntax Type ::= "$selftype"
 
-    syntax Identifier ::= "i32"  [token]
+    syntax Identifier ::= "i8"  [token]
+                        | "u8"  [token]
+                        | "i16"  [token]
+                        | "u16"  [token]
+                        | "i32"  [token]
                         | "u32"  [token]
                         | "i64"  [token]
                         | "u64"  [token]
@@ -120,6 +128,10 @@ module RUST-REPRESENTATION
     syntax Bool ::= checkIntOfType(Value, Type)  [function, total]
                   | checkIntOfSameType(Value, Value) [function, total]
 
+    rule checkIntOfType(u8(_),  u8) => true
+    rule checkIntOfType(i8(_),  i8) => true
+    rule checkIntOfType(u16(_),  u16) => true
+    rule checkIntOfType(i16(_),  i16) => true
     rule checkIntOfType(u32(_),  u32) => true
     rule checkIntOfType(i32(_),  i32) => true
     rule checkIntOfType(u64(_),  u64) => true
@@ -127,6 +139,10 @@ module RUST-REPRESENTATION
     rule checkIntOfType(i64(_),  u128) => true
     rule checkIntOfType(_, _) => false [owise]
 
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u8) requires checkIntOfType(B,  u8) 
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i8) requires checkIntOfType(B,  i8)
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u16) requires checkIntOfType(B,  u16) 
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i16) requires checkIntOfType(B,  i16)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u32) requires checkIntOfType(B,  u32) 
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i32) requires checkIntOfType(B,  i32)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u64) requires checkIntOfType(B,  u64)
