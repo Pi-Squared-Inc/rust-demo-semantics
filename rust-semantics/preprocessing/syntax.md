@@ -1,9 +1,11 @@
 ```k
 
 module RUST-PREPROCESSING-SYNTAX
+    imports RUST-CRATE-LIST-SYNTAX
     imports RUST-SHARED-SYNTAX
 
-    syntax Initializer ::= crateParser(crate: Crate)
+    syntax Initializer  ::= cratesParser(crates: WrappedCrateList)
+                          | crateParser(crate: Crate)
 endmodule
 
 module RUST-PREPROCESSING-PRIVATE-SYNTAX

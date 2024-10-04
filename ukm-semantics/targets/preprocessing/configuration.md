@@ -13,10 +13,7 @@ module COMMON-K-CELL
 
     configuration
         <k>
-            crateParser($CRATE1:Crate)
-            ~> crateParser($CRATE2:Crate)
-            ~> crateParser($CRATE3:Crate)
-            ~> crateParser($CRATE4:Crate)
+            cratesParser($PGM:WrappedCrateList)
             ~> ukmPreprocessCrates
             ~> ukmEncodePreprocessedCell
         </k>
