@@ -545,7 +545,12 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax StructExpression ::= "TODO: not needed yet, not implementing"
+  syntax StructExpression ::= Identifier "{" StructFieldsExpression "}"
+  syntax StructFieldsExpression ::= LiteralExpressionList 
+                                  | StructFieldAssignments
+  syntax StructFieldAssignment ::= Identifier ":" LiteralExpression 
+  syntax StructFieldAssignments ::= NeList{StructFieldAssignment, ","}
+  syntax LiteralExpressionList ::= NeList{LiteralExpression, ","}
 
 ```
 
