@@ -18,9 +18,9 @@ module MX-RUST-MODULES-BLOCKCHAIN
             )
 
     rule
-        normalizedMethodCall
+        normalizedFunctionCall
             ( MxRust#Blockchain
-            , #token("new", "Identifier"):Identifier
+                :: #token("new", "Identifier"):Identifier
             , .PtrList
             )
         =>  mxRustNewStruct

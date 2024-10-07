@@ -13,9 +13,9 @@ module MX-RUST-MODULES-BIGUINT
 
     rule
         <k>
-            normalizedMethodCall
+            normalizedFunctionCall
                 ( #token("BigUint", "Identifier"):Identifier
-                , #token("from", "Identifier"):Identifier
+                    :: #token("from", "Identifier"):Identifier
                 ,   ( ptr(ValueId:Int)
                     , .PtrList
                     )
@@ -26,9 +26,9 @@ module MX-RUST-MODULES-BIGUINT
         </k>
         <values> ValueId |-> V:Value ... </values>
 
-    rule normalizedMethodCall
+    rule normalizedFunctionCall
             ( #token("BigUint", "Identifier"):Identifier
-            , #token("zero", "Identifier"):Identifier
+                :: #token("zero", "Identifier"):Identifier
             , .PtrList
             )
         => mxRustBigIntNew(0)

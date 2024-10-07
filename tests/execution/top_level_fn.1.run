@@ -1,0 +1,5 @@
+new :: top_level_fn :: TopLevelFn;
+push 125_u64;
+call :: top_level_fn :: TopLevelFn.call_top_level;
+return_value;
+check_eq 128_u64

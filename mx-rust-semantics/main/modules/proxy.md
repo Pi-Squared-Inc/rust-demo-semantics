@@ -42,9 +42,9 @@ module MX-RUST-MODULES-PROXY
 
     rule
         <k>
-            normalizedMethodCall
+            normalizedFunctionCall
                 ( #token("MxRust#Proxy", "Identifier"):Identifier
-                , #token("new", "Identifier"):Identifier
+                    :: #token("new", "Identifier"):Identifier
                 , ptr(P1), ptr(P2), .PtrList
                 )
             =>  mxRustNewStruct
@@ -70,7 +70,7 @@ module MX-RUST-MODULES-PROXY
             normalizedMethodCall
                 ( #token("MxRust#Proxy", "Identifier"):Identifier
                     => ProxyType
-                , MethodName:Identifier
+                , _MethodName:Identifier
                 , (ptr(SelfId:Int) , _Params:PtrList)
                 )
             ...
@@ -85,7 +85,6 @@ module MX-RUST-MODULES-PROXY
             ...
         </values>
         <trait-path> ProxyType </trait-path>
-        <method-name> MethodName </method-name>
 
     syntax RustMxInstruction ::= rustMxManagedExecuteOnDestContext
                                     ( destination: RustToMxOrInstruction  // RustToMx
@@ -184,9 +183,9 @@ module MX-RUST-MODULES-PROXY
 
     rule
         <k>
-            normalizedMethodCall
+            normalizedFunctionCall
                 ( #token("MxRust#Proxy", "Identifier"):Identifier
-                , #token("MxRust#execute_on_dest_context", "Identifier"):Identifier
+                    :: #token("MxRust#execute_on_dest_context", "Identifier"):Identifier
                 , (ptr(SelfId:Int) , .PtrList)
                 )
             => rustMxManagedExecuteOnDestContext

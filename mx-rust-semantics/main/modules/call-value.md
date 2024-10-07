@@ -18,9 +18,9 @@ module MX-RUST-MODULES-CALL-VALUE
             )
 
     rule
-        normalizedMethodCall
+        normalizedFunctionCall
             ( MxRust#CallValue
-            , #token("new", "Identifier"):Identifier
+                :: #token("new", "Identifier"):Identifier
             , .PtrList
             )
         =>  mxRustNewStruct

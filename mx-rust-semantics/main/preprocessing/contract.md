@@ -1,9 +1,10 @@
 ```k
 
 module MX-RUST-PREPROCESSING-CONTRACT
-    imports COMMON-K-CELL
-    imports MX-RUST-REPRESENTATION
-    imports RUST-PREPROCESSING-CONFIGURATION
+    imports private COMMON-K-CELL
+    imports private MX-RUST-REPRESENTATION
+    imports private RUST-CONVERSIONS-SYNTAX
+    imports private RUST-PREPROCESSING-CONFIGURATION
 
     syntax MxRustInstruction  ::= rustMxAddContractSend(TypePath)
                                 | rustMxAddContractCallValue(TypePath)
@@ -11,6 +12,10 @@ module MX-RUST-PREPROCESSING-CONTRACT
                                 | rustMxAddContractGenericMethod
                                     ( trait: TypePath
                                     , method: Identifier
+                                    , struct: Identifier
+                                    )
+                                | rustMxAddContractGenericMethod
+                                    ( method: PathInExpression
                                     , struct: Identifier
                                     )
 
@@ -40,33 +45,39 @@ module MX-RUST-PREPROCESSING-CONTRACT
             , struct: #token("MxRust#Blockchain", "Identifier")
             )
 
+    rule rustMxAddContractGenericMethod
+            (... trait: Trait:TypePath
+            , method: Method:Identifier
+            , struct: Identifier
+            )
+        => rustMxAddContractGenericMethod
+            (... method: typePathToPathInExpression(append(Trait, Method))
+            , struct: Identifier
+            )
+
     rule
         <k>
             rustMxAddContractGenericMethod
-                (... trait: Trait:TypePath
-                , method: Method:Identifier
+                (... method: Method:PathInExpression
                 )
             => error
-                ( "send already exists for trait"
-                , ListItem(Trait)
+                ( "method already exists for trait"
+                , ListItem(Method)
                 )
             ...
         </k>
-        <trait-path> Trait </trait-path>
         <method-name> Method </method-name>
         [priority(50)]
 
     rule
         <k>
             rustMxAddContractGenericMethod
-                (... trait: Trait:TypePath
-                , method: Method:Identifier
+                (... method: Method:PathInExpression
                 , struct: Struct:Identifier
                 )
             => .K
             ...
         </k>
-        <trait-path> Trait </trait-path>
         ( .Bag
             =>  <method>
                     <method-name> Method </method-name>

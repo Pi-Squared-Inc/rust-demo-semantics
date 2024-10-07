@@ -10,9 +10,9 @@ module MX-RUST-MODULES-HOOKS
 
     rule
         <k>
-            normalizedMethodCall
+            normalizedFunctionCall
                 ( #token("MxRust#Hooks", "Identifier"):Identifier
-                , #token("MxRust#loadMxReturnValue", "Identifier"):Identifier
+                    :: #token("MxRust#loadMxReturnValue", "Identifier"):Identifier
                 ,   ( ptr(ReturnTypeId:Int)
                     , .PtrList
                     )

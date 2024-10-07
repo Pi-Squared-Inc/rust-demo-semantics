@@ -1,0 +1,4 @@
+new :: top_level_fn :: TopLevelFn;
+call :: top_level_fn :: TopLevelFn.call_top_level_no_arg;
+return_value;
+check_eq 3_u64
