@@ -180,6 +180,9 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax TypeOrDots ::= Type
   syntax FunctionReturnType ::= "->" Type
 
+  syntax Abi ::= StringLiteral | RawStringLiteral
+  syntax MaybeAbi ::= "" | Abi
+
 ```
   https://doc.rust-lang.org/reference/items/type-aliases.html
 
@@ -259,7 +262,11 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax ExternBlock ::= "TODO: not needed yet, not implementing"
+  syntax ExternBlock ::= MaybeUnsafe "extern" MaybeAbi "{" InnerAttributes ExternalItems "}"
+  syntax ExternalItems ::= List{ExternalItem, ""}
+  syntax ExternalItem ::= OuterAttributes MacroInvocationSemi
+                        | OuterAttributes MaybeVisibility StaticItem
+                        | OuterAttributes MaybeVisibility Function
 
 ```
 

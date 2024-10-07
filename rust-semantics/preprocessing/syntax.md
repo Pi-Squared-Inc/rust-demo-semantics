@@ -24,6 +24,7 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
                           | moduleItemsParser(Items, TypePath)
                           | constantParser(ConstantItem, TypePath)  [strict(1)]
                           | functionParser(Function, TypePath, OuterAttributes)
+                          | externBlockParser(ExternBlock, TypePath)
                           | resolveCrateNames(TypePath)
 
     syntax Initializer  ::= addMethod(traitName : TypePath, function: Function, atts:OuterAttributes)
