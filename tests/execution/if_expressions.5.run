@@ -1,0 +1,4 @@
+new :: if_expressions :: IfExpressions;
+call :: if_expressions :: IfExpressions.test_if_no_return;
+return_value;
+check_eq ()

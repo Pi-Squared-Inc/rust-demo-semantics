@@ -244,6 +244,13 @@ module MX-RUST-PREPROCESSING-METHODS
                 _:NonEmptyOuterAttributes
             , _:Identifier
             ) => IdentifierToString(Name)
+    rule getEndpointName
+            (   (#[ #token("view", "Identifier") :: .SimplePathList
+                    ( Name:Identifier :: .PathExprSegments, .CallParamsList )
+                ])
+                _:NonEmptyOuterAttributes
+            , _:Identifier
+            ) => IdentifierToString(Name)
     rule getEndpointName(_:OuterAttribute Atts:NonEmptyOuterAttributes, Default:Identifier)
         => getEndpointName(Atts, Default)
         [owise]
@@ -335,6 +342,8 @@ module MX-RUST-PREPROCESSING-METHODS
     rule getMapperValueType(Type:GenericArg) => error("unknown Mx-Rust type", Type)
         [owise]
     rule getMapperValueType(#token("BigUint", "Identifier") #as T:Type)
+        => rustType(T)
+    rule getMapperValueType(#token("ManagedBuffer", "Identifier") #as T:Type)
         => rustType(T)
 
     syntax BlockExpression ::= buildProxyMethodBody

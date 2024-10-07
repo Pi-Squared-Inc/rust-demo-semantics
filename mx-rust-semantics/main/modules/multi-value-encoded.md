@@ -62,10 +62,6 @@ module MX-RUST-MODULES-MULTI-VALUE-ENCODED
             )
         => mxRustGetBuffer(ptr(VecValueId))
 
-    syntax MxRustInstruction ::= mxRustGetBuffer(Expression)  [strict]
-    rule mxRustGetBuffer(ptrValue(_, i32(BufferId:MInt{32})))
-        => mxGetBuffer(MInt2Unsigned(BufferId))
-
   // --------------------------------------
 
 endmodule

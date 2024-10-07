@@ -1,0 +1,4 @@
+new :: let_expression :: Let;
+call :: let_expression :: Let.let_final;
+return_value;
+check_eq 100_u64

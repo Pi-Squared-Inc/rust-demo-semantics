@@ -1,0 +1,4 @@
+new :: function_call :: FunctionCalls;
+call :: function_call :: FunctionCalls.call_chained;
+return_value;
+check_eq 1_u64

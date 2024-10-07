@@ -1,0 +1,6 @@
+new :: crate_1 :: First;
+new :: crate_2 :: Second;
+push 123_u64;
+call :: crate_1 :: First.call_second;
+return_value;
+check_eq 126_u64

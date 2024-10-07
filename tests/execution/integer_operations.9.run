@@ -1,0 +1,4 @@
+new :: integer_operations :: IntegerOperations;
+call :: integer_operations :: IntegerOperations.relational_expression_greater_or_equal;
+return_value;
+check_eq true

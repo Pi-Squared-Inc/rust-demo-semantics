@@ -21,6 +21,19 @@ module RUST-COMMON-SYNTAX
   syntax Identifier ::= r"[A-Za-z_][A-Za-z0-9\\_]*"  [token]
 endmodule
 
+module RUST-CRATES-SYNTAX
+    imports RUST-COMMON-SYNTAX
+    imports RUST-CRATE-LIST-SYNTAX
+endmodule
+
+module RUST-CRATE-LIST-SYNTAX
+  syntax TypePath
+  syntax Crate
+
+  syntax WrappedCrate ::= "<(<" absolutePath: TypePath "<|>" crate: Crate ">)>"
+  syntax WrappedCrateList ::= NeList{WrappedCrate, ""}
+endmodule
+
 module RUST-SHARED-SYNTAX
   imports STRING-SYNTAX
   imports BOOL-SYNTAX

@@ -19,6 +19,11 @@ PREPROCESSING_OUTPUTS ::= $(patsubst $(PREPROCESSING_INPUT_DIR)/%,$(PREPROCESSIN
 EXECUTION_INPUTS ::= $(wildcard $(EXECUTION_INPUT_DIR)/*.*.run)
 EXECUTION_OUTPUTS ::= $(patsubst $(EXECUTION_INPUT_DIR)/%,$(EXECUTION_OUTPUT_DIR)/%.executed.kore,$(EXECUTION_INPUTS))
 
+CRATES_TESTING_INPUT_DIR ::= tests/crates
+CRATES_TESTING_OUTPUT_DIR ::= .build/crates/output
+CRATES_TESTING_INPUTS ::= $(wildcard $(CRATES_TESTING_INPUT_DIR)/*.run)
+CRATES_TESTING_OUTPUTS ::= $(patsubst $(CRATES_TESTING_INPUT_DIR)/%,$(CRATES_TESTING_OUTPUT_DIR)/%.executed.kore,$(CRATES_TESTING_INPUTS))
+
 MX_SEMANTICS_FILES ::= $(shell find mx-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
 MX_TESTING_KOMPILED ::= .build/mx-testing-kompiled
 MX_TESTING_TIMESTAMP ::= $(MX_TESTING_KOMPILED)/timestamp
@@ -52,26 +57,56 @@ MX_RUST_TWO_CONTRACTS_TESTING_OUTPUT_DIR ::= .build/mx-rust-two-contracts/output
 MX_RUST_TWO_CONTRACTS_TESTING_INPUTS ::= $(wildcard $(MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR)/*.run)
 MX_RUST_TWO_CONTRACTS_TESTING_OUTPUTS ::= $(patsubst $(MX_RUST_TWO_CONTRACTS_TESTING_INPUT_DIR)/%,$(MX_RUST_TWO_CONTRACTS_TESTING_OUTPUT_DIR)/%.executed.kore,$(MX_RUST_TWO_CONTRACTS_TESTING_INPUTS))
 
-.PHONY: clean build test syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test
+DEMOS_TESTING_KOMPILED ::= $(MX_RUST_CONTRACT_TESTING_KOMPILED)
+DEMOS_TESTING_TIMESTAMP ::= $(DEMOS_TESTING_KOMPILED)/timestamp
+DEMOS_TESTING_INPUT_DIR ::= tests/demos
+DEMOS_TESTING_OUTPUT_DIR ::= .build/demos/output
+DEMOS_TESTING_INPUTS ::= $(wildcard $(DEMOS_TESTING_INPUT_DIR)/*.run)
+DEMOS_TESTING_OUTPUTS ::= $(patsubst $(DEMOS_TESTING_INPUT_DIR)/%,$(DEMOS_TESTING_OUTPUT_DIR)/%.executed.kore,$(DEMOS_TESTING_INPUTS))
+
+UKM_SEMANTICS_FILES ::= $(shell find mx-rust-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
+
+UKM_EXECUTION_KOMPILED ::= .build/ukm-execution-kompiled
+UKM_EXECUTION_TIMESTAMP ::= $(UKM_EXECUTION_KOMPILED)/timestamp
+
+UKM_PREPROCESSING_KOMPILED ::= .build/ukm-preprocessing-kompiled
+UKM_PREPROCESSING_TIMESTAMP ::= $(UKM_PREPROCESSING_KOMPILED)/timestamp
+
+UKM_TESTING_KOMPILED ::= .build/ukm-testing-kompiled
+UKM_TESTING_TIMESTAMP ::= $(UKM_TESTING_KOMPILED)/timestamp
+
+.PHONY: clean build build-legacy test test-legacy syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test
+
+all: build test
 
 clean:
 	rm -r .build
 
 build: $(RUST_PREPROCESSING_TIMESTAMP) \
 				$(RUST_EXECUTION_TIMESTAMP) \
-				$(MX_TESTING_TIMESTAMP) \
-				$(MX_RUST_TIMESTAMP) \
-				$(MX_RUST_TESTING_TIMESTAMP) \
-				$(MX_RUST_CONTRACT_TESTING_TIMESTAMP) \
-				$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP)
+				$(UKM_EXECUTION_TIMESTAMP) \
+				$(UKM_PREPROCESSING_TIMESTAMP) \
+				$(UKM_TESTING_TIMESTAMP)
 
-test: build syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test
+build-legacy: \
+		$(MX_TESTING_TIMESTAMP) \
+		$(MX_RUST_TIMESTAMP) \
+		$(MX_RUST_TESTING_TIMESTAMP) \
+		$(MX_RUST_CONTRACT_TESTING_TIMESTAMP) \
+		$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP)
+
+
+test: build syntax-test preprocessing-test execution-test crates-test
+
+test-legacy: mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test
 
 syntax-test: $(SYNTAX_OUTPUTS)
 
 preprocessing-test: $(PREPROCESSING_OUTPUTS)
 
 execution-test: $(EXECUTION_OUTPUTS)
+
+crates-test: $(CRATES_TESTING_OUTPUTS)
 
 mx-test: $(MX_TESTING_OUTPUTS)
 
@@ -80,6 +115,8 @@ mx-rust-test: $(MX_RUST_TESTING_OUTPUTS)
 mx-rust-contract-test: $(MX_RUST_CONTRACT_TESTING_OUTPUTS)
 
 mx-rust-two-contracts-test: $(MX_RUST_TWO_CONTRACTS_TESTING_OUTPUTS)
+
+demos-test: $(DEMOS_TESTING_OUTPUTS)
 
 $(RUST_PREPROCESSING_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
@@ -128,17 +165,46 @@ $(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTI
 			-I . \
 			--debug
 
+$(UKM_EXECUTION_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(UKM_EXECUTION_KOMPILED)
+	$$(which kompile) ukm-semantics/targets/execution/ukm-target.md \
+			--emit-json -o $(UKM_EXECUTION_KOMPILED) \
+			-I . \
+			--debug
+
+$(UKM_PREPROCESSING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(UKM_PREPROCESSING_KOMPILED)
+	$$(which kompile) ukm-semantics/targets/preprocessing/ukm-target.md \
+			--emit-json -o $(UKM_PREPROCESSING_KOMPILED) \
+			-I . \
+			--debug
+
+$(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
+	# Workaround for https://github.com/runtimeverification/k/issues/4141
+	-rm -r $(UKM_TESTING_KOMPILED)
+	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md \
+			--emit-json -o $(UKM_TESTING_KOMPILED) \
+			-I . \
+			--debug
+
 $(RUST_SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(RUST_SYNTAX_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)
 	mkdir -p $(RUST_SYNTAX_OUTPUT_DIR)
 	kast --definition $(RUST_PREPROCESSING_KOMPILED) $< --sort Crate > $@.tmp && mv -f $@.tmp $@
 
-$(PREPROCESSING_OUTPUT_DIR)/%.rs.preprocessed.kore: $(PREPROCESSING_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)
+$(PREPROCESSING_OUTPUT_DIR)/%.rs.preprocessed.kore: \
+		$(PREPROCESSING_INPUT_DIR)/%.rs \
+		$(RUST_PREPROCESSING_TIMESTAMP) \
+		parsers/type-path-rust-preprocessing.sh
 	mkdir -p $(PREPROCESSING_OUTPUT_DIR)
 	krun \
 		$< \
 		--definition $(RUST_PREPROCESSING_KOMPILED) \
 		--output kore \
-		--output-file $@.tmp
+		--output-file $@.tmp \
+		-cCRATE_PATH="$(shell echo "$<" | sed 's%^.*/%%' | sed 's/.rs//' | sed 's/^/::/')" \
+		-pCRATE_PATH=$(CURDIR)/parsers/type-path-rust-preprocessing.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@
 
@@ -151,10 +217,15 @@ $(EXECUTION_OUTPUT_DIR)/%.run.executed.kore: \
 			parsers/contract-rust.sh \
 			parsers/test-rust.sh
 	mkdir -p $(EXECUTION_OUTPUT_DIR)
+	echo "<(<" > $@.in.tmp
+	echo "$<" | sed 's%^.*/%%' | sed 's/\..*//' | sed 's/^/::/' >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat "$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
 	krun \
-		"$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" \
+		$@.in.tmp \
 		--definition $(RUST_EXECUTION_KOMPILED) \
-		--parser $(CURDIR)/parsers/contract-rust.sh \
+		--parser $(CURDIR)/parsers/crates-rust-execution.sh \
 		--output kore \
 		--output-file $@.tmp \
 		-cTEST="$(shell cat $<)" \
@@ -179,7 +250,8 @@ $(MX_RUST_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 			$(MX_RUST_TESTING_TIMESTAMP) \
 			$(wildcard parsers/inc-*.sh) \
 			parsers/contract-mx-rust.sh \
-			parsers/test-mx-rust.sh
+			parsers/test-mx-rust.sh \
+			parsers/type-path-mx-rust.sh
 	mkdir -p $(MX_RUST_TESTING_OUTPUT_DIR)
 	krun \
 		"$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" \
@@ -187,6 +259,8 @@ $(MX_RUST_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 		--parser $(CURDIR)/parsers/contract-mx-rust.sh \
 		--output kore \
 		--output-file $@.tmp \
+		-cCRATE_PATH="$(shell echo "$<" | sed 's%^.*/%%' | sed 's/\..*//' | sed 's/^/::/')" \
+		-pCRATE_PATH=$(CURDIR)/parsers/type-path-mx-rust.sh \
 		-cTEST='$(shell cat $<)' \
 		-pTEST=$(CURDIR)/parsers/test-mx-rust.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
@@ -240,5 +314,62 @@ $(MX_RUST_TWO_CONTRACTS_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 		-pARGS1=$(CURDIR)/parsers/args-mx-rust-two-contracts.sh \
 		-cARGS2='$(shell cat $(patsubst %.run,%.2.args,$<))' \
 		-pARGS2=$(CURDIR)/parsers/args-mx-rust-two-contracts.sh
+	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
+	mv -f $@.tmp $@
+
+
+# TODO: Add $(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs
+# as a dependency
+$(DEMOS_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
+			$(DEMOS_TESTING_INPUT_DIR)/%.run \
+			$(DEMOS_TESTING_TIMESTAMP) \
+			$(wildcard parsers/inc-*.sh) \
+			parsers/args-mx-rust-contract.sh \
+			parsers/contract-mx-rust-contract.sh \
+			parsers/test-mx-rust-contract.sh
+	mkdir -p $(DEMOS_TESTING_OUTPUT_DIR)
+	krun \
+		"$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" \
+		--definition $(DEMOS_TESTING_KOMPILED) \
+		--parser $(CURDIR)/parsers/contract-mx-rust-contract.sh \
+		--output kore \
+		--output-file $@.tmp \
+		-cTEST='$(shell cat $<)' \
+		-pTEST=$(CURDIR)/parsers/test-mx-rust-contract.sh \
+		-cARGS='$(shell cat $(patsubst %.run,%.args,$<))' \
+		-pARGS=$(CURDIR)/parsers/args-mx-rust-contract.sh
+	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
+	mv -f $@.tmp $@
+
+
+# TODO: Add $(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs
+# as a dependency
+$(CRATES_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
+			$(CRATES_TESTING_INPUT_DIR)/%.run \
+			$(CRATES_TESTING_INPUT_DIR)/crate_1.rs \
+			$(CRATES_TESTING_INPUT_DIR)/crate_2.rs \
+			$(RUST_EXECUTION_TIMESTAMP) \
+			$(wildcard parsers/inc-*.sh) \
+			parsers/crates-rust-execution.sh \
+			parsers/test-rust.sh
+	mkdir -p $(CRATES_TESTING_OUTPUT_DIR)
+	echo "<(<" > $@.in.tmp
+	echo "::crate_1" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(CRATES_TESTING_INPUT_DIR)/crate_1.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+	echo "<(<" >> $@.in.tmp
+	echo "::crate_2" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(CRATES_TESTING_INPUT_DIR)/crate_2.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+	krun \
+		$@.in.tmp \
+		--parser $(CURDIR)/parsers/crates-rust-execution.sh \
+		--definition $(RUST_EXECUTION_KOMPILED) \
+		--output kore \
+		--output-file $@.tmp \
+		-cTEST="$(shell cat $<)" \
+		-pTEST=$(CURDIR)/parsers/test-rust.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@

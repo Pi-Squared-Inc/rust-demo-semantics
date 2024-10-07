@@ -7,6 +7,8 @@ module RUST-CONVERSIONS-SYNTAX
     syntax PtrListOrError ::= listToPtrList(List)  [function, total]
     syntax ValueListOrError ::= ptrListToValueList(PtrListOrError, Map)  [function, total]
     syntax ValueListOrError ::= callParamsToValueList(CallParamsList)  [function, total]
+    syntax PathInExpression ::= typePathToPathInExpression(TypePath)  [function, total]
+    syntax PathExprSegments ::= typePathSegmentsToPathExprSegments(TypePathSegments)  [function, total]
 endmodule
 
 module RUST-CONVERSIONS
@@ -34,6 +36,26 @@ module RUST-CONVERSIONS
     rule callParamsToValueList(L:CallParamsList)
         => error("callParamsToValueList: Unexpected value", ListItem(L))
         [owise]
+
+    rule typePathToPathInExpression(S:TypePathSegments)
+        => typePathSegmentsToPathExprSegments(S)
+    rule typePathToPathInExpression(:: S:TypePathSegments)
+        => :: typePathSegmentsToPathExprSegments(S)
+
+    rule typePathSegmentsToPathExprSegments(S:PathIdentSegment)
+        => S
+    rule typePathSegmentsToPathExprSegments(S:PathIdentSegment A:GenericArgs)
+        => S :: A
+    rule typePathSegmentsToPathExprSegments(S:PathIdentSegment :: A:GenericArgs)
+        => S :: A
+
+    rule typePathSegmentsToPathExprSegments(S:PathIdentSegment :: Ss:TypePathSegments)
+        => S :: typePathSegmentsToPathExprSegments(Ss)
+    rule typePathSegmentsToPathExprSegments(S:PathIdentSegment A:GenericArgs :: Ss:TypePathSegments)
+        => S :: A :: typePathSegmentsToPathExprSegments(Ss)
+    rule typePathSegmentsToPathExprSegments(S:PathIdentSegment :: A:GenericArgs :: Ss:TypePathSegments)
+        => S :: A :: typePathSegmentsToPathExprSegments(Ss)
+
 endmodule
 
 ```

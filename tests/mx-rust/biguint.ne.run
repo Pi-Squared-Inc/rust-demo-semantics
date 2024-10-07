@@ -1,26 +1,26 @@
 addAccount("Owner");
 setCallee("Owner");
-new BigUintTest;
+new :: biguint :: BigUintTest;
 set_named "self";
 
 push_named "self";
 push 20u64;
 push 30u64;
-call BigUintTest.ne;
+call :: biguint :: BigUintTest.ne;
 return_value;
 check_eq true;
 
 push_named "self";
 push 30u64;
 push 30u64;
-call BigUintTest.ne;
+call :: biguint :: BigUintTest.ne;
 return_value;
 check_eq false;
 
 push_named "self";
 push 40u64;
 push 30u64;
-call BigUintTest.ne;
+call :: biguint :: BigUintTest.ne;
 return_value;
 check_eq true
 

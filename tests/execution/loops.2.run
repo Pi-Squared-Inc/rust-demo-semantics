@@ -1,4 +1,4 @@
-new LoopExpressions;
-call LoopExpressions.while_evaluation;
+new :: loops :: LoopExpressions;
+call :: loops :: LoopExpressions.while_evaluation;
 return_value;
 check_eq ()

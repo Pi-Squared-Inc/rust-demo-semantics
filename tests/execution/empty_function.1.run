@@ -1,0 +1,2 @@
+new :: empty_function :: Empty;
+call :: empty_function :: Empty.empty

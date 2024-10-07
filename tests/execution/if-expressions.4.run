@@ -1,4 +1,0 @@
-new IfExpressions;
-call IfExpressions.test_if_instruction;
-return_value;
-check_eq 11_u64

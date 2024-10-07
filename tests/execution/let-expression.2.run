@@ -1,4 +1,0 @@
-new Let;
-call Let.let_mut;
-return_value;
-check_eq 100_u64

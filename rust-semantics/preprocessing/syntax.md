@@ -1,9 +1,11 @@
 ```k
 
 module RUST-PREPROCESSING-SYNTAX
+    imports RUST-CRATE-LIST-SYNTAX
     imports RUST-SHARED-SYNTAX
 
-    syntax Initializer ::= crateParser(crate: Crate)
+    syntax Initializer  ::= cratesParser(crates: WrappedCrateList)
+                          | crateParser(crate: Crate, crateModule: TypePath)
 endmodule
 
 module RUST-PREPROCESSING-PRIVATE-SYNTAX
@@ -12,17 +14,16 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
     imports RUST-REPRESENTATION
     imports RUST-SHARED-SYNTAX
 
-    syntax MaybeTypePath ::= ".TypePath" | TypePath
-
     syntax Initializer  ::= traitParser(Trait, MaybeTypePath, OuterAttributes)
                           | traitMethodsParser(AssociatedItems, traitName:TypePath)
                           | traitInitializer
                                 ( traitName: TypePath
                                 , atts: OuterAttributes
                                 )
-    syntax Initializer  ::= moduleParser(Module)
+    syntax Initializer  ::= moduleParser(Module, TypePath)
                           | moduleItemsParser(Items, TypePath)
-
+                          | constantParser(ConstantItem, TypePath)  [strict(1)]
+                          | resolveCrateNames(TypePath)
 
     syntax Initializer  ::= addMethod(traitName : TypePath, function: Function, atts:OuterAttributes)
                           | #addMethod(

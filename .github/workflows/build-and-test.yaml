@@ -42,7 +42,27 @@
         - name: 'Build the semantics'
           run: docker exec -t k-rust-demo-${{ github.sha }} /bin/bash -c 'make build -j4'
         - name: 'Run Tests'
-          run: docker exec -t k-rust-demo-${{ github.sha }} /bin/bash -c 'make -j4 test'
+          run: docker exec -t k-rust-demo-${{ github.sha }} /bin/bash -c 'make test -j4'
+        - name: 'Tear down Docker'
+          if: always()
+          run: |
+            docker stop k-rust-demo-${{ github.sha }}
+    build-test-legacy:
+      name: 'Build And Test the deprecated Mx semantics'
+      runs-on: [self-hosted, linux, normal]
+      steps:
+        - name: 'Check out code'
+          uses: actions/checkout@v3
+          with:
+            submodules: recursive
+        - name: 'Set up Docker'
+          uses: ./.github/actions/with-docker
+          with:
+            container-name: k-rust-demo-${{ github.sha }}
+        - name: 'Build the semantics'
+          run: docker exec -t k-rust-demo-${{ github.sha }} /bin/bash -c 'make build-legacy -j4'
+        - name: 'Run Tests'
+          run: docker exec -t k-rust-demo-${{ github.sha }} /bin/bash -c 'make test-legacy -j4'
         - name: 'Tear down Docker'
           if: always()
           run: |
