@@ -61,7 +61,7 @@ pub trait Erc20Token {
     fn init(&self, name: &ManagedBuffer, symbol: &ManagedBuffer, init_supply: u64) {
         self.s_name().set_if_empty(name);
         self.s_symbol().set_if_empty(symbol);
-        self._mint(::ukm::Caller(), , init_supply);
+        self._mint(::ukm::Caller(), init_supply);
     }
 
     #[upgrade]
@@ -89,7 +89,7 @@ pub trait Erc20Token {
 
     #[endpoint(transfer)]
     fn transfer(&self, to: u64, value: u64) -> bool {
-        let owner = ::ukm::Caller(), ;
+        let owner = ::ukm::Caller();
         self._transfer(&owner, to, &value);
         true
     }
@@ -101,14 +101,14 @@ pub trait Erc20Token {
 
     #[endpoint(approve)]
     fn approve(&self, spender: u64, value: u64) -> bool {
-        let owner = ::ukm::Caller(), ;
+        let owner = ::ukm::Caller();
         self._approve(&owner, spender, value, true);
         true
     }
 
     #[endpoint(transferFrom)]
     fn transfer_from(&self, from: u64, to: u64, value: u64) -> bool {
-        let spender = ::ukm::Caller(), ;
+        let spender = ::ukm::Caller();
         self._spend_allowance(from, &spender, value);
         self._transfer(from, to, value);
         true
