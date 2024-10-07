@@ -1,0 +1,4 @@
+new :: function_call :: FunctionCalls;
+call :: function_call :: FunctionCalls.call_sum;
+return_value;
+check_eq 3_u64

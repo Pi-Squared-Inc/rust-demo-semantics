@@ -1,0 +1,2 @@
+new :: function_call :: FunctionCalls;
+call :: function_call :: FunctionCalls.call_empty

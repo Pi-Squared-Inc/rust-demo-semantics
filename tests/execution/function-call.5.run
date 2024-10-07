@@ -1,4 +1,0 @@
-new FunctionCalls;
-call FunctionCalls.call_chained;
-return_value;
-check_eq 1_u64

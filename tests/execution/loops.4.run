@@ -1,4 +1,4 @@
-new LoopExpressions;
-call LoopExpressions.iterator_with_same_pattern;
+new :: loops :: LoopExpressions;
+call :: loops :: LoopExpressions.iterator_with_same_pattern;
 return_value;
 check_eq ()

@@ -8,7 +8,10 @@ module COMMON-K-CELL
     syntax MxRustTest
 
     configuration
-        <k> crateParser($PGM:Crate) ~> mxRustPreprocessTraits ~> ($TEST:MxRustTest):KItem </k>
+        <k> crateParser($PGM:Crate, $CRATE_PATH:TypePath)
+            ~> mxRustPreprocessTraits
+            ~> ($TEST:MxRustTest):KItem
+        </k>
 endmodule
 
 ```

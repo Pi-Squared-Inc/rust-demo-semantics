@@ -10,7 +10,7 @@ module RUST-PREPROCESSING-CONFIGURATION
         <preprocessed>
             <constants>
                 <constant multiplicity="*" type="Map">
-                    <constant-name> .Identifier </constant-name>
+                    <constant-name> .PathInExpression </constant-name>
                     <constant-value> tuple(.ValueList) </constant-value>
                 </constant>
             </constants>

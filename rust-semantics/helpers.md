@@ -20,7 +20,7 @@ module RUST-HELPERS
     rule isSameType(u16(_), u16) => true
     rule isSameType(i8(_), i8) => true
     rule isSameType(u8(_), u8) => true
-    rule isSameType(struct(T, _), T:Type) => true
+    rule isSameType(struct(T, _), T:TypePath) => true
     rule isSameType(struct(T, _), T:Identifier _:GenericArgs ) => true
 
 endmodule
