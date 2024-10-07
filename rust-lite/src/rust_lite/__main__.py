@@ -3,20 +3,18 @@ from __future__ import annotations
 import logging
 import sys
 from collections.abc import Iterable
-from typing import TYPE_CHECKING
-from .cli import _create_argument_parser, generate_options, get_argument_type_setter, get_option_string_destination
-from pyk.cli.pyk import parse_toml_args
 from pathlib import Path
+from typing import TYPE_CHECKING, Any
 
+from pyk.cli.pyk import parse_toml_args
 
+from .cli import _create_argument_parser, generate_options, get_argument_type_setter, get_option_string_destination
 from .manager import RustLiteManager
-
-from . import VERSION
 
 if TYPE_CHECKING:
     from argparse import Namespace
-    from collections.abc import Callable, Iterator
-    from typing import Any, Final, TypeVar
+    from typing import Final, TypeVar
+
     from .cli import RunOptions
 
     T = TypeVar('T')
@@ -61,23 +59,28 @@ def exec_run(options: RunOptions) -> None:
 
     module_manager.print_k_top_element()
 
-def trigger_exec_run(stripped_args):
+
+def trigger_exec_run(stripped_args: dict[str, Any]) -> None:
     options = generate_options(stripped_args)
     executor_name = 'exec_run'
     execute = globals()[executor_name]
     execute(options)
 
+
 def exec_empty() -> None:
     stripped_args = {'command': 'run', 'input_file': Path('../tests/preprocessing/empty.rs')}
     trigger_exec_run(stripped_args)
+
 
 def exec_erc20() -> None:
     stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/erc_20_token.rs')}
     trigger_exec_run(stripped_args)
 
+
 def exec_staking() -> None:
     stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/staking.rs')}
     trigger_exec_run(stripped_args)
+
 
 def exec_lending() -> None:
     stripped_args = {'command': 'run', 'input_file': Path('../tests/syntax/lending.rs')}

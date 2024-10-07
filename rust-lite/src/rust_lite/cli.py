@@ -6,11 +6,8 @@ from functools import cached_property
 from typing import TYPE_CHECKING, Any
 
 from pyk.cli.args import DisplayOptions as PykDisplayOptions
-from pyk.cli.args import KCLIArgs, KDefinitionOptions, LoggingOptions, Options, SaveDirOptions
+from pyk.cli.args import KCLIArgs, KDefinitionOptions, LoggingOptions, Options
 from pyk.cli.utils import file_path
-from pyk.kast.inner import KSort
-from pyk.kore.tools import PrintOutput
-from pyk.ktool.krun import KRunOutput
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -135,9 +132,8 @@ class VersionOptions(LoggingOptions):
     def get_argument_type() -> dict[str, Callable]:
         return LoggingOptions.get_argument_type()
 
-class RunOptions(
-    LoggingOptions
-):
+
+class RunOptions(LoggingOptions):
     input_file: Path
 
     @staticmethod
@@ -148,17 +144,14 @@ class RunOptions(
 
     @staticmethod
     def from_option_string() -> dict[str, str]:
-        return (
-            LoggingOptions.from_option_string()
-        )
+        return LoggingOptions.from_option_string()
 
     @staticmethod
     def get_argument_type() -> dict[str, Callable]:
-        return ( 
-            {
-                'input_file': file_path,
-            }
-        )
+        return {
+            'input_file': file_path,
+        }
+
 
 class RustLiteCLIArgs(KCLIArgs):
     @cached_property
