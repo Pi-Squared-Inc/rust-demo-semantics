@@ -18,9 +18,9 @@ module MX-RUST-MODULES-SEND
             )
 
     rule
-        normalizedMethodCall
+        normalizedFunctionCall
             ( MxRust#Send
-            , #token("new", "Identifier"):Identifier
+                :: #token("new", "Identifier"):Identifier
             , .PtrList
             )
         =>  mxRustNewStruct

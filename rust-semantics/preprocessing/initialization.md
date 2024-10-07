@@ -2,6 +2,7 @@
 
 module INITIALIZATION
     imports private COMMON-K-CELL
+    imports private RUST-CONVERSIONS-SYNTAX
     imports private RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-PREPROCESSING-PRIVATE-HELPERS
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
@@ -21,6 +22,16 @@ module INITIALIZATION
                 </trait>
         </traits>
 
+    rule addFunction(Parent:TypePath, F:Function, A:OuterAttributes)
+        => #addFunction
+            ( Parent
+            , getFunctionName(F)
+            , extractFunctionNormalizedParams(F)
+            , getFunctionReturnType(F)
+            , getFunctionBlockOrSemicolon(F)
+            , A
+            )
+
     rule addMethod(Trait:TypePath, F:Function, A:OuterAttributes)
         => #addMethod
             ( Trait
@@ -37,25 +48,36 @@ module INITIALIZATION
                 Name:Identifier, P:NormalizedFunctionParameterList,
                 R:Type, B:BlockExpressionOrSemicolon,
                 A:OuterAttributes
-            ) => .K
+            )
+            => #addFunction(Trait, Name, P, R, B, A)
             ...
         </k>
         <trait>
           ...
           <trait-path> Trait </trait-path>
           <method-list> L:List => ListItem(Name) L </method-list>
-          <methods>
-            .Bag =>
-              <method>
-                <method-name> Name:Identifier </method-name>
-                <method-params> P </method-params>
-                <method-return-type> R </method-return-type>
-                <method-implementation> toFBR(B) </method-implementation>
-                <method-outer-attributes> A </method-outer-attributes>
-              </method>
-            ...
-          </methods>
         </trait>
+
+    rule
+        <k> #addFunction(
+                Parent:TypePath,
+                Name:Identifier, P:NormalizedFunctionParameterList,
+                R:Type, B:BlockExpressionOrSemicolon,
+                A:OuterAttributes
+            ) => .K
+            ...
+        </k>
+        <methods>
+          .Bag =>
+            <method>
+              <method-name> typePathToPathInExpression(append(Parent, Name)) </method-name>
+              <method-params> P </method-params>
+              <method-return-type> R </method-return-type>
+              <method-implementation> toFBR(B) </method-implementation>
+              <method-outer-attributes> A </method-outer-attributes>
+            </method>
+          ...
+        </methods>
 
     syntax FunctionBodyRepresentation ::= toFBR(BlockExpressionOrSemicolon)  [function, total]
     rule toFBR(B:BlockExpression) => block(B)

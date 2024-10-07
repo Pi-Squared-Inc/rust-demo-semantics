@@ -10,9 +10,9 @@ module MX-RUST-MODULES-ADDRESS
                         | "mx_address_value"  [token]
 
     rule
-        normalizedMethodCall
+        normalizedFunctionCall
             ( ManagedAddress
-            , #token("zero", "Identifier"):Identifier
+                :: #token("zero", "Identifier"):Identifier
             , ( .PtrList)
             )
         => mxRustEmptyValue(rustType(ManagedAddress))

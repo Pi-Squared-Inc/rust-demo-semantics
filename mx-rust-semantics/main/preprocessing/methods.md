@@ -7,6 +7,7 @@ module MX-RUST-PREPROCESSING-METHODS
     imports private MX-RUST-PREPROCESSED-ENDPOINTS-CONFIGURATION
     imports private MX-RUST-PREPROCESSED-PROXIES-CONFIGURATION
     imports private MX-RUST-REPRESENTATION
+    imports private RUST-CONVERSIONS-SYNTAX
     imports private RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
@@ -25,34 +26,29 @@ module MX-RUST-PREPROCESSING-METHODS
                                     , methodName: Identifier
                                     )
                                 | mxRustPreprocessStorage
-                                    ( trait: TypePath
-                                    , traitType: TraitType
-                                    , methodName: Identifier
+                                    ( traitType: TraitType
+                                    , methodName: PathInExpression
                                     )
                                 | mxRustPreprocessEndpoint
-                                    ( trait: TypePath
-                                    , traitType: TraitType
-                                    , methodName: Identifier
+                                    ( traitType: TraitType
+                                    , methodName: PathInExpression
+                                    , defaultEndpointName: Identifier
                                     )
                                 | mxRustPreprocessProxyMethod
-                                    ( trait: TypePath
-                                    , traitType: TraitType
-                                    , methodName: Identifier
+                                    ( traitType: TraitType
+                                    , methodName: PathInExpression
                                     )
                                 | addStorageMethodBody
-                                    ( trait: TypePath
-                                    , methodName: Identifier
+                                    ( methodName: PathInExpression
                                     , storageName:String
                                     , mapperValueType:MxRustTypeOrError
                                     )
                                 | addProxyMethodBody
-                                    ( trait: TypePath
-                                    , methodName: Identifier
+                                    ( methodName: PathInExpression
                                     , proxyModule: TypePathOrError
                                     )
                                 | mxRustAddEndpointMapping
-                                    ( trait: TypePath
-                                    , methodName: Identifier
+                                    ( methodName: PathInExpression
                                     , endpointName:String
                                     )
 
@@ -73,22 +69,25 @@ module MX-RUST-PREPROCESSING-METHODS
             ~> mxRustPreprocessMethods(T, TType, Names)
 
     rule mxRustPreprocessMethod(Trait:TypePath, TType:TraitType, Method:Identifier)
-        => mxRustPreprocessStorage(Trait, TType, Method)
-            ~> mxRustPreprocessEndpoint(Trait, TType, Method)
-            ~> mxRustPreprocessProxyMethod(Trait, TType, Method)
+        => mxRustPreprocessStorage(TType, typePathToPathInExpression(append(Trait, Method)))
+            ~> mxRustPreprocessEndpoint
+                ( TType
+                , typePathToPathInExpression(append(Trait, Method))
+                , Method
+                )
+            ~> mxRustPreprocessProxyMethod(TType, typePathToPathInExpression(append(Trait, Method)))
 
-    rule mxRustPreprocessStorage(_Trait:TypePath, proxy, _Method:Identifier) => .K
+    rule mxRustPreprocessStorage(proxy, _Method:PathInExpression) => .K
     rule
         <k>
-            mxRustPreprocessStorage(Trait:TypePath, contract, Method:Identifier)
+            mxRustPreprocessStorage(contract, Method:PathInExpression)
             => addStorageMethodBody
-                (... trait: Trait, methodName: Method
+                (... methodName: Method
                 , storageName: getStorageName(Atts)
                 , mapperValueType: getMapperValueType(MapperValue)
                 )
             ...
         </k>
-        <trait-path> Trait </trait-path>
         <method-name> Method </method-name>
         <method-implementation> empty </method-implementation>
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
@@ -97,54 +96,57 @@ module MX-RUST-PREPROCESSING-METHODS
         </method-return-type>
         requires getStorageName(Atts) =/=K ""
         [priority(50)]
-    rule mxRustPreprocessStorage(_Trait:TypePath, contract, _Method:Identifier) => .K
+    rule mxRustPreprocessStorage(contract, _Method:PathInExpression) => .K
         [priority(100)]
 
     rule
         <k>
-            mxRustPreprocessEndpoint(Trait:TypePath, proxy, Method:Identifier)
+            mxRustPreprocessEndpoint(proxy, Method:PathInExpression, DefaultEndpointName:Identifier)
             => .K
             ...
         </k>
-        <trait-path> Trait </trait-path>
         <method-name> Method </method-name>
         <method-implementation>
             empty
-            => block(buildProxyEndpointMethod(Params, getEndpointName(Atts, Method), rustType(ReturnType)))
+            => block
+                ( buildProxyEndpointMethod
+                    ( Params
+                    , getEndpointName(Atts, DefaultEndpointName)
+                    , rustType(ReturnType)
+                    )
+                )
         </method-implementation>
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
         <method-params> Params:NormalizedFunctionParameterList </method-params>
         <method-return-type> ReturnType => #token("MxRust#Proxy", "Identifier") </method-return-type>
-        requires getEndpointName(Atts, Method) =/=K ""
+        requires getEndpointName(Atts, DefaultEndpointName) =/=K ""
         [priority(50)]
     rule
         <k>
-            mxRustPreprocessEndpoint(Trait:TypePath, contract, Method:Identifier)
+            mxRustPreprocessEndpoint(contract, Method:PathInExpression, DefaultEndpointName:Identifier)
             => mxRustAddEndpointMapping
-                (... trait: Trait, methodName: Method
-                , endpointName: getEndpointName(Atts, Method)
+                (... methodName: Method
+                , endpointName: getEndpointName(Atts, DefaultEndpointName)
                 )
             ...
         </k>
-        <trait-path> Trait </trait-path>
         <method-name> Method </method-name>
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
-        requires getEndpointName(Atts, Method) =/=K ""
+        requires getEndpointName(Atts, DefaultEndpointName) =/=K ""
         [priority(50)]
-    rule mxRustPreprocessEndpoint(_Trait:TypePath, contract, _Method:Identifier) => .K
+    rule mxRustPreprocessEndpoint(contract, _Method:PathInExpression, _DefaultEndpointName:Identifier) => .K
         [priority(100)]
 
-    rule mxRustPreprocessProxyMethod(_Trait:TypePath, proxy, _Method:Identifier) => .K
+    rule mxRustPreprocessProxyMethod(proxy, _Method:PathInExpression) => .K
     rule
         <k>
-            mxRustPreprocessProxyMethod(Trait:TypePath, contract, Method:Identifier)
+            mxRustPreprocessProxyMethod(contract, Method:PathInExpression)
             => addProxyMethodBody
-                (... trait: Trait, methodName: Method
+                (... methodName: Method
                 , proxyModule: parentTypePath(ReturnType)
                 )
             ...
         </k>
-        <trait-path> Trait </trait-path>
         <method-name> Method </method-name>
         <method-implementation> empty </method-implementation>
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
@@ -152,11 +154,10 @@ module MX-RUST-PREPROCESSING-METHODS
         requires isProxyMethod(Atts)
     rule
         <k>
-            mxRustPreprocessProxyMethod(Trait:TypePath, contract, Method:Identifier)
+            mxRustPreprocessProxyMethod(contract, Method:PathInExpression)
             => .K
             ...
         </k>
-        <trait-path> Trait </trait-path>
         <method-name> Method </method-name>
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
         requires notBool isProxyMethod(Atts)
@@ -164,7 +165,7 @@ module MX-RUST-PREPROCESSING-METHODS
     rule
         <k>
             mxRustAddEndpointMapping
-                (... trait: _Trait:TypePath, methodName: Method:Identifier
+                (... methodName: Method:PathInExpression
                 , endpointName: EndpointName:String
                 )
             => .K
@@ -176,12 +177,11 @@ module MX-RUST-PREPROCESSING-METHODS
     rule
         <k>
             addStorageMethodBody
-                (... trait: Trait:TypePath, methodName: Method:Identifier
+                (... methodName: Method:PathInExpression
                 , storageName: StorageName:String
                 , mapperValueType: MapperValueType:MxRustType) => .K
             ...
         </k>
-        <trait-path> Trait </trait-path>
         <method-name> Method </method-name>
         <method-params> Params:NormalizedFunctionParameterList </method-params>
         <method-implementation>
@@ -191,12 +191,11 @@ module MX-RUST-PREPROCESSING-METHODS
     rule
         <k>
             addProxyMethodBody
-                (... trait: Trait:TypePath, methodName: Method:Identifier
+                (... methodName: Method:PathInExpression
                 , proxyModule: ProxyModule:TypePath
                 ) => .K
             ...
         </k>
-        <trait-path> Trait </trait-path>
         <method-name> Method </method-name>
         <method-params>
             SelfName:SelfSort : _

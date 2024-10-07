@@ -3,31 +3,39 @@
 module MX-RUST-PREPROCESSING-PROXY
     imports COMMON-K-CELL
     imports MX-RUST-REPRESENTATION
+    imports RUST-CONVERSIONS-SYNTAX
     imports RUST-PREPROCESSING-CONFIGURATION
+
+    syntax MxRustInstruction ::= rustMxAddProxyEodtMethod(PathInExpression)
+
+    rule rustMxAddProxyMethods(Trait:TypePath)
+        => rustMxAddProxyEodtMethod
+            ( typePathToPathInExpression
+                ( append(Trait, #token("execute_on_dest_context", "Identifier"))
+                )
+            )
 
     rule
         <k>
-            rustMxAddProxyMethods(Trait:TypePath)
+            rustMxAddProxyEodtMethod(Name:PathInExpression)
             => error
                 ( "execute_on_dest_context already exists for trait"
-                , ListItem(Trait)
+                , ListItem(Name)
                 )
             ...
         </k>
-        <trait-path> Trait </trait-path>
-        <method-name> #token("execute_on_dest_context", "Identifier") </method-name>
+        <method-name> Name </method-name>
         [priority(50)]
 
     rule
         <k>
-            rustMxAddProxyMethods(Trait:TypePath)
+            rustMxAddProxyEodtMethod(Name:PathInExpression)
             => .K
             ...
         </k>
-        <trait-path> Trait </trait-path>
         ( .Bag
             =>  <method>
-                    <method-name> #token("execute_on_dest_context", "Identifier") </method-name>
+                    <method-name> Name </method-name>
                     <method-params> self : $selftype , .NormalizedFunctionParameterList </method-params>
                     <method-return-type> #token("MxRust#CallReturnType", "Identifier") </method-return-type>
                     <method-implementation>

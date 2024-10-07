@@ -9,9 +9,9 @@ module MX-RUST-MODULES-MANAGED-VEC
     imports private RUST-SHARED-SYNTAX
 
     rule
-        normalizedMethodCall
+        normalizedFunctionCall
             ( #token("ManagedVec", "Identifier"):Identifier
-            , #token("new", "Identifier"):Identifier
+                :: #token("new", "Identifier"):Identifier
             , .PtrList
             )
         => mxRustEmptyValue(rustType(#token("ManagedVec", "Identifier")))

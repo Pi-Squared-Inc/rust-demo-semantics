@@ -125,6 +125,37 @@ module RUST-EXPRESSION-CALLS
             , reverse(Args, .PtrList)
             )
 
+    rule Name:PathExpression ( ):Expression => normalizedFunctionCall(Name, .PtrList)
+    rule Name:PathExpression ( Args:CallParamsList ) => functionCall(Name, Args)
+
+    rule
+        ( .K
+        => reverseNormalizeParams
+                (... params: Args
+                , reversedNormalizedParams: .PtrList
+                )
+        )
+        ~> functionCall
+                (... function: _MethodName:PathExpression
+                , params: Args:CallParamsList
+                )
+        requires isValueWithPtr(Args)
+
+    rule
+        ( reverseNormalizeParams
+                (... params: .CallParamsList
+                , reversedNormalizedParams: Args:PtrList
+                )
+            ~> functionCall
+                (... function: MethodName:PathExpression
+                , params: _:CallParamsList
+                )
+        )
+        => normalizedFunctionCall
+            ( MethodName
+            , reverse(Args, .PtrList)
+            )
+
     // Apparently contexts need the type of the HOLE to be K, and I'm not sure
     // how to transform CallParamsList in some sort of K combination in a
     // reasonable way. We're using heat/cool rules instead.
