@@ -195,7 +195,12 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax Struct ::= "TODO: not needed yet, not implementing"
+  syntax Structs ::= List{Struct, ""}
+  syntax Struct ::= StructStruct | TupleStruct
+  syntax TupleStruct ::= "TODO: not needed yet, not implementing"
+  syntax StructStruct ::= "struct" Identifier MaybeGenericParams "{" StructFields "}"
+  syntax StructFields ::= List{StructField, ","}
+  syntax StructField ::= Identifier ":" Type
 
 ```
 

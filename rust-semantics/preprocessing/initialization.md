@@ -8,6 +8,56 @@ module INITIALIZATION
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 
     rule
+        <k> structInitializer( (struct Name:Identifier { F:StructFields } ):Struct, ParentPath:TypePath) => structParser(append(ParentPath, Name), F:StructFields )
+            ...
+        </k>
+        <struct-list> .List => ListItem(append(ParentPath, Name)) ...</struct-list>
+        <structs>
+            ...
+            .Bag
+            =>  <struct>
+                    <struct-path> append(ParentPath, Name) </struct-path>
+                    ...
+                </struct>
+        </structs>
+        
+    rule
+        <k> structParser(Name:TypePath, ((FN:Identifier : FT:Type):StructField  , RF:StructFields):StructFields) => 
+                structParser(Name:TypePath, RF:StructFields)
+            ...
+        </k>
+        <struct>
+          ...
+          <struct-path> Name </struct-path>
+          <variable-list> L:List => ListItem(Name) L </variable-list>
+          <variables>
+            .Bag =>
+              <variable>
+                <variable-name> FN </variable-name>
+                <variable-type> FT </variable-type>
+              </variable>
+            ...
+          </variables>
+        </struct> [owise]
+    rule
+        <k> structParser(Name:TypePath, ((FN:Identifier : FT:Type):StructField  , .StructFields):StructFields) => .K
+            ...
+        </k>
+        <struct>
+          ...
+          <struct-path> Name </struct-path>
+          <variable-list> L:List => ListItem(Name) L </variable-list>
+          <variables>
+            .Bag =>
+              <variable>
+                <variable-name> FN </variable-name>
+                <variable-type> FT </variable-type>
+              </variable>
+            ...
+          </variables>
+        </struct>
+
+    rule
         <k> traitInitializer(Name:TypePath, Atts:OuterAttributes) => .K
             ...
         </k>
