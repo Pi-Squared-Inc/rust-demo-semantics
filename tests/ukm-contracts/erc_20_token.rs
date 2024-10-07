@@ -16,9 +16,9 @@ use ukm::*;
 /* ----------------------------------------------------------------------------
 
 TODOs:
-    - Integers are all u64. Implement u256 and modify appropriately;
+    - Integers are all u64 at the moment. Implement u256 and modify appropriately;
     - Reuse the implementation of ManagedBuffer for strings, and the annotations for
-      the contract trait identification, as well as views, storage mapers, update, and
+      the contract trait identification, as well as views, storage mappers, update, and
       inits;
     - Support some sort of struct for implementing MessageResult within the UKM module.
       We also have to figure out the contents of MessageResult.
