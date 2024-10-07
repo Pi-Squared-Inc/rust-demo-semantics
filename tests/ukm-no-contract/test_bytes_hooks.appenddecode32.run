@@ -1,0 +1,9 @@
+push 10_u32;
+call :: test_bytes_hooks :: append_decode_u32;
+return_value;
+check_eq(2_u64, 10_u32);
+
+push 2_u64;
+call :: bytes_hooks :: length;
+return_value;
+check_eq 0_u32

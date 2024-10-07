@@ -10,6 +10,7 @@ module RUST-EXECUTION-TEST-PARSING-SYNTAX
                             | "call" TypePath "." Identifier
                             | "call" PathInExpression
                             | "return_value"
+                            | "return_value_to_arg"
                             | "check_eq" Expression  [strict]
                             | "push" Expression [strict]
 endmodule
@@ -78,6 +79,8 @@ module RUST-EXECUTION-TEST
     rule
         <k> (V:PtrValue ~> return_value) => .K ... </k>
         <test-stack> .List => ListItem(V) ... </test-stack>
+
+    rule (V:PtrValue ~> return_value_to_arg) => push V
 
     rule
         <k> check_eq ptrValue(_, V:Value) => .K ... </k>

@@ -20,6 +20,7 @@ endmodule
 module UKM-TARGET-CONFIGURATION
     imports COMMON-K-CELL
     imports RUST-EXECUTION-CONFIGURATION
+    imports RUST-EXECUTION-TEST-CONFIGURATION
     imports UKM-CONFIGURATION
     imports UKM-FULL-PREPROCESSED-CONFIGURATION
     imports UKM-TEST-CONFIGURATION
@@ -29,6 +30,7 @@ module UKM-TARGET-CONFIGURATION
             <ukm-full-preprocessed/>
             <ukm/>
             <ukm-test/>
+            <rust-test/>
             <execution/>
             <k/>
         </ukm-target>

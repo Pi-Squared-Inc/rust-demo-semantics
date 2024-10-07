@@ -1,0 +1,13 @@
+push "Hello";
+call :: test_bytes_hooks :: append_str;
+return_value_to_arg;
+call :: bytes_hooks :: length;
+return_value;
+check_eq 7_u32;
+
+push "Everyone";
+call :: test_bytes_hooks :: append_str;
+return_value_to_arg;
+call :: bytes_hooks :: length;
+return_value;
+check_eq 10_u32
