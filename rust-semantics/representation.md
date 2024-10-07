@@ -64,6 +64,7 @@ module RUST-REPRESENTATION
     syntax PtrListOrError ::= PtrList | SemanticsError
 
     syntax Instruction  ::= normalizedMethodCall(TypePath, Identifier, PtrList)
+                          | normalizedFunctionCall(PathInExpression, PtrList)
                           | implicitCastTo(Type)
                           | methodCall
                               ( self: Expression
@@ -165,6 +166,8 @@ module RUST-REPRESENTATION
                               | evaluate(ValueListOrError)
 
     syntax MaybeTypePath ::= ".TypePath" | TypePath
+
+    syntax TypePath ::= append(MaybeTypePath, Identifier)  [function, total]
 
 endmodule
 

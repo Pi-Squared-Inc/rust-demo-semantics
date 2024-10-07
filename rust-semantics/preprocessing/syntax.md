@@ -35,7 +35,6 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
                                 OuterAttributes
                             )
 
-    syntax TypePath ::= append(MaybeTypePath, Identifier)  [function, total]
 endmodule
 
 ```

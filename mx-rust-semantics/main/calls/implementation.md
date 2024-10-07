@@ -66,22 +66,21 @@ module MX-RUST-CALLS-IMPLEMENTATION
             ...
         </k>
         <mx-rust-endpoint-to-function>
-            FunctionName |-> Endpoint:Identifier ...
+            FunctionName:String:KItem |-> Endpoint:PathInExpression ...
         </mx-rust-endpoint-to-function>
         <mx-rust-contract-trait> TraitName:TypePath </mx-rust-contract-trait>
         <mx-call-args> Args:MxValueList </mx-call-args>
-        <trait-path> TraitName </trait-path>
         <method-name> Endpoint </method-name>
         <method-params> _:SelfSort : _ , Nfp:NormalizedFunctionParameterList </method-params>
 
     rule (ptrValue(...) #as SelfValue:Expression) , Params:CallParamsList
-        ~> MxRust#partialMethodCall(Method:Identifier)
-        => methodCall(... self: SelfValue, method: Method, params: Params)
+        ~> MxRust#partialMethodCall(Method:PathInExpression)
+        => functionCall(... function: Method, params: (SelfValue , Params))
 
     syntax MxRustInstruction ::= "MxRust#newContractObject" "(" TypePath ")"
     rule MxRust#newContractObject(P:TypePath) => Rust#newStruct(P, .Map)
 
-    syntax MxRustInstruction ::= "MxRust#partialMethodCall" "(" Identifier ")"
+    syntax MxRustInstruction ::= "MxRust#partialMethodCall" "(" PathInExpression ")"
 
     syntax MxRustInstruction ::= mxArgsToRustArgs
                                     ( MxValueList

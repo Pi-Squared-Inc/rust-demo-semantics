@@ -9,9 +9,9 @@ module MX-RUST-MODULES-STORAGE
     imports private RUST-SHARED-SYNTAX
 
     rule
-        normalizedMethodCall
-            ( #token("SingleValueMapper", "Identifier"):Identifier #as Type:Identifier
-            , #token("new", "Identifier"):Identifier
+        normalizedFunctionCall
+            ( #token("SingleValueMapper", "Identifier"):Identifier
+              :: #token("new", "Identifier"):Identifier
             ,   ( ptr(KeyId:Int)
                 , ptr(ResultTypeId:Int)
                 , .PtrList
@@ -19,7 +19,7 @@ module MX-RUST-MODULES-STORAGE
             )
         => mxRustNewValue
             ( struct
-                ( Type
+                ( #token("SingleValueMapper", "Identifier"):Identifier
                 , #token("storage_key", "Identifier"):Identifier |-> KeyId
                     #token("result_type", "Identifier"):Identifier |-> ResultTypeId
                 )

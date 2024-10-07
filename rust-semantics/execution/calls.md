@@ -3,6 +3,7 @@
 module RUST-CALLS
     imports BOOL
     imports private COMMON-K-CELL
+    imports private RUST-CONVERSIONS-SYNTAX
     imports private RUST-EXECUTION-CONFIGURATION
     imports private RUST-HELPERS
     imports private RUST-PREPROCESSING-CONFIGURATION
@@ -14,11 +15,21 @@ module RUST-CALLS
     syntax Instruction  ::= "clearLocalState"
                           | setArgs(PtrList, NormalizedFunctionParameterList)
 
-    rule
-        <k>
-            normalizedMethodCall(
+    rule normalizedMethodCall(
                 TraitName:TypePath,
                 MethodName:Identifier,
+                Args:PtrList
+            )
+        => normalizedFunctionCall
+            ( typePathToPathInExpression(append(TraitName, MethodName))
+            , Args
+            )
+        [owise]
+
+    rule
+        <k>
+            normalizedFunctionCall(
+                MethodName:PathInExpression,
                 Args:PtrList
             ) => pushLocalState
                 ~> clearLocalState
@@ -28,7 +39,6 @@ module RUST-CALLS
                 ~> popLocalState
             ...
         </k>
-        <trait-path> TraitName </trait-path>
         <method-name> MethodName </method-name>
         <method-params> Params:NormalizedFunctionParameterList </method-params>
         <method-return-type> ReturnType:Type </method-return-type>

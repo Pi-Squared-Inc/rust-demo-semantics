@@ -36,7 +36,7 @@ module MX-RUST-PREPROCESSED-ENDPOINTS-CONFIGURATION
     imports MAP
 
     configuration
-        <mx-rust-endpoint-to-function> .Map </mx-rust-endpoint-to-function>  // String to Identifier
+        <mx-rust-endpoint-to-function> .Map </mx-rust-endpoint-to-function>  // String to PathInExpression
 endmodule
 
 ```

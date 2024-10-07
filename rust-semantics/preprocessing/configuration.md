@@ -20,19 +20,22 @@ module RUST-PREPROCESSING-CONFIGURATION
                     <trait-path> my_identifier:TypePath </trait-path>
                     <trait-attributes> `emptyOuterAttributes`(.KList):OuterAttributes </trait-attributes>
                     <method-list> .List </method-list>  // List of Identifier
-                    <methods>
-                        <method multiplicity="*" type="Map">
-                            <method-name> .Identifier </method-name>
-                            <method-params> .NormalizedFunctionParameterList </method-params>
-                            <method-return-type> ():Type </method-return-type>
-                            <method-implementation> empty:FunctionBodyRepresentation </method-implementation>
-                            <method-outer-attributes> `emptyOuterAttributes`(.KList):OuterAttributes </method-outer-attributes>
-                        </method>
-                    </methods>
                 </trait>
             </traits>
+            <methods>
+                <method multiplicity="*" type="Map">
+                    <method-name> my_identifier:PathInExpression </method-name>
+                    <method-params> .NormalizedFunctionParameterList </method-params>
+                    <method-return-type> ():Type </method-return-type>
+                    <method-implementation> empty:FunctionBodyRepresentation </method-implementation>
+                    <method-outer-attributes> `emptyOuterAttributes`(.KList):OuterAttributes </method-outer-attributes>
+                </method>
+            </methods>
         </preprocessed>
 endmodule
 
+module RUST-PREPROCESSING-METHODS-CONFIGURATION
+
+endmodule
 
 ```

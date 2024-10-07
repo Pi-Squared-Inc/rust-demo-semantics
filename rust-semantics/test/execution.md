@@ -8,6 +8,7 @@ module RUST-EXECUTION-TEST-PARSING-SYNTAX
     // syntax ExecutionTest ::= ExecutionItem ";" ExecutionItem
     syntax ExecutionItem  ::= "new" TypePath
                             | "call" TypePath "." Identifier
+                            | "call" PathInExpression
                             | "return_value"
                             | "check_eq" Expression  [strict]
                             | "push" Expression [strict]
@@ -16,6 +17,7 @@ endmodule
 module RUST-EXECUTION-TEST
     imports private COMMON-K-CELL
     imports private LIST
+    imports private RUST-CONVERSIONS-SYNTAX
     imports private RUST-EXECUTION-CONFIGURATION
     imports private RUST-EXECUTION-TEST-PARSING-SYNTAX
     imports private RUST-EXECUTION-TEST-CONFIGURATION
@@ -41,23 +43,23 @@ module RUST-EXECUTION-TEST
         <k> ptrValue(P:Ptr, _:Value) ~> new _:TypePath => .K ... </k>
         <test-stack> .List => ListItem(P) ... </test-stack>
 
+    rule call P:TypePath . Name:Identifier => call typePathToPathInExpression(append(P, Name))
+
     rule
         <k>
-            call P:TypePath . Name:Identifier
-            => buildTestMethodCall(P, Name, .PtrList, paramsLength(Params))
+            call Name:PathInExpression
+            => buildTestMethodCall(Name, .PtrList, paramsLength(Params))
             ...
         </k>
-        <trait-path> P </trait-path>
         <method-name> Name </method-name>
         <method-params> Params </method-params>
 
-    syntax TestExecution ::= buildTestMethodCall(TypePath, Identifier, PtrList, Int)
+    syntax TestExecution ::= buildTestMethodCall(PathInExpression, PtrList, Int)
 
     rule
         <k>
             buildTestMethodCall(
-                _TraitName:TypePath,
-                _MethodName:Identifier,
+                _MethodName:PathInExpression,
                 Args:PtrList => (ValueId , Args),
                 ParamCount:Int => ParamCount -Int 1
             )
@@ -68,11 +70,10 @@ module RUST-EXECUTION-TEST
 
     rule
         buildTestMethodCall(
-            TraitName:TypePath,
-            MethodName:Identifier,
+            MethodName:PathInExpression,
             Args:PtrList,
             0
-        ) => normalizedMethodCall(TraitName, MethodName, Args)
+        ) => normalizedFunctionCall(MethodName, Args)
 
     rule
         <k> (V:PtrValue ~> return_value) => .K ... </k>

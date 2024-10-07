@@ -2,6 +2,7 @@
 
 module INITIALIZATION
     imports private COMMON-K-CELL
+    imports private RUST-CONVERSIONS-SYNTAX
     imports private RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-PREPROCESSING-PRIVATE-HELPERS
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
@@ -44,18 +45,18 @@ module INITIALIZATION
           ...
           <trait-path> Trait </trait-path>
           <method-list> L:List => ListItem(Name) L </method-list>
-          <methods>
-            .Bag =>
-              <method>
-                <method-name> Name:Identifier </method-name>
-                <method-params> P </method-params>
-                <method-return-type> R </method-return-type>
-                <method-implementation> toFBR(B) </method-implementation>
-                <method-outer-attributes> A </method-outer-attributes>
-              </method>
-            ...
-          </methods>
         </trait>
+        <methods>
+          .Bag =>
+            <method>
+              <method-name> typePathToPathInExpression(append(Trait, Name)) </method-name>
+              <method-params> P </method-params>
+              <method-return-type> R </method-return-type>
+              <method-implementation> toFBR(B) </method-implementation>
+              <method-outer-attributes> A </method-outer-attributes>
+            </method>
+          ...
+        </methods>
 
     syntax FunctionBodyRepresentation ::= toFBR(BlockExpressionOrSemicolon)  [function, total]
     rule toFBR(B:BlockExpression) => block(B)
