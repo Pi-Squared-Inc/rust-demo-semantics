@@ -36,12 +36,12 @@ module CRATE
             => (Atts Is):Crate
           , CratePath:TypePath
           )
-    // rule (.K => functionParser(Fn, CratePath))
-    //     ~> crateParser
-    //       ( (Atts:InnerAttributes (_ItemAtts:OuterAttributes _:MaybeVisibility Fn:Function):Item Is:Items):Crate
-    //         => (Atts Is):Crate
-    //       , CratePath:TypePath
-    //       )
+    rule (.K => functionParser(Fn, CratePath, ItemAtts))
+        ~> crateParser
+          ( (Atts:InnerAttributes (ItemAtts:OuterAttributes _:MaybeVisibility Fn:Function):Item Is:Items):Crate
+            => (Atts Is):Crate
+          , CratePath:TypePath
+          )
 
     rule crateParser( (_Atts:InnerAttributes .Items):Crate, _Path:TypePath)
         => .K //resolveCrateNames(Path)

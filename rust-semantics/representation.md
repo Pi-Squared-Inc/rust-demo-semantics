@@ -78,6 +78,11 @@ module RUST-REPRESENTATION
                               , params: CallParamsList
                               )
                             [strict(3), result(ValueWithPtr)]
+                          | functionCall
+                              ( function: PathExpression
+                              , params: CallParamsList
+                              )
+                            [strict(2), result(ValueWithPtr)]
                           | "Rust#newStruct" "(" type:TypePath "," fields:MapOrError ")"
                           | reverseNormalizeParams
                               ( params: CallParamsList

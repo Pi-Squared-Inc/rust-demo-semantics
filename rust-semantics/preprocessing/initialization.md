@@ -22,6 +22,16 @@ module INITIALIZATION
                 </trait>
         </traits>
 
+    rule addFunction(Parent:TypePath, F:Function, A:OuterAttributes)
+        => #addFunction
+            ( Parent
+            , getFunctionName(F)
+            , extractFunctionNormalizedParams(F)
+            , getFunctionReturnType(F)
+            , getFunctionBlockOrSemicolon(F)
+            , A
+            )
+
     rule addMethod(Trait:TypePath, F:Function, A:OuterAttributes)
         => #addMethod
             ( Trait
@@ -38,7 +48,8 @@ module INITIALIZATION
                 Name:Identifier, P:NormalizedFunctionParameterList,
                 R:Type, B:BlockExpressionOrSemicolon,
                 A:OuterAttributes
-            ) => .K
+            )
+            => #addFunction(Trait, Name, P, R, B, A)
             ...
         </k>
         <trait>
@@ -46,10 +57,20 @@ module INITIALIZATION
           <trait-path> Trait </trait-path>
           <method-list> L:List => ListItem(Name) L </method-list>
         </trait>
+
+    rule
+        <k> #addFunction(
+                Parent:TypePath,
+                Name:Identifier, P:NormalizedFunctionParameterList,
+                R:Type, B:BlockExpressionOrSemicolon,
+                A:OuterAttributes
+            ) => .K
+            ...
+        </k>
         <methods>
           .Bag =>
             <method>
-              <method-name> typePathToPathInExpression(append(Trait, Name)) </method-name>
+              <method-name> typePathToPathInExpression(append(Parent, Name)) </method-name>
               <method-params> P </method-params>
               <method-return-type> R </method-return-type>
               <method-implementation> toFBR(B) </method-implementation>
