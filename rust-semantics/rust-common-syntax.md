@@ -199,7 +199,8 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax StructStruct ::= "struct" Identifier MaybeGenericParams MaybeWhereClause "{" MaybeStructFields "}"
   syntax MaybeStructFields ::= "" | StructFields
   syntax StructFields ::= List{StructField, ","}
-  syntax StructField ::= Identifier ":" Type
+  syntax StructField ::= OuterAttributes MaybeVisibility Identifier ":" Type //TODO: Outerfields and visibility for 
+                                                                             //struct fields is not yet supported.
 
 ```
 
