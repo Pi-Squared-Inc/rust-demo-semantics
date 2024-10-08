@@ -29,15 +29,15 @@ module INITIALIZATION
         <struct>
           ...
           <struct-path> Name </struct-path>
-          <variable-list> L:List => ListItem(FN) L </variable-list>
-          <variables>
+          <field-list> L:List => ListItem(FN) L </field-list>
+          <fields>
             .Bag =>
-              <variable>
-                <variable-name> FN </variable-name>
-                <variable-type> FT </variable-type>
-              </variable>
+              <field>
+                <field-name> FN </field-name>
+                <field-type> FT </field-type>
+              </field>
             ...
-          </variables>
+          </fields>
         </struct> [owise]
     rule
         <k> structParser(Name:TypePath, ((FN:Identifier : FT:Type):StructField  , .StructFields):StructFields) => .K
@@ -46,15 +46,15 @@ module INITIALIZATION
         <struct>
           ...
           <struct-path> Name </struct-path>
-          <variable-list> L:List => ListItem(FN) L </variable-list>
-          <variables>
+          <field-list> L:List => ListItem(FN) L </field-list>
+          <fields>
             .Bag =>
-              <variable>
-                <variable-name> FN </variable-name>
-                <variable-type> FT </variable-type>
-              </variable>
+              <field>
+                <field-name> FN </field-name>
+                <field-type> FT </field-type>
+              </field>
             ...
-          </variables>
+          </fields>
         </struct>
 
     rule

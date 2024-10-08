@@ -194,11 +194,10 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   https://doc.rust-lang.org/reference/items/structs.html
 
 ```k
-
-  syntax Structs ::= List{Struct, ""}
   syntax Struct ::= StructStruct | TupleStruct
   syntax TupleStruct ::= "TODO: not needed yet, not implementing"
-  syntax StructStruct ::= "struct" Identifier MaybeGenericParams "{" StructFields "}"
+  syntax StructStruct ::= "struct" Identifier MaybeGenericParams MaybeWhereClause "{" MaybeStructFields "}"
+  syntax MaybeStructFields ::= "" | StructFields
   syntax StructFields ::= List{StructField, ","}
   syntax StructField ::= Identifier ":" Type
 

@@ -22,7 +22,7 @@ module RUST-EXPRESSION-STRUCT
             ... 
          </k>
         <struct-path> I </struct-path>
-        <variable-list> VL </variable-list>
+        <field-list> VL </field-list>
         
     rule <k> fromStructExpressionWithLiteralsBuildFieldsMap(I:TypePath, (E:LiteralExpression, RL):LiteralExpressionList, FieldNameList:List, FieldsMap:Map)
                 => E ~> fromStructExpressionWithLiteralsBuildFieldsMap(I, RL, FieldNameList, FieldsMap) ... 
@@ -41,6 +41,7 @@ module RUST-EXPRESSION-STRUCT
         </k>
         <values> VALUES:Map => VALUES[NVI <- V] </values>
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
+        requires notBool (FieldName in_keys(FieldsMap)) 
 
     rule <k> 
             fromStructExpressionWithLiteralsBuildFieldsMap(I:TypePath, .LiteralExpressionList, .List, FieldsMap:Map) 

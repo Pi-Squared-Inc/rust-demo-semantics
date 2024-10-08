@@ -18,13 +18,13 @@ module RUST-PREPROCESSING-CONFIGURATION
             <structs>
                 <struct multiplicity="*" type="Map">
                     <struct-path> my_identifier:TypePath </struct-path> 
-                    <variable-list> .List </variable-list>  // List of Identifier
-                    <variables>
-                        <variable multiplicity="*" type="Map">
-                            <variable-name> .Identifier </variable-name>
-                            <variable-type> ():Type </variable-type>
-                        </variable>
-                    </variables>
+                    <field-list> .List </field-list>  // List of Identifier
+                    <fields>
+                        <field multiplicity="*" type="Map">
+                            <field-name> .Identifier </field-name>
+                            <field-type> ():Type </field-type>
+                        </field>
+                    </fields>
                 </struct>
             </structs>
             <trait-list> .List </trait-list>  // List of TypePath
