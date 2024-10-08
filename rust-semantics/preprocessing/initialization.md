@@ -29,7 +29,7 @@ module INITIALIZATION
         <struct>
           ...
           <struct-path> Name </struct-path>
-          <variable-list> L:List => ListItem(Name) L </variable-list>
+          <variable-list> L:List => ListItem(FN) L </variable-list>
           <variables>
             .Bag =>
               <variable>
@@ -46,7 +46,7 @@ module INITIALIZATION
         <struct>
           ...
           <struct-path> Name </struct-path>
-          <variable-list> L:List => ListItem(Name) L </variable-list>
+          <variable-list> L:List => ListItem(FN) L </variable-list>
           <variables>
             .Bag =>
               <variable>

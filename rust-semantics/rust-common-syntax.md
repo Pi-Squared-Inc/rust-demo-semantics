@@ -545,7 +545,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax StructExpression ::= Identifier "{" StructFieldsExpression "}"
+  syntax StructExpression ::= TypePath "{" StructFieldsExpression "}"
   syntax StructFieldsExpression ::= LiteralExpressionList 
                                   | StructFieldAssignments
   syntax StructFieldAssignment ::= Identifier ":" LiteralExpression 
