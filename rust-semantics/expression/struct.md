@@ -12,19 +12,18 @@ module RUST-EXPRESSION-STRUCT
     rule <k> struct(P, Fields) => ptrValue(null, struct(P, Fields)) ... </k>
 
     // KItems for breaking down struct expressions into the adequate format struct(P, F)
-    syntax KItem ::= fromStructExpressionWithLiteralsBuildFieldsMap(TypePath, LiteralExpressionList, List, Map)
-                   | fromStructExpressionWithAssignmentsBuildFieldsMap(TypePath, StructFieldAssignments, Map)
-
+    syntax KItem ::= fromStructExpressionWithLiteralsBuildFieldsMap(TypePath, StructBases, List, Map)
+                   | fromStructExpressionWithAssignmentsBuildFieldsMap(TypePath, StructExprFields, Map)
 
     // From Struct Expression to struct(P, F). Case 1, field names are not given:
     rule <k> 
-            I:TypePath { L:LiteralExpressionList } => fromStructExpressionWithLiteralsBuildFieldsMap(I, L, VL, .Map) 
+            I:TypePath { L:StructBases } => fromStructExpressionWithLiteralsBuildFieldsMap(I, L, VL, .Map) 
             ... 
          </k>
         <struct-path> I </struct-path>
         <field-list> VL </field-list>
         
-    rule <k> fromStructExpressionWithLiteralsBuildFieldsMap(I:TypePath, (E:LiteralExpression, RL):LiteralExpressionList, FieldNameList:List, FieldsMap:Map)
+    rule <k> fromStructExpressionWithLiteralsBuildFieldsMap(I:TypePath, (E:Expression, RL):StructBases, FieldNameList:List, FieldsMap:Map)
                 => E ~> fromStructExpressionWithLiteralsBuildFieldsMap(I, RL, FieldNameList, FieldsMap) ... 
          </k>
 
@@ -33,7 +32,7 @@ module RUST-EXPRESSION-STRUCT
             ptrValue(_, V:Value):PtrValue ~> 
             fromStructExpressionWithLiteralsBuildFieldsMap(
                     I:TypePath, 
-                    RL:LiteralExpressionList, 
+                    RL:StructBases, 
                     (FieldNameList):List ListItem(FieldName), 
                     FieldsMap:Map)
             => fromStructExpressionWithLiteralsBuildFieldsMap(I, RL, FieldNameList, FieldsMap (FieldName |-> NVI):Map )  
@@ -44,21 +43,21 @@ module RUST-EXPRESSION-STRUCT
         requires notBool (FieldName in_keys(FieldsMap)) 
 
     rule <k> 
-            fromStructExpressionWithLiteralsBuildFieldsMap(I:TypePath, .LiteralExpressionList, .List, FieldsMap:Map) 
+            fromStructExpressionWithLiteralsBuildFieldsMap(I:TypePath, .StructBases, .List, FieldsMap:Map) 
                 => struct(I, FieldsMap) 
             ... 
         </k>
 
     // From Struct Expression to struct(P, F). Case 2, field names are given:
     rule <k> 
-            I:TypePath { S:StructFieldAssignments } => fromStructExpressionWithAssignmentsBuildFieldsMap(I, S, .Map) 
+            I:TypePath { S:MaybeStructExprFieldsOrStructBase } => fromStructExpressionWithAssignmentsBuildFieldsMap(I, S, .Map) 
             ... 
          </k>
 
     rule <k> 
             fromStructExpressionWithAssignmentsBuildFieldsMap(
                     Name:TypePath, 
-                    ((FieldName:Identifier : LE:LiteralExpression):StructFieldAssignment, RS):StructFieldAssignments,
+                    ((FieldName:Identifier : LE:Expression):StructExprField, RS):StructExprFields,
                     FieldsMap:Map)
                 => LE ~> FieldName ~> fromStructExpressionWithAssignmentsBuildFieldsMap(Name, RS, FieldsMap)
             ...
@@ -68,7 +67,7 @@ module RUST-EXPRESSION-STRUCT
             ptrValue(_, V:Value):PtrValue ~> FieldName:Identifier ~>
             fromStructExpressionWithAssignmentsBuildFieldsMap(
                 Name:TypePath, 
-                RS:StructFieldAssignments,
+                RS:StructExprFields,
                 FieldsMap:Map
             ) =>
             fromStructExpressionWithAssignmentsBuildFieldsMap(
@@ -81,7 +80,7 @@ module RUST-EXPRESSION-STRUCT
 
     rule <k> fromStructExpressionWithAssignmentsBuildFieldsMap(
                 Name:TypePath, 
-                .StructFieldAssignments,
+                .StructExprFields,
                 FieldsMap:Map
             ) => struct(Name, FieldsMap)
         ...
