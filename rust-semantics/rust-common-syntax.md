@@ -554,7 +554,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax MaybeStructExprFieldsOrStructBase ::= "" | StructExprFields | StructBases
   syntax StructExprFields ::= NeList{StructExprField, ","} 
   syntax StructBases ::= NeList{StructBase, ","}
-  syntax StructExprField ::= Identifier ":" Expression 
+  syntax StructExprField ::= Identifier ":" Expression //TODO: Not implemented properly. Needs outer attributes.
 
   syntax StructBase ::= Expression
   syntax StructExprUnit ::= "TODO: not needed yet, not implementing"
