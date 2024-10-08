@@ -16,7 +16,7 @@ push_status;
 check_eq 2;
 
 output_to_arg;
-call :: endpoints :: decode_single_u64;
+call :: test_helpers :: decode_single_u64;
 return_value;
 
 check_eq 126_u64

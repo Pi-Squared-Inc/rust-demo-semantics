@@ -1,7 +1,8 @@
 ```k
 
 module UKM-HOOKS-UKM-SYNTAX
-    syntax UkmHook ::= CallDataHook()
+    syntax UkmHook  ::= CallDataHook()
+                      | CallerHook()
 endmodule
 
 
@@ -12,9 +13,12 @@ module UKM-HOOKS-UKM
 
     syntax Identifier ::= "ukm"  [token]
                         | "CallData"  [token]
+                        | "Caller"  [token]
 
-    rule normalizedFunctionCall ( ukm :: CallData :: .PathExprSegments , .PtrList )
+    rule normalizedFunctionCall ( :: ukm :: CallData :: .PathExprSegments , .PtrList )
         => CallDataHook()
+    rule normalizedFunctionCall ( :: ukm :: Caller :: .PathExprSegments , .PtrList )
+        => CallerHook()
 endmodule
 
 ```

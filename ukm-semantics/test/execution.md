@@ -5,6 +5,7 @@ module UKM-TEST-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
 
     syntax ExecutionItem  ::= "mock" "CallData"
+                            | "mock" "Caller"
                             | "call_contract" Int
                             | "output_to_arg"
                             | "push_status"
@@ -25,6 +26,13 @@ module UKM-TEST-EXECUTION
 
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>
+        <test-stack>
+            (ListItem(ptrValue(_, u64(_BytesId)) #as V:PtrValue) => .List)
+            ...
+        </test-stack>
+
+    rule
+        <k> mock Caller => mock(CallerHook(), V) ... </k>
         <test-stack>
             (ListItem(ptrValue(_, u64(_BytesId)) #as V:PtrValue) => .List)
             ...

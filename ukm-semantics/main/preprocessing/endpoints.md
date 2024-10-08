@@ -121,7 +121,7 @@ module UKM-PREPROCESSING-ENDPOINTS
                         block({
                             .InnerAttributes
                             concatNonEmptyStatements
-                                (   let buffer_id = ukm :: CallData();
+                                (   let buffer_id = :: ukm :: CallData();
                                     let ( buffer_id | .PatternNoTopAlts
                                         , signature | .PatternNoTopAlts
                                         , .Patterns
@@ -151,6 +151,7 @@ module UKM-PREPROCESSING-ENDPOINTS
                         | "append_u16"  [token]
                         | "append_u32"  [token]
                         | "append_u64"  [token]
+                        | "append_bool"  [token]
                         | "decode_u8"  [token]
                         | "decode_u16"  [token]
                         | "decode_u32"  [token]
@@ -232,6 +233,8 @@ module UKM-PREPROCESSING-ENDPOINTS
         => v(:: bytes_hooks :: append_u32 ( BufferId , Value , .CallParamsList ))
     rule appendValue(BufferId:Identifier, Value:Identifier, u64)
         => v(:: bytes_hooks :: append_u64 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, bool)
+        => v(:: bytes_hooks :: append_bool ( BufferId , Value , .CallParamsList ))
     rule appendValue(BufferId:Identifier, _Value:Identifier, ()) => v(BufferId)
     rule appendValue(BufferId:Identifier, Value:Identifier, T:Type)
         => e(error("appendValue: unrecognized type", ListItem(BufferId) ListItem(Value) ListItem(T)))
