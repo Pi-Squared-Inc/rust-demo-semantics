@@ -8,6 +8,7 @@ module UKM-TEST-SYNTAX
     syntax ExecutionItem  ::= "mock" "CallData"
                             | "mock" "Caller"
                             | "mock" UkmHook UkmHookResult
+                            | "list_mock" UkmHook UkmHookResult
                             | "call_contract" Int
                             | "output_to_arg"
                             | "push_status"
@@ -43,6 +44,7 @@ module UKM-TEST-EXECUTION
         </test-stack>
 
     rule mock Hook:UkmHook Result:UkmHookResult => mock(Hook, Result)
+    rule list_mock Hook:UkmHook Result:UkmHookResult => listMock(Hook, Result)
 
     rule call_contract Account => ukmExecute(Account, 100)
 
