@@ -1,2 +1,4 @@
 new :: structs :: StructFile;
-call :: structs :: StructFile.empty
+call :: structs :: StructFile.struct_with_var_assignment;
+return_value;
+check_eq 2_u32
