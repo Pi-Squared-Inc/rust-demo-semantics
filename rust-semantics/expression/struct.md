@@ -57,9 +57,9 @@ module RUST-EXPRESSION-STRUCT
     rule <k> 
             fromStructExpressionWithAssignmentsBuildFieldsMap(
                     Name:TypePath, 
-                    ((FieldName:Identifier : LE:Expression):StructExprField, RS):StructExprFields,
+                    ((FieldName:Identifier : Le:Expression):StructExprField, RS):StructExprFields,
                     FieldsMap:Map)
-                => LE ~> FieldName ~> fromStructExpressionWithAssignmentsBuildFieldsMap(Name, RS, FieldsMap)
+                => Le ~> FieldName ~> fromStructExpressionWithAssignmentsBuildFieldsMap(Name, RS, FieldsMap)
             ...
         </k>
 

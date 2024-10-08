@@ -32,17 +32,17 @@ module RUST-EXPRESSION-STRUCT-COMPARISONS
     syntax ExpressionOrError ::= allPtrEquality(PtrListOrError, PtrListOrError)
                                   [function, total]
 
-    rule allPtrEquality(E:SemanticsError, _:PtrListOrError) => E
-    rule allPtrEquality(_:PtrList, E:SemanticsError) => E
+    rule allPtrEquality(E:SemanticsError, _:PtrListOrError) => e(E)
+    rule allPtrEquality(_:PtrList, E:SemanticsError) => e(E)
 
-    rule allPtrEquality(.PtrList, .PtrList) => true
+    rule allPtrEquality(.PtrList, .PtrList) => v(true)
     rule allPtrEquality((P:Ptr , Ps:PtrList), (Q:Ptr , Qs:PtrList))
-        => andOrError(P == Q , allPtrEquality(Ps, Qs))
+        => andOrError(v(P == Q) , allPtrEquality(Ps, Qs))
 
     rule allPtrEquality(.PtrList, (_:Ptr , _:PtrList) #as Ps:PtrList)
-        => error("allPtrEquality: Second list too long", ListItem(Ps))
+        => e(error("allPtrEquality: Second list too long", ListItem(Ps)))
     rule allPtrEquality((_:Ptr , _:PtrList) #as Ps:PtrList, .PtrList)
-        => error("zip(PtrList): First list too long", ListItem(Ps))
+        => e(error("zip(PtrList): First list too long", ListItem(Ps)))
 
 endmodule
 
