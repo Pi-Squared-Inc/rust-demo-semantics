@@ -38,24 +38,9 @@ module INITIALIZATION
               </field>
             ...
           </fields>
-        </struct> [owise]
-    rule
-        <k> structParser(Name:TypePath, ((FN:Identifier : FT:Type):StructField  , .StructFields):StructFields) => .K
-            ...
-        </k>
-        <struct>
-          ...
-          <struct-path> Name </struct-path>
-          <field-list> L:List => ListItem(FN) L </field-list>
-          <fields>
-            .Bag =>
-              <field>
-                <field-name> FN </field-name>
-                <field-type> FT </field-type>
-              </field>
-            ...
-          </fields>
-        </struct>
+        </struct> 
+
+    rule structParser(_Name:TypePath, .StructFields) => .K
 
     rule
         <k> traitInitializer(Name:TypePath, Atts:OuterAttributes) => .K

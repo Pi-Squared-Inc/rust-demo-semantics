@@ -550,13 +550,16 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
                             | StructExprUnit
   syntax StructExprStruct ::= TypePath "{" MaybeStructExprFieldsOrStructBase "}" //TODO: Not implemented properly
                                                                                  //Should use PathInExpression instead of
-                                                                                 //TypePath.
-  syntax MaybeStructExprFieldsOrStructBase ::= "" | StructExprFields | StructBases
+                                                                                 //TypePath. 
+  syntax MaybeStructExprFieldsOrStructBase ::= "" | StructExprFields | StructBases //TODO: Not implemented properly
+                                                                        //StructBases should be
+                                                                        //singular. and its correct
+                                                                        //value is:  StructExprField (, StructExprField)* (, StructBase | ,?)  
   syntax StructExprFields ::= NeList{StructExprField, ","} 
   syntax StructBases ::= NeList{StructBase, ","}
   syntax StructExprField ::= Identifier ":" Expression //TODO: Not implemented properly. Needs outer attributes.
 
-  syntax StructBase ::= Expression
+  syntax StructBase ::= Expression //TODO: Not implemented properly. Actual value should be '".." Expression' 
   syntax StructExprUnit ::= "TODO: not needed yet, not implementing"
   syntax StructExprTuple ::= "TODO: not needed yet, not implementing"
 
