@@ -1,0 +1,13 @@
+push 10_u32;
+call :: test_bytes_hooks :: append_u32;
+return_value_to_arg;
+call :: bytes_hooks :: length;
+return_value;
+check_eq 3_u32;
+
+push 1000_u32;
+call :: test_bytes_hooks :: append_u32;
+return_value_to_arg;
+call :: bytes_hooks :: length;
+return_value;
+check_eq 4_u32

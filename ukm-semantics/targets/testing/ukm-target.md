@@ -10,11 +10,14 @@ requires "rust-semantics/full-preprocessing.md"
 requires "rust-semantics/test/execution.md"
 
 module UKM-TARGET-SYNTAX
+    imports RUST-COMMON-SYNTAX
+    imports UKM-TEST-SYNTAX
 endmodule
 
 module UKM-TARGET
     imports private RUST-COMMON
     imports private RUST-FULL-PREPROCESSING
+    imports private RUST-EXECUTION-TEST
     imports private UKM-EXECUTION
     imports private UKM-PREPROCESSING
     imports private UKM-TARGET-CONFIGURATION

@@ -1,0 +1,5 @@
+call :: test_bytes_hooks :: empty;
+return_value_to_arg;
+call :: bytes_hooks :: length;
+return_value;
+check_eq 0_u32

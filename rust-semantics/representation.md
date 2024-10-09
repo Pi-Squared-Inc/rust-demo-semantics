@@ -89,6 +89,7 @@ module RUST-REPRESENTATION
                               , reversedNormalizedParams: PtrList
                               )
                           | "clearValue"
+                          | tupleExpression(TupleElementsNoEndComma)
 
     syntax PtrList ::= reverse(PtrList, PtrList) [function, total]
 

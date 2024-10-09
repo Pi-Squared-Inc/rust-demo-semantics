@@ -6,6 +6,7 @@ module RUST-EXPRESSION-EXPRESSION-LIST
     imports private RUST-VALUE-SYNTAX
 
     rule evaluate(L:ExpressionList) => evaluate(expressionListToValueList(L))
+        requires isValueWithPtr(L)
 
     rule isValueWithPtr(.ExpressionList) => true
     rule isValueWithPtr(E:Expression , T:ExpressionList)

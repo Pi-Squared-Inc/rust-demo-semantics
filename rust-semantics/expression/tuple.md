@@ -12,8 +12,6 @@ module RUST-EXPRESSION-TUPLE
     rule (E:Expression , T:TupleElementsNoEndComma,):TupleExpression
         => tupleExpression(E , T)
 
-    syntax Instruction ::= tupleExpression(TupleElementsNoEndComma)
-
     rule (.K => evaluate(tupleElementsToExpressionList(Es)))
         ~> tupleExpression(Es:TupleElementsNoEndComma)
     rule (evaluate(L:ValueList) ~> tupleExpression(_:TupleElementsNoEndComma))
