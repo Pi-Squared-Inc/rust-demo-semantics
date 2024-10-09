@@ -194,8 +194,13 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   https://doc.rust-lang.org/reference/items/structs.html
 
 ```k
-
-  syntax Struct ::= "TODO: not needed yet, not implementing"
+  syntax Struct ::= StructStruct | TupleStruct
+  syntax TupleStruct ::= "TODO: not needed yet, not implementing"
+  syntax StructStruct ::= "struct" Identifier MaybeGenericParams MaybeWhereClause "{" MaybeStructFields "}"
+  syntax MaybeStructFields ::= "" | StructFields
+  syntax StructFields ::= List{StructField, ","}
+  syntax StructField ::= OuterAttributes MaybeVisibility Identifier ":" Type //TODO: Outerfields and visibility for 
+                                                                             //struct fields is not yet supported.
 
 ```
 
@@ -540,7 +545,23 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax StructExpression ::= "TODO: not needed yet, not implementing"
+  syntax StructExpression ::= StructExprStruct 
+                            | StructExprTuple 
+                            | StructExprUnit
+  syntax StructExprStruct ::= TypePath "{" MaybeStructExprFieldsOrStructBase "}" //TODO: Not implemented properly
+                                                                                 //Should use PathInExpression instead of
+                                                                                 //TypePath. 
+  syntax MaybeStructExprFieldsOrStructBase ::= "" | StructExprFields | StructBases //TODO: Not implemented properly
+                                                                        //StructBases should be
+                                                                        //singular. and its correct
+                                                                        //value is:  StructExprField (, StructExprField)* (, StructBase | ,?)  
+  syntax StructExprFields ::= NeList{StructExprField, ","} 
+  syntax StructBases ::= NeList{StructBase, ","}
+  syntax StructExprField ::= Identifier ":" Expression //TODO: Not implemented properly. Needs outer attributes.
+
+  syntax StructBase ::= Expression //TODO: Not implemented properly. Actual value should be '".." Expression' 
+  syntax StructExprUnit ::= "TODO: not needed yet, not implementing"
+  syntax StructExprTuple ::= "TODO: not needed yet, not implementing"
 
 ```
 

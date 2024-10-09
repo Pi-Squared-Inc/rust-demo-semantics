@@ -27,6 +27,9 @@ module RUST-PREPROCESSING-PRIVATE-SYNTAX
                           | externBlockParser(ExternBlock, TypePath)
                           | resolveCrateNames(TypePath)
 
+    syntax Initializer  ::= structInitializer(Struct, TypePath)
+                          | structParser(TypePath, StructFields)
+
     syntax Initializer  ::= addMethod(traitName : TypePath, function: Function, atts:OuterAttributes)
                           | #addMethod(
                                 TypePath,

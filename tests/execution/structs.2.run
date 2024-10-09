@@ -1,0 +1,4 @@
+new :: structs :: StructFile;
+call :: structs :: StructFile.struct_without_var_assignment;
+return_value;
+check_eq 3_u32
