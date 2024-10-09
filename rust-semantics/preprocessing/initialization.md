@@ -8,6 +8,41 @@ module INITIALIZATION
     imports private RUST-PREPROCESSING-PRIVATE-SYNTAX
 
     rule
+        <k> structInitializer( (struct Name:Identifier { F:StructFields } ):Struct, ParentPath:TypePath) => structParser(append(ParentPath, Name), F:StructFields )
+            ...
+        </k>
+        <struct-list> .List => ListItem(append(ParentPath, Name)) ...</struct-list>
+        <structs>
+            ...
+            .Bag
+            =>  <struct>
+                    <struct-path> append(ParentPath, Name) </struct-path>
+                    ...
+                </struct>
+        </structs>
+        
+    rule
+        <k> structParser(Name:TypePath, ((FN:Identifier : FT:Type):StructField  , RF:StructFields):StructFields) => 
+                structParser(Name:TypePath, RF:StructFields)
+            ...
+        </k>
+        <struct>
+          ...
+          <struct-path> Name </struct-path>
+          <field-list> L:List => ListItem(FN) L </field-list>
+          <fields>
+            .Bag =>
+              <field>
+                <field-name> FN </field-name>
+                <field-type> FT </field-type>
+              </field>
+            ...
+          </fields>
+        </struct> 
+
+    rule structParser(_Name:TypePath, .StructFields) => .K
+
+    rule
         <k> traitInitializer(Name:TypePath, Atts:OuterAttributes) => .K
             ...
         </k>

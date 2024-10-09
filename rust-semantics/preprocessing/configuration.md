@@ -14,6 +14,19 @@ module RUST-PREPROCESSING-CONFIGURATION
                     <constant-value> tuple(.ValueList) </constant-value>
                 </constant>
             </constants>
+            <struct-list> .List </struct-list>
+            <structs>
+                <struct multiplicity="*" type="Map">
+                    <struct-path> my_identifier:TypePath </struct-path> 
+                    <field-list> .List </field-list>  // List of Identifier
+                    <fields>
+                        <field multiplicity="*" type="Map">
+                            <field-name> .Identifier </field-name>
+                            <field-type> ():Type </field-type>
+                        </field>
+                    </fields>
+                </struct>
+            </structs>
             <trait-list> .List </trait-list>  // List of TypePath
             <traits>
                 <trait multiplicity="*" type="Map">

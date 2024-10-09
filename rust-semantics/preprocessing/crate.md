@@ -48,6 +48,12 @@ module CRATE
             => (Atts Is):Crate
           , CratePath:TypePath
           )
+    rule (.K => structInitializer(S:Struct, CratePath))
+        ~> crateParser
+          ( (Atts:InnerAttributes (_ItemAtts:OuterAttributes _:MaybeVisibility S:Struct):Item Is:Items):Crate
+            => (Atts Is):Crate
+          , CratePath:TypePath
+          )
 
     rule crateParser( (_Atts:InnerAttributes .Items):Crate, _Path:TypePath)
         => .K //resolveCrateNames(Path)
