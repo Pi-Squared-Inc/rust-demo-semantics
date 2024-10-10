@@ -98,7 +98,7 @@ module RUST-REPRESENTATION
     syntax MapOrError ::= Map | SemanticsError
 
     syntax Expression ::= Ptr
-    syntax ExpressionOrError ::= Expression | SemanticsError
+    syntax ExpressionOrError ::= v(Expression) | e(SemanticsError)
 
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 
@@ -129,7 +129,10 @@ module RUST-REPRESENTATION
     syntax IntOrError ::= valueToInteger(Value)  [function, total]
     syntax ValueOrError ::= integerToValue(Int, Type)  [function, total]
 
+    syntax StringOrError ::= String | SemanticsError
+
     syntax String ::= IdentifierToString(Identifier)  [function, total, hook(STRING.token2string)]
+    syntax Identifier ::= StringToIdentifier(String)  [function, total, hook(STRING.string2token)]
 
     syntax CallParamsList ::= reverse(CallParamsList, CallParamsList)  [function, total]
 
@@ -174,6 +177,9 @@ module RUST-REPRESENTATION
     syntax MaybeTypePath ::= ".TypePath" | TypePath
 
     syntax TypePath ::= append(MaybeTypePath, Identifier)  [function, total]
+
+    syntax NonEmptyStatementsOrError ::= NonEmptyStatements | SemanticsError
+    syntax NonEmptyStatements ::= concatNonEmptyStatements(NonEmptyStatements, NonEmptyStatements)  [function, total]
 
 endmodule
 
