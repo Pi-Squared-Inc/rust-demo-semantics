@@ -197,8 +197,8 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax Struct ::= StructStruct | TupleStruct
   syntax TupleStruct ::= "TODO: not needed yet, not implementing"
   syntax StructStruct ::= "struct" Identifier MaybeGenericParams MaybeWhereClause "{" MaybeStructFields "}"
-  syntax MaybeStructFields ::= "" | StructFields
-  syntax StructFields ::= List{StructField, ","}
+  syntax MaybeStructFields ::= "" | StructFields | StructFields ","
+  syntax StructFields ::= NeList{StructField, ","}
   syntax StructField ::= OuterAttributes MaybeVisibility Identifier ":" Type //TODO: Outerfields and visibility for 
                                                                              //struct fields is not yet supported.
 

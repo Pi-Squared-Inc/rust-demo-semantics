@@ -15,12 +15,20 @@ module UKM-HOOKS-BYTES-CONFIGURATION
         </ukm-bytes>
 endmodule
 
+module UKM-HOOKS-BYTES-SYNTAX
+    imports BYTES-SYNTAX
+    syntax Expression ::= ukmBytesNew(Bytes)
+endmodule
+
 module UKM-HOOKS-BYTES
     imports private BYTES
     imports private COMMON-K-CELL
     imports private RUST-HELPERS
     imports private RUST-REPRESENTATION
     imports private UKM-HOOKS-BYTES-CONFIGURATION
+    imports private UKM-HOOKS-BYTES-SYNTAX
+    imports private UKM-REPRESENTATION
+
 
     syntax Identifier ::= "bytes_hooks"  [token]
                         | "empty"  [token]
@@ -37,11 +45,6 @@ module UKM-HOOKS-BYTES
                         | "decode_u16"  [token]
                         | "decode_u8"  [token]
                         | "decode_str"  [token]
-
-    syntax UkmBytesValue ::= ukmBytesValue(Bytes)
-    syntax UkmExpression  ::= ukmBytesId(MInt{64})
-                            | UkmBytesValue
-    syntax KResult ::= UkmBytesValue
 
     rule
         <k>
@@ -175,7 +178,6 @@ module UKM-HOOKS-BYTES
                             | ukmBytesDecode(Int, Bytes, Type)
                             | ukmBytesDecodeInt(Int, Bytes, Type)
                             | ukmBytesDecode(ValueOrError, Bytes)
-    syntax Expression ::= ukmBytesNew(Bytes)
 
     rule
         <k>

@@ -82,6 +82,11 @@ UKM_NO_CONTRACT_TESTING_OUTPUT_DIR ::= .build/ukm-no-contract/output
 UKM_NO_CONTRACT_TESTING_INPUTS ::= $(wildcard $(UKM_NO_CONTRACT_TESTING_INPUT_DIR)/*.run)
 UKM_NO_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(UKM_NO_CONTRACT_TESTING_INPUT_DIR)/%,$(UKM_NO_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(UKM_NO_CONTRACT_TESTING_INPUTS))
 
+UKM_WITH_CONTRACT_TESTING_INPUT_DIR ::= tests/ukm-with-contract
+UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR ::= .build/ukm-with-contract/output
+UKM_WITH_CONTRACT_TESTING_INPUTS ::= $(wildcard $(UKM_WITH_CONTRACT_TESTING_INPUT_DIR)/*.run)
+UKM_WITH_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(UKM_WITH_CONTRACT_TESTING_INPUT_DIR)/%,$(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(UKM_WITH_CONTRACT_TESTING_INPUTS))
+
 .PHONY: clean build build-legacy test test-legacy syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test ukm-no-contracts-test
 
 all: build test
@@ -126,6 +131,8 @@ mx-rust-two-contracts-test: $(MX_RUST_TWO_CONTRACTS_TESTING_OUTPUTS)
 demos-test: $(DEMOS_TESTING_OUTPUTS)
 
 ukm-no-contracts-test: $(UKM_NO_CONTRACT_TESTING_OUTPUTS)
+
+ukm-with-contracts-test: $(UKM_WITH_CONTRACT_TESTING_OUTPUTS)
 
 $(RUST_PREPROCESSING_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
@@ -407,6 +414,54 @@ $(UKM_NO_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 	# echo "<|>" >> $@.in.tmp
 	# cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/ukm.rs >> $@.in.tmp
 	# echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
+	echo "$<" | sed 's%^.*/%%' | sed 's/\..*//' | sed 's/^/::/' >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat "$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	krun \
+		$@.in.tmp \
+		--parser $(CURDIR)/parsers/crates-ukm-testing-execution.sh \
+		--definition $(UKM_TESTING_KOMPILED) \
+		--output kore \
+		--output-file $@.tmp \
+		-cTEST='$(shell cat $<)' \
+		-pTEST=$(CURDIR)/parsers/test-ukm-testing-execution.sh
+	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
+	mv -f $@.tmp $@
+
+
+# TODO: Add $(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs
+# as a dependency
+$(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
+			$(UKM_WITH_CONTRACT_TESTING_INPUT_DIR)/%.run \
+			$(UKM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs \
+			$(UKM_CONTRACTS_TESTING_INPUT_DIR)/ukm.rs \
+			$(UKM_TESTING_TIMESTAMP) \
+			$(wildcard parsers/inc-*.sh) \
+			parsers/crates-ukm-testing-execution.sh \
+			parsers/test-ukm-testing-execution.sh
+	mkdir -p $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)
+
+	echo "<(<" > $@.in.tmp
+	echo "::bytes_hooks" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
+	echo "::state_hooks" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/state_hooks.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
+	echo "::ukm" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/ukm.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
 	echo "$<" | sed 's%^.*/%%' | sed 's/\..*//' | sed 's/^/::/' >> $@.in.tmp
