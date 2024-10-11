@@ -6,9 +6,9 @@ module UKM-PREPROCESSING-ENDPOINTS
     imports private RUST-ERROR-SYNTAX
     imports private RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-SHARED-SYNTAX
+    imports private UKM-COMMON-TOOLS-SYNTAX
     imports private UKM-PREPROCESSING-EPHEMERAL-CONFIGURATION
     imports private UKM-PREPROCESSING-SYNTAX-PRIVATE
-    imports private UKM-REPRESENTATION
 
     rule
         <k>
@@ -137,8 +137,6 @@ module UKM-PREPROCESSING-ENDPOINTS
             )
             ...
         </methods>
-
-    rule dispatcherMethodIdentifier => #token("ukm#dispatch#method", "Identifier")
 
     syntax Identifier ::= "buffer_id"  [token]
                         | "signature"  [token]

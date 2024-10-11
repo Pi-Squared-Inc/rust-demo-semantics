@@ -23,9 +23,11 @@ module RUST-EXPRESSION-STRUCT-COMPARISONS
     rule (ptrValue(_, struct(StructName:TypePath, FirstFields:Map))
             == ptrValue(_, struct(StructName, SecondFields:Map))
         ):Expression
-        => allPtrEquality
-            ( listToPtrList(values(FirstFields))
-            , listToPtrList(values(SecondFields))
+        => unwrap
+            ( allPtrEquality
+                ( listToPtrList(values(FirstFields))
+                , listToPtrList(values(SecondFields))
+                )
             )
         [owise]
 

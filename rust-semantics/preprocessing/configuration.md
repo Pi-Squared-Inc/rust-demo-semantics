@@ -15,7 +15,7 @@ module RUST-PREPROCESSING-CONFIGURATION
             <struct-list> .List </struct-list>
             <structs>
                 <struct multiplicity="*" type="Map">
-                    <struct-path> #token("not#initialized", "Identifier"):Identifier:TypePath </struct-path> 
+                    <struct-path> #token("not#initialized", "Identifier"):Identifier:TypePath </struct-path>
                     <field-list> .List </field-list>  // List of Identifier
                     <fields>
                         <field multiplicity="*" type="Map">

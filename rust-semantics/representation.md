@@ -99,6 +99,9 @@ module RUST-REPRESENTATION
 
     syntax Expression ::= Ptr
     syntax ExpressionOrError ::= v(Expression) | e(SemanticsError)
+    syntax KItem ::= unwrap(ExpressionOrError)  [function, total]
+    rule unwrap(v(E:Expression)) => E
+    rule unwrap(e(E:SemanticsError)) => E
 
     syntax NormalizedFunctionParameterListOrError ::= NormalizedFunctionParameterList | SemanticsError
 

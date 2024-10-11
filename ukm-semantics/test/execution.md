@@ -21,6 +21,8 @@ module UKM-TEST-EXECUTION
     imports private UKM-HOOKS-UKM-SYNTAX
     imports private UKM-TEST-SYNTAX
 
+    syntax Mockable ::= UkmHook
+
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>
         <test-stack>

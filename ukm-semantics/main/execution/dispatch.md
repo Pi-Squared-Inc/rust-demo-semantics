@@ -5,9 +5,9 @@ module UKM-EXECUTION-DISPATCH
     imports private RUST-REPRESENTATION
     imports private RUST-VALUE-SYNTAX
     imports private RUST-EXECUTION-CONFIGURATION
+    imports private UKM-COMMON-TOOLS-SYNTAX
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-PREPROCESSING-CONFIGURATION
-    imports private UKM-REPRESENTATION
 
     syntax UkmInstruction ::= ukmExecute(contract:Value, gas: ValueOrError)
 

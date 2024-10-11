@@ -94,13 +94,14 @@ module RUST-EXECUTION-TEST
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
 
     syntax KItem ::= wrappedK(K)
+    syntax Mockable
 
     rule
-        <k> mock(Mocked:KItem, Result:K) => .K ... </k>
+        <k> mock(Mocked:Mockable, Result:K) => .K ... </k>
         <mocks> M:Map => M[Mocked <- wrappedK(Result)] </mocks>
 
     rule
-        <k> (Mocked:KItem => Result) ...</k>
+        <k> (Mocked:Mockable => Result) ...</k>
         <mocks> Mocked |-> wrappedK(Result:K) ...</mocks>
         [priority(10)]
 endmodule

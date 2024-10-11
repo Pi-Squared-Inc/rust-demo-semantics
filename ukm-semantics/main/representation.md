@@ -13,7 +13,6 @@ module UKM-REPRESENTATION
                             | UkmValue
     syntax KResult ::= UkmValue
 
-    syntax Identifier ::= "dispatcherMethodIdentifier"  [function, total]
 endmodule
 
 ```
