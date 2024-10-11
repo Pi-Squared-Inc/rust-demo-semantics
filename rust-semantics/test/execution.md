@@ -13,6 +13,7 @@ module RUST-EXECUTION-TEST-PARSING-SYNTAX
                             | "return_value_to_arg"
                             | "check_eq" Expression  [strict]
                             | "push" Expression [strict]
+    syntax KItem ::= mock(KItem, K)
 endmodule
 
 module RUST-EXECUTION-TEST
@@ -92,6 +93,16 @@ module RUST-EXECUTION-TEST
         <values> VALUES:Map => VALUES[NVI <- V] </values>
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
 
+    syntax KItem ::= wrappedK(K)
+
+    rule
+        <k> mock(Mocked:KItem, Result:K) => .K ... </k>
+        <mocks> M:Map => M[Mocked <- wrappedK(Result)] </mocks>
+
+    rule
+        <k> (Mocked:KItem => Result) ...</k>
+        <mocks> Mocked |-> wrappedK(Result:K) ...</mocks>
+        [priority(10)]
 endmodule
 
 ```

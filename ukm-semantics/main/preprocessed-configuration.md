@@ -1,13 +1,10 @@
 ```k
 
-module UKM-PREPROCESSED-CONFIGURATION
-    configuration
-        <ukm-preprocessed> .K </ukm-preprocessed>
-endmodule
+requires "preprocessing/configuration.md"
 
 module UKM-FULL-PREPROCESSED-CONFIGURATION
     imports RUST-PREPROCESSING-CONFIGURATION
-    imports UKM-PREPROCESSED-CONFIGURATION
+    imports UKM-PREPROCESSING-CONFIGURATION
 
     configuration
         <ukm-full-preprocessed>

@@ -42,5 +42,8 @@ module RUST-HELPERS
     rule isSignedInt(u128) => true
     rule isSignedInt(&T => T)
 
+    rule concatNonEmptyStatements(.NonEmptyStatements, S:NonEmptyStatements) => S
+    rule concatNonEmptyStatements(S:Statement Ss1:NonEmptyStatements, Ss2:NonEmptyStatements)
+        => S concatNonEmptyStatements(Ss1, Ss2)
 endmodule
 ```

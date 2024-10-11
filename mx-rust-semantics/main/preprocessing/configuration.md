@@ -17,7 +17,7 @@ module MX-RUST-PREPROCESSED-CONTRACT-TRAIT-CONFIGURATION
     imports RUST-SHARED-SYNTAX
 
     configuration
-        <mx-rust-contract-trait> (#token("no#path", "Identifier"):Identifier):TypePath </mx-rust-contract-trait>  // String to Identifier
+        <mx-rust-contract-trait> (#token("no#path", "Identifier"):Identifier):TypePath </mx-rust-contract-trait>
 endmodule
 
 module MX-RUST-PREPROCESSED-PROXIES-CONFIGURATION

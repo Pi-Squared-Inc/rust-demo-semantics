@@ -22,10 +22,12 @@ endmodule
 module UKM-TARGET-CONFIGURATION
     imports COMMON-K-CELL
     imports UKM-FULL-PREPROCESSED-CONFIGURATION
+    imports UKM-PREPROCESSING-EPHEMERAL-CONFIGURATION
 
     configuration
         <ukm-target>
             <ukm-full-preprocessed/>
+            <ukm-preprocessing-ephemeral/>
             <k/>
         </ukm-target>
 endmodule
