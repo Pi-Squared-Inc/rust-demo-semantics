@@ -55,9 +55,9 @@ def exec_run(options: RunOptions) -> None:
 
     module_manager.load_program(contract_path)
 
-    print('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
+    # print('Performed all possible rewriting operations; Trying to fetch the content of the K cell.')
 
-    module_manager.print_k_top_element()
+    # module_manager.print_k_top_element()
 
 
 def trigger_exec_run(stripped_args: dict[str, Any]) -> None:

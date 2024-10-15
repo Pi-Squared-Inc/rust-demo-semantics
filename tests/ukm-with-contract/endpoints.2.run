@@ -1,0 +1,4 @@
+push "myEndpoint";
+push "uint256";
+mock EncodeFunctionCall;
+return_value

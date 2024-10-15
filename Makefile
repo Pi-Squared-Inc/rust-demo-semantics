@@ -137,23 +137,23 @@ ukm-with-contracts-test: $(UKM_WITH_CONTRACT_TESTING_OUTPUTS)
 $(RUST_PREPROCESSING_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(RUST_PREPROCESSING_KOMPILED)
-	$$(which kompile) rust-semantics/targets/preprocessing/rust.md --emit-json -o $(RUST_PREPROCESSING_KOMPILED) --debug
+	$$(which kompile) rust-semantics/targets/preprocessing/rust.md --backend llvm --emit-json -o $(RUST_PREPROCESSING_KOMPILED) --debug 
 
 $(RUST_EXECUTION_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(RUST_EXECUTION_KOMPILED)
-	$$(which kompile) rust-semantics/targets/execution/rust.md --emit-json -o $(RUST_EXECUTION_KOMPILED) --debug
+	$$(which kompile) rust-semantics/targets/execution/rust.md --backend llvm --emit-json -o $(RUST_EXECUTION_KOMPILED) --debug
 
 $(MX_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_TESTING_KOMPILED)
-	$$(which kompile) mx-semantics/targets/testing/mx.md --emit-json -o $(MX_TESTING_KOMPILED) --debug
+	$$(which kompile) mx-semantics/targets/testing/mx.md --backend llvm --emit-json -o $(MX_TESTING_KOMPILED) --debug
 
 $(MX_RUST_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX_RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_RUST_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/blockchain/mx-rust.md \
-			--emit-json -o $(MX_RUST_KOMPILED) \
+			--backend llvm --emit-json -o $(MX_RUST_KOMPILED) \
 			-I . \
 			--debug
 
@@ -161,7 +161,7 @@ $(MX_RUST_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) $(MX
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_RUST_TESTING_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/testing/mx-rust.md \
-			--emit-json -o $(MX_RUST_TESTING_KOMPILED) \
+			--backend llvm --emit-json -o $(MX_RUST_TESTING_KOMPILED) \
 			-I . \
 			--debug
 
@@ -169,7 +169,7 @@ $(MX_RUST_CONTRACT_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTICS_FI
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_RUST_CONTRACT_TESTING_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/contract-testing/mx-rust.md \
-			--emit-json -o $(MX_RUST_CONTRACT_TESTING_KOMPILED) \
+			--backend llvm --emit-json -o $(MX_RUST_CONTRACT_TESTING_KOMPILED) \
 			-I . \
 			--debug
 
@@ -177,7 +177,7 @@ $(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTI
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED)
 	$$(which kompile) mx-rust-semantics/targets/two-contracts-testing/mx-rust.md \
-			--emit-json -o $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED) \
+			--backend llvm --emit-json -o $(MX_RUST_TWO_CONTRACTS_TESTING_KOMPILED) \
 			-I . \
 			--debug
 
@@ -185,15 +185,16 @@ $(UKM_EXECUTION_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_EXECUTION_KOMPILED)
 	$$(which kompile) ukm-semantics/targets/execution/ukm-target.md \
+			-ccopt -g -ccopt -std=c++17 -ccopt -lcrypto -ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(UKM_EXECUTION_KOMPILED) \
 			-I . \
 			--debug
-
+			
 $(UKM_PREPROCESSING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_PREPROCESSING_KOMPILED)
 	$$(which kompile) ukm-semantics/targets/preprocessing/ukm-target.md \
-			--emit-json -o $(UKM_PREPROCESSING_KOMPILED) \
+			--backend llvm --emit-json -o $(UKM_PREPROCESSING_KOMPILED) \
 			-I . \
 			--debug
 
@@ -201,6 +202,7 @@ $(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_TESTING_KOMPILED)
 	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md \
+			-ccopt -g -ccopt -std=c++17 -ccopt -lcrypto -ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(UKM_TESTING_KOMPILED) \
 			-I . \
 			--debug

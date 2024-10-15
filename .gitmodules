@@ -1,0 +1,7 @@
+[submodule "deps/plugin"]
+	path = ./
+	url = https://github.com/runtimeverification/blockchain-k-plugin
+	ignore = untracked
+[submodule "blockchain-k-plugin"]
+	path = blockchain-k-plugin
+	url = https://github.com/runtimeverification/blockchain-k-plugin
