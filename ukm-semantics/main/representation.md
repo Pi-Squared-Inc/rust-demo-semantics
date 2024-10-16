@@ -13,6 +13,9 @@ module UKM-REPRESENTATION
                             | UkmValue
     syntax KResult ::= UkmValue
 
+    syntax Expression ::= ukmCast(Expression, Expression)  [seqstrict]
+    syntax Value ::= rustType(Type)
+
 endmodule
 
 ```

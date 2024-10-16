@@ -26,6 +26,21 @@ module UKM-PREPROCESSING-METHODS
         <method-name> Method </method-name>
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
         requires getEndpointName(Atts, MethodIdentifier) =/=K ""
+            andBool getStorageName(Atts) ==K ""
+        [priority(50)]
+    rule
+        <k>
+            ukmPreprocessMethod(_Trait:TypePath, MethodIdentifier:Identifier, Method:PathInExpression)
+            => ukmPreprocessStorage
+                (... fullMethodPath: Method
+                , storageName: getStorageName(Atts)
+                )
+            ...
+        </k>
+        <method-name> Method </method-name>
+        <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
+        requires getStorageName(Atts) =/=K ""
+            andBool getEndpointName(Atts, MethodIdentifier) ==K ""
         [priority(50)]
     rule ukmPreprocessMethod(_:TypePath, _:Identifier, _:PathInExpression) => .K
         [owise]
@@ -62,6 +77,20 @@ module UKM-PREPROCESSING-METHODS
             ) => IdentifierToString(Name)
     rule getEndpointName(_:OuterAttribute Atts:NonEmptyOuterAttributes, Default:Identifier)
         => getEndpointName(Atts, Default)
+        [owise]
+
+    // This is identical to the function in the mx-rust semantics.
+    syntax String ::= getStorageName(atts:OuterAttributes)  [function, total]
+    rule getStorageName() => ""
+    rule getStorageName(.NonEmptyOuterAttributes) => ""
+    rule getStorageName
+            (   (#[ #token("storage_mapper", "Identifier") :: .SimplePathList
+                    ( Name:String, .CallParamsList )
+                ])
+                _:NonEmptyOuterAttributes
+            ) => Name
+    rule getStorageName(_:OuterAttribute Atts:NonEmptyOuterAttributes)
+        => getStorageName(Atts)
         [owise]
 
 endmodule
