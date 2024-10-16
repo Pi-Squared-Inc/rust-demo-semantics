@@ -7,6 +7,7 @@ extern "C" {
   fn append_u32(bytes_id: u64, value: u32) -> u64;
   fn append_u16(bytes_id: u64, value: u16) -> u64;
   fn append_u8(bytes_id: u64, value: u8) -> u64;
+  fn append_bool(bytes_id: u64, value: bool) -> u64;
   fn append_str(bytes_id: u64, value: &str) -> u64;
 
   fn decode_u128(bytes_id: u64) -> (u64, u128);

@@ -38,6 +38,7 @@ module UKM-HOOKS-BYTES
                         | "append_u32"  [token]
                         | "append_u16"  [token]
                         | "append_u8"  [token]
+                        | "append_bool"  [token]
                         | "append_str"  [token]
                         | "decode_u128"  [token]
                         | "decode_u64"  [token]
@@ -107,6 +108,13 @@ module UKM-HOOKS-BYTES
 
     rule
         normalizedFunctionCall
+            ( :: bytes_hooks :: append_bool :: .PathExprSegments
+            , BufferIdId:Ptr, IntId:Ptr, .PtrList
+            )
+        => ukmBytesAppendBool(BufferIdId, IntId)
+
+    rule
+        normalizedFunctionCall
             ( :: bytes_hooks :: append_str :: .PathExprSegments
             , BufferIdId:Ptr, StrId:Ptr, .PtrList
             )
@@ -170,6 +178,7 @@ module UKM-HOOKS-BYTES
                             | ukmBytesLength(UkmExpression)  [strict(1)]
                             | ukmBytesAppendInt(Expression, Expression)  [seqstrict]
                             | ukmBytesAppendInt(UkmExpression, Int)  [strict(1)]
+                            | ukmBytesAppendBool(Expression, Expression)  [seqstrict]
                             | ukmBytesAppendStr(Expression, Expression)  [seqstrict]
                             | ukmBytesAppendBytes(UkmExpression, Bytes)  [strict(1)]
                             | ukmBytesAppendLenAndBytes(Bytes, Bytes)
@@ -211,6 +220,11 @@ module UKM-HOOKS-BYTES
 
     rule ukmBytesAppendInt(ukmBytesValue(B:Bytes), Value:Int)
         => ukmBytesAppendLenAndBytes(B, Int2Bytes(Value, BE, Unsigned))
+
+    rule ukmBytesAppendBool(ptrValue(P, u64(BytesId)), ptrValue(_, false))
+        => ukmBytesAppendInt(ptrValue(P, u64(BytesId)), ptrValue(null, u8(0p8)))
+    rule ukmBytesAppendBool(ptrValue(P, u64(BytesId)), ptrValue(_, true))
+        => ukmBytesAppendInt(ptrValue(P, u64(BytesId)), ptrValue(null, u8(1p8)))
 
     rule ukmBytesAppendStr(ptrValue(_, u64(BytesId)), ptrValue(_, Value:String))
         => ukmBytesAppendBytes(ukmBytesId(BytesId), String2Bytes(Value))

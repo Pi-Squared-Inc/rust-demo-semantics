@@ -108,7 +108,7 @@ build-legacy: \
 		$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP)
 
 
-test: build syntax-test preprocessing-test execution-test crates-test ukm-no-contracts-test
+test: build syntax-test preprocessing-test execution-test crates-test ukm-no-contracts-test ukm-with-contracts-test
 
 test-legacy: mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test
 
@@ -449,6 +449,12 @@ $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 	echo "::bytes_hooks" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
 	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
+	echo "::test_helpers" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/test_helpers.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp

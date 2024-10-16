@@ -13,6 +13,7 @@ module RUST-EXECUTION-TEST-PARSING-SYNTAX
                             | "return_value_to_arg"
                             | "check_eq" Expression  [strict]
                             | "push" Expression [strict]
+                            | "push_value" Expression [strict]
     syntax KItem ::= mock(KItem, K)
 endmodule
 
@@ -90,6 +91,12 @@ module RUST-EXECUTION-TEST
     rule
         <k> push ptrValue(_, V:Value) => .K ... </k>
         <test-stack> .List => ListItem(ptr(NVI)) ... </test-stack>
+        <values> VALUES:Map => VALUES[NVI <- V] </values>
+        <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
+
+    rule
+        <k> push_value ptrValue(_, V:Value) => .K ... </k>
+        <test-stack> .List => ListItem(ptrValue(ptr(NVI), V)) ... </test-stack>
         <values> VALUES:Map => VALUES[NVI <- V] </values>
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
 
