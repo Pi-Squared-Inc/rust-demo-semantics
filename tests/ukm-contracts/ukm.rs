@@ -1,7 +1,7 @@
 #![no_std]
 
 // TODO: Support structs and figure out the content of MessageResult
-struct MessageResult { }
+struct MessageResult { gas: u64 }
 
 pub const EVMC_REJECTED: u64 = 0_u64;
 pub const EVMC_INTERNAL_ERROR: u64 = 1_u64;

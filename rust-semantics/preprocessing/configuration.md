@@ -4,8 +4,6 @@ module RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
 
-    syntax Identifier ::= "my_identifier"  [token]
-
     configuration
         <preprocessed>
             <constants>
@@ -17,7 +15,7 @@ module RUST-PREPROCESSING-CONFIGURATION
             <struct-list> .List </struct-list>
             <structs>
                 <struct multiplicity="*" type="Map">
-                    <struct-path> my_identifier:TypePath </struct-path> 
+                    <struct-path> #token("not#initialized", "Identifier"):Identifier:TypePath </struct-path>
                     <field-list> .List </field-list>  // List of Identifier
                     <fields>
                         <field multiplicity="*" type="Map">
@@ -30,14 +28,14 @@ module RUST-PREPROCESSING-CONFIGURATION
             <trait-list> .List </trait-list>  // List of TypePath
             <traits>
                 <trait multiplicity="*" type="Map">
-                    <trait-path> my_identifier:TypePath </trait-path>
+                    <trait-path> #token("not#initialized", "Identifier"):Identifier:TypePath </trait-path>
                     <trait-attributes> `emptyOuterAttributes`(.KList):OuterAttributes </trait-attributes>
                     <method-list> .List </method-list>  // List of Identifier
                 </trait>
             </traits>
             <methods>
                 <method multiplicity="*" type="Map">
-                    <method-name> my_identifier:PathInExpression </method-name>
+                    <method-name> #token("not#initialized", "Identifier"):Identifier:PathInExpression </method-name>
                     <method-params> .NormalizedFunctionParameterList </method-params>
                     <method-return-type> ():Type </method-return-type>
                     <method-implementation> empty:FunctionBodyRepresentation </method-implementation>
