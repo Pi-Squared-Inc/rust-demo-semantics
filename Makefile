@@ -458,6 +458,12 @@ $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
+	echo "::helpers" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/helpers.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
 	echo "::state_hooks" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
 	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/state_hooks.rs >> $@.in.tmp
