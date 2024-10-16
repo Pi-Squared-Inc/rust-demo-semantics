@@ -108,7 +108,7 @@ build-legacy: \
 		$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP)
 
 
-test: build syntax-test preprocessing-test execution-test crates-test ukm-no-contracts-test
+test: build syntax-test preprocessing-test execution-test crates-test ukm-no-contracts-test ukm-with-contracts-test
 
 test-legacy: mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test
 
