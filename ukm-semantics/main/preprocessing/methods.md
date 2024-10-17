@@ -27,6 +27,7 @@ module UKM-PREPROCESSING-METHODS
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
         requires getEndpointName(Atts, MethodIdentifier) =/=K ""
             andBool getStorageName(Atts) ==K ""
+            andBool getEventName(Atts) ==K ""
     rule
         <k>
             ukmPreprocessMethod(_Trait:TypePath, MethodIdentifier:Identifier, Method:PathInExpression)
@@ -40,6 +41,21 @@ module UKM-PREPROCESSING-METHODS
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
         requires getStorageName(Atts) =/=K ""
             andBool getEndpointName(Atts, MethodIdentifier) ==K ""
+            andBool getEventName(Atts) ==K ""
+    rule
+        <k>
+            ukmPreprocessMethod(_Trait:TypePath, MethodIdentifier:Identifier, Method:PathInExpression)
+            => ukmPreprocessEvent
+                (... fullMethodPath: Method
+                , eventName: getEventName(Atts)
+                )
+            ...
+        </k>
+        <method-name> Method </method-name>
+        <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
+        requires getEventName(Atts) =/=K ""
+            andBool getEndpointName(Atts, MethodIdentifier) ==K ""
+            andBool getStorageName(Atts) ==K ""
     rule ukmPreprocessMethod(_:TypePath, _:Identifier, _:PathInExpression) => .K
         [owise]
 
@@ -91,6 +107,18 @@ module UKM-PREPROCESSING-METHODS
         => getStorageName(Atts)
         [owise]
 
+    syntax String ::= getEventName(atts:OuterAttributes)  [function, total]
+    rule getEventName() => ""
+    rule getEventName(.NonEmptyOuterAttributes) => ""
+    rule getEventName
+            (   (#[ #token("event", "Identifier") :: .SimplePathList
+                    ( Name:String, .CallParamsList )
+                ])
+                _:NonEmptyOuterAttributes
+            ) => Name
+    rule getEventName(_:OuterAttribute Atts:NonEmptyOuterAttributes)
+        => getEventName(Atts)
+        [owise]
 endmodule
 
 ```

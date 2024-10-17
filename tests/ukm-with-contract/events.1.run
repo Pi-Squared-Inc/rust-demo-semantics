@@ -1,0 +1,20 @@
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "logEvent(Uint64,Uint64)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 123_u64;
+call :: bytes_hooks :: append_u64;
+return_value_to_arg;
+push 555_u64;
+call :: bytes_hooks :: append_u64;
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2
+
