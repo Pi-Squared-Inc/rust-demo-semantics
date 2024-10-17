@@ -13,6 +13,8 @@ module RUST-VALUE-SYNTAX
     syntax MInt{32}
     syntax MInt{64}
     syntax MInt{128}
+    syntax MInt{160}
+    syntax MInt{256}
 
     syntax SemanticsError ::= error(String, KItem)
 
@@ -25,6 +27,8 @@ module RUST-VALUE-SYNTAX
                     | i64(MInt{64})
                     | u64(MInt{64})
                     | u128(MInt{128})
+                    | u160(MInt{160})
+                    | u256(MInt{256})
                     | tuple(ValueList)
                     | struct(TypePath, Map)  // Map from field name (Identifier) to value ID (Int)
                     | Range
@@ -116,6 +120,8 @@ module RUST-REPRESENTATION
                         | "i64"  [token]
                         | "u64"  [token]
                         | "u128"  [token]
+                        | "u160"  [token]
+                        | "u256"  [token]
                         | "bool" [token]
                         | "str"  [token]
 
@@ -150,7 +156,9 @@ module RUST-REPRESENTATION
     rule checkIntOfType(i32(_),  i32) => true
     rule checkIntOfType(u64(_),  u64) => true
     rule checkIntOfType(i64(_),  i64) => true
-    rule checkIntOfType(i64(_),  u128) => true
+    rule checkIntOfType(u128(_),  u128) => true
+    rule checkIntOfType(u160(_),  u160) => true
+    rule checkIntOfType(u256(_),  u256) => true
     rule checkIntOfType(_, _) => false [owise]
 
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u8) requires checkIntOfType(B,  u8) 
@@ -162,6 +170,8 @@ module RUST-REPRESENTATION
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u64) requires checkIntOfType(B,  u64)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i64) requires checkIntOfType(B,  i64)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u128) requires checkIntOfType(B,  u128)
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u160) requires checkIntOfType(B,  u160)
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u256) requires checkIntOfType(B,  u256)
     rule checkIntOfSameType(_, _) => false [owise]
 
     syntax TypePathOrError ::= TypePath | SemanticsError

@@ -33,6 +33,8 @@ module UKM-HOOKS-BYTES
     syntax Identifier ::= "bytes_hooks"  [token]
                         | "empty"  [token]
                         | "length"  [token]
+                        | "append_u256"  [token]
+                        | "append_u160"  [token]
                         | "append_u128"  [token]
                         | "append_u64"  [token]
                         | "append_u32"  [token]
@@ -40,6 +42,8 @@ module UKM-HOOKS-BYTES
                         | "append_u8"  [token]
                         | "append_bool"  [token]
                         | "append_str"  [token]
+                        | "decode_u256"  [token]
+                        | "decode_u160"  [token]
                         | "decode_u128"  [token]
                         | "decode_u64"  [token]
                         | "decode_u32"  [token]
@@ -71,6 +75,20 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesLength(BufferIdId)
+
+    rule
+        normalizedFunctionCall
+            ( :: bytes_hooks :: append_u256 :: .PathExprSegments
+            , BufferIdId:Ptr, IntId:Ptr, .PtrList
+            )
+        => ukmBytesAppendInt(BufferIdId, IntId)
+
+    rule
+        normalizedFunctionCall
+            ( :: bytes_hooks :: append_u160 :: .PathExprSegments
+            , BufferIdId:Ptr, IntId:Ptr, .PtrList
+            )
+        => ukmBytesAppendInt(BufferIdId, IntId)
 
     rule
         normalizedFunctionCall
@@ -123,10 +141,24 @@ module UKM-HOOKS-BYTES
 
     rule
         normalizedFunctionCall
+            ( :: bytes_hooks :: decode_u256 :: .PathExprSegments
+            , BufferIdId:Ptr, .PtrList
+            )
+        => ukmBytesDecode(BufferIdId, u256)
+
+    rule
+        normalizedFunctionCall
+            ( :: bytes_hooks :: decode_u160 :: .PathExprSegments
+            , BufferIdId:Ptr, .PtrList
+            )
+        => ukmBytesDecode(BufferIdId, u160)
+
+    rule
+        normalizedFunctionCall
             ( :: bytes_hooks :: decode_u128 :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
-        => ukmBytesDecode(BufferIdId, u32)
+        => ukmBytesDecode(BufferIdId, u128)
 
     rule
         normalizedFunctionCall
@@ -217,6 +249,10 @@ module UKM-HOOKS-BYTES
         => ptrValue(null, u32(Int2MInt(lengthBytes(Value))))
         requires notBool uoverflowMInt(32, lengthBytes(Value))
 
+    rule ukmBytesAppendInt(ptrValue(_, u64(BytesId)), ptrValue(_, u256(Value)))
+        => ukmBytesAppendInt(ukmBytesId(BytesId), MInt2Unsigned(Value))
+    rule ukmBytesAppendInt(ptrValue(_, u64(BytesId)), ptrValue(_, u160(Value)))
+        => ukmBytesAppendInt(ukmBytesId(BytesId), MInt2Unsigned(Value))
     rule ukmBytesAppendInt(ptrValue(_, u64(BytesId)), ptrValue(_, u128(Value)))
         => ukmBytesAppendInt(ukmBytesId(BytesId), MInt2Unsigned(Value))
     rule ukmBytesAppendInt(ptrValue(_, u64(BytesId)), ptrValue(_, u64(Value)))
