@@ -10,15 +10,16 @@ FROM runtimeverificationinc/kframework-k:ubuntu-jammy-${K_COMMIT}
 
 COPY --from=Z3 /usr/bin/z3 /usr/bin/z3
 
-ARG LLVM_VERSION
 RUN    apt-get update              \
     && apt-get upgrade --yes       \
     && apt-get install --yes       \
-                      clang-${LLVM_VERSION} \
-                      curl \
-                      llvm-${LLVM_VERSION}-dev \
-                      llvm-${LLVM_VERSION}-tools \
+                      curl
 
+ARG LLVM_VERSION
+RUN wget https://apt.llvm.org/llvm.sh
+RUN chmod +x llvm.sh
+RUN sudo ./llvm.sh ${LLVM_VERSION}
+                      
 ARG USER_ID=1000
 ARG GROUP_ID=1000
 RUN groupadd -g $GROUP_ID user && useradd -m -u $USER_ID -s /bin/sh -g user user
