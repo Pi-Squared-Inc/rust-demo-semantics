@@ -2,27 +2,70 @@
 
 module UKM-TEST-SYNTAX
     imports INT-SYNTAX
+    imports STRING-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
 
-    syntax ExecutionItem  ::= "mock" "CallData"
-                            | "mock" "Caller"
+    syntax UKMTestTypeHolder ::= "ptr_holder" KItem [strict]
+                                | "value_holder" Value
+                                | "list_ptrs_holder" List
+                                | "list_values_holder" List
+
+    syntax UKMTestTypeHolderList ::= List{UKMTestTypeHolder, ","}
+
+    syntax UKMMockOperations ::= "Caller"
+                               | "CallData"
+                               | "Encode"
+
+    syntax ExecutionItem  ::= "mock" UKMMockOperations
                             | "call_contract" Int
                             | "output_to_arg"
                             | "push_status"
                             | "check_eq" Int
+                            | "hold_string_from_test_stack"
+                            | "hold_list_values_from_test_stack"
 endmodule
 
 module UKM-TEST-EXECUTION
     imports private COMMON-K-CELL
     imports private RUST-EXECUTION-TEST-CONFIGURATION
+    imports private UKM-ENCODING-SYNTAX
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-HOOKS-BYTES-CONFIGURATION
     imports private UKM-HOOKS-BYTES-SYNTAX
     imports private UKM-HOOKS-STATE-CONFIGURATION
     imports private UKM-HOOKS-UKM-SYNTAX
     imports private UKM-TEST-SYNTAX
+    imports private BYTES
 
     syntax Mockable ::= UkmHook
+
+    // The following constructions allows us to build more complex data structures
+    // for mocking tests
+    rule <k> UTH:UKMTestTypeHolder ~> EI:ExecutionItem => EI ~> UTH ... </k>
+    rule <k> UTHL:UKMTestTypeHolderList ~> EI:ExecutionItem => EI ~> UTHL ... </k>
+    rule <k> UTH1:UKMTestTypeHolder ~> UTH2:UKMTestTypeHolder 
+                => (UTH1, UTH2):UKMTestTypeHolderList ... </k> 
+    rule <k> UTH:UKMTestTypeHolder ~> UTHL:UKMTestTypeHolderList 
+                => (UTH, UTHL):UKMTestTypeHolderList ... </k> 
+
+    rule <k> hold_string_from_test_stack => ptr_holder P ... </k>
+         <test-stack> ListItem(P) L:List => L </test-stack>
+    rule <k> ptr_holder ptrValue(_, V) => value_holder V ... </k>
+         
+    rule <k> hold_list_values_from_test_stack => list_ptrs_holder L ~> list_values_holder .List ... </k>
+         <test-stack> L:List => .List </test-stack>
+    rule <k> list_ptrs_holder ListItem(I) LPH ~> list_values_holder LLH   
+                => I ~> list_ptrs_holder LPH ~> list_values_holder LLH ... </k> 
+    rule <k> ptrValue(_, V) ~> list_ptrs_holder LPH ~> list_values_holder LLH
+                => list_ptrs_holder LPH ~> list_values_holder ListItem(V) LLH ... </k> 
+    rule <k> list_ptrs_holder .List => .K ... </k>
+
+
+    rule <k> mock Encode
+             ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .UKMTestTypeHolderList
+             => Bytes2String(encodeCallData(FNAME, PTYPES, ARGS)) 
+            ...
+         </k> 
 
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>

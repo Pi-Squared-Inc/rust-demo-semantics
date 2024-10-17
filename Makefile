@@ -184,7 +184,9 @@ $(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTI
 $(UKM_EXECUTION_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_EXECUTION_KOMPILED)
-	$$(which kompile) ukm-semantics/targets/execution/ukm-target.md \
+	$$(which kompile) ukm-semantics/targets/execution/ukm-target.md  \
+			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
+			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(UKM_EXECUTION_KOMPILED) \
 			-I . \
 			--debug
@@ -192,7 +194,9 @@ $(UKM_EXECUTION_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 $(UKM_PREPROCESSING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_PREPROCESSING_KOMPILED)
-	$$(which kompile) ukm-semantics/targets/preprocessing/ukm-target.md \
+	$$(which kompile) ukm-semantics/targets/preprocessing/ukm-target.md  \
+			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
+			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(UKM_PREPROCESSING_KOMPILED) \
 			-I . \
 			--debug
@@ -200,7 +204,9 @@ $(UKM_PREPROCESSING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 $(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_TESTING_KOMPILED)
-	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md \
+	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md  \
+			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
+			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(UKM_TESTING_KOMPILED) \
 			-I . \
 			--debug
