@@ -40,6 +40,9 @@ module RUST-EXPRESSION-INTEGER-LITERALS
     rule findSuffix(S) => suffix(u32, 3) requires endsWith(S, "u32")
     rule findSuffix(S) => suffix(i64, 3) requires endsWith(S, "i64")
     rule findSuffix(S) => suffix(u64, 3) requires endsWith(S, "u64")
+    rule findSuffix(S) => suffix(u128, 4) requires endsWith(S, "u128")
+    rule findSuffix(S) => suffix(u160, 4) requires endsWith(S, "u160")
+    rule findSuffix(S) => suffix(u256, 4) requires endsWith(S, "u256")
     rule findSuffix(_) => suffix(( ), 0)  [owise]
 
     syntax IntegerSuffix ::= suffix(Type, Int)
@@ -82,6 +85,12 @@ module RUST-EXPRESSION-INTEGER-LITERALS
         requires sminMInt(64) <=Int I andBool I <=Int smaxMInt(64)
     rule integerToValue(I:Int, u64) => u64(Int2MInt(I))
         requires uminMInt(64) <=Int I andBool I <=Int umaxMInt(64)
+    rule integerToValue(I:Int, u128) => u128(Int2MInt(I))
+        requires uminMInt(128) <=Int I andBool I <=Int umaxMInt(128)
+    rule integerToValue(I:Int, u160) => u160(Int2MInt(I))
+        requires uminMInt(160) <=Int I andBool I <=Int umaxMInt(160)
+    rule integerToValue(I:Int, u256) => u256(Int2MInt(I))
+        requires uminMInt(256) <=Int I andBool I <=Int umaxMInt(256)
     rule integerToValue(I:Int, ( )) => u128(Int2MInt(I))
     rule integerToValue(I:Int, T:Type)
         => error("integerToValue: unimplemented", ListItem(I:Int:KItem) ListItem(T:Type:KItem))
@@ -97,6 +106,8 @@ module RUST-EXPRESSION-INTEGER-LITERALS
     rule valueToInteger(i64(V:MInt{64})) => MInt2Signed(V)
     rule valueToInteger(u64(V:MInt{64})) => MInt2Unsigned(V)
     rule valueToInteger(u128(V:MInt{128})) => MInt2Unsigned(V)
+    rule valueToInteger(u160(V:MInt{160})) => MInt2Unsigned(V)
+    rule valueToInteger(u256(V:MInt{256})) => MInt2Unsigned(V)
 
     syntax Bool ::= endsWith(containing:String, contained:String)  [function, total]
     rule endsWith(Containing:String, Contained:String)
