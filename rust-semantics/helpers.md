@@ -35,11 +35,10 @@ module RUST-HELPERS
 
     syntax Bool ::= isSignedInt(Type)  [function, total]
     rule isSignedInt(_) => false [owise]
-    rule isSignedInt(u8) => true
-    rule isSignedInt(u16) => true
-    rule isSignedInt(u32) => true
-    rule isSignedInt(u64) => true
-    rule isSignedInt(u128) => true
+    rule isSignedInt(i8) => true
+    rule isSignedInt(i16) => true
+    rule isSignedInt(i32) => true
+    rule isSignedInt(i64) => true
     rule isSignedInt(&T => T)
 
     rule concatNonEmptyStatements(.NonEmptyStatements, S:NonEmptyStatements) => S
