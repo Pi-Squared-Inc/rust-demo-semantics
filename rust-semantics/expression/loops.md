@@ -1,6 +1,7 @@
 ```k
 
 module RUST-LOOP-EXPRESSIONS
+    imports K-EQUAL-SYNTAX
     imports RUST-REPRESENTATION
 
     syntax IteratorLoopExpression ::=  "for1" Pattern "limit" PtrValue BlockExpression
@@ -32,32 +33,22 @@ module RUST-LOOP-EXPRESSIONS
     syntax LetStatement ::= incrementPatt(Identifier, Value) [function]
 
     rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, i8 (Int2MInt(1:Int)));
-        requires checkIntOfType(ComparisonValue, i8 )
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u8 (Int2MInt(1:Int)));
-        requires checkIntOfType(ComparisonValue, u8 )
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, i16(Int2MInt(1:Int)));
-        requires checkIntOfType(ComparisonValue, i16)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u16(Int2MInt(1:Int)));
-        requires checkIntOfType(ComparisonValue, u16)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, i32(Int2MInt(1:Int)));
-        requires checkIntOfType(ComparisonValue, i32)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u32(Int2MInt(1:Int)));
-        requires checkIntOfType(ComparisonValue, u32)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u64(Int2MInt(1:Int)));
-        requires checkIntOfType(ComparisonValue, u64)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, i64(Int2MInt(1:Int)));
-        requires checkIntOfType(ComparisonValue, i64)
-    rule incrementPatt(Patt:Identifier, ComparisonValue:Value) =>
-            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, u128(Int2MInt(1:Int))); 
-        requires checkIntOfType(ComparisonValue, u128)
+            let Patt = (Patt :: .PathExprSegments):PathExprSegments + ptrValue(null, oneOfSameType(ComparisonValue));
+        requires oneOfSameType(ComparisonValue) =/=K tuple(.ValueList)
+
+    syntax Value ::= oneOfSameType(Value)  [function, total]
+    rule oneOfSameType(_) => tuple(.ValueList)  [owise]
+    rule oneOfSameType(u8  (_)) => u8  (Int2MInt(1))
+    rule oneOfSameType(i8  (_)) => i8  (Int2MInt(1))
+    rule oneOfSameType(u16 (_)) => u16 (Int2MInt(1))
+    rule oneOfSameType(i16 (_)) => i16 (Int2MInt(1))
+    rule oneOfSameType(u32 (_)) => u32 (Int2MInt(1))
+    rule oneOfSameType(i32 (_)) => i32 (Int2MInt(1))
+    rule oneOfSameType(u64 (_)) => u64 (Int2MInt(1))
+    rule oneOfSameType(i64 (_)) => i64 (Int2MInt(1))
+    rule oneOfSameType(u128(_)) => u128(Int2MInt(1))
+    rule oneOfSameType(u160(_)) => u160(Int2MInt(1))
+    rule oneOfSameType(u256(_)) => u256(Int2MInt(1))
 
 endmodule
 
