@@ -19,7 +19,7 @@ RUN    apt-get update              \
 ARG LLVM_VERSION
 RUN wget https://apt.llvm.org/llvm.sh
 RUN chmod +x llvm.sh
-RUN sudo ./llvm.sh ${LLVM_VERSION}
+RUN ./llvm.sh ${LLVM_VERSION}
                       
 ARG USER_ID=1000
 ARG GROUP_ID=1000
