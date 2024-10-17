@@ -27,7 +27,6 @@ module UKM-PREPROCESSING-METHODS
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
         requires getEndpointName(Atts, MethodIdentifier) =/=K ""
             andBool getStorageName(Atts) ==K ""
-        [priority(50)]
     rule
         <k>
             ukmPreprocessMethod(_Trait:TypePath, MethodIdentifier:Identifier, Method:PathInExpression)
@@ -41,7 +40,6 @@ module UKM-PREPROCESSING-METHODS
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
         requires getStorageName(Atts) =/=K ""
             andBool getEndpointName(Atts, MethodIdentifier) ==K ""
-        [priority(50)]
     rule ukmPreprocessMethod(_:TypePath, _:Identifier, _:PathInExpression) => .K
         [owise]
 
