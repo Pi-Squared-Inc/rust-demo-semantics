@@ -446,6 +446,12 @@ $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 	mkdir -p $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)
 
 	echo "<(<" > $@.in.tmp
+	echo "::address" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/address.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
 	echo "::bytes_hooks" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
 	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
