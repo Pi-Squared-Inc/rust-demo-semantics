@@ -1,5 +1,6 @@
 ARG Z3_VERSION
 ARG K_COMMIT
+ARG LLVM_VERSION
 
 ARG Z3_VERSION=4.12.1
 FROM runtimeverificationinc/z3:ubuntu-jammy-${Z3_VERSION} as Z3
@@ -9,15 +10,14 @@ FROM runtimeverificationinc/kframework-k:ubuntu-jammy-${K_COMMIT}
 
 COPY --from=Z3 /usr/bin/z3 /usr/bin/z3
 
+ARG LLVM_VERSION
 RUN    apt-get update              \
     && apt-get upgrade --yes       \
     && apt-get install --yes       \
-                       curl
-#                        cmake       \
-#                        pandoc      \
-#                        python3     \
-#                        python3-pip \
-#                        wabt
+                      clang-${LLVM_VERSION} \
+                      curl \
+                      llvm-${LLVM_VERSION}-dev \
+                      llvm-${LLVM_VERSION}-tools \
 
 ARG USER_ID=1000
 ARG GROUP_ID=1000
