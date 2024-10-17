@@ -464,6 +464,12 @@ $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
+	echo "::single_value_mapper" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/single_value_mapper.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
 	echo "::ukm" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
 	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/ukm.rs >> $@.in.tmp

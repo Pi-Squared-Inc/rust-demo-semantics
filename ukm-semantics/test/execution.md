@@ -3,9 +3,11 @@
 module UKM-TEST-SYNTAX
     imports INT-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
+    imports UKM-HOOKS-UKM-SYNTAX
 
     syntax ExecutionItem  ::= "mock" "CallData"
                             | "mock" "Caller"
+                            | "mock" UkmHook UkmHookResult
                             | "call_contract" Int
                             | "output_to_arg"
                             | "push_status"
@@ -37,6 +39,8 @@ module UKM-TEST-EXECUTION
             (ListItem(ptrValue(_, u64(_BytesId)) #as V:PtrValue) => .List)
             ...
         </test-stack>
+
+    rule mock Hook:UkmHook Result:UkmHookResult => mock(Hook, Result)
 
     rule call_contract Account => ukmExecute(Account, 100)
 

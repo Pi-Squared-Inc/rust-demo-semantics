@@ -36,6 +36,16 @@ module UKM-PREPROCESSING-SYNTAX-PRIVATE
                                 )
                             | ukmAddEndpointSignature(signature: StringOrError, method: Identifier)
                             | ukmAddDispatcher(TypePath)
+                            | ukmPreprocessStorage
+                                ( fullMethodPath: PathInExpression
+                                , storageName: String
+                                )
+                            | ukmAddStorageMethodBody
+                                  ( methodName: PathInExpression
+                                  , storageName: String
+                                  , mapperValueType: Type
+                                  , appendParamsInstructions: NonEmptyStatementsOrError
+                                  )
 
 endmodule
 

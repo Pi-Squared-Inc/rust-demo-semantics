@@ -100,6 +100,7 @@ module RUST-CASTS
 
     rule implicitCast(struct(T, _) #as V, T) => V
     rule implicitCast(struct(T, _) #as V, T < _ >) => V
+    rule implicitCast(struct(:: A :: T, _) #as V, :: A :: T < _ >) => V
 
     // Rewrites
 

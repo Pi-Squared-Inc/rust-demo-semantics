@@ -46,6 +46,7 @@ module UKM-HOOKS-BYTES
                         | "decode_u16"  [token]
                         | "decode_u8"  [token]
                         | "decode_str"  [token]
+                        | "hash"  [token]
 
     rule
         <k>
@@ -162,6 +163,13 @@ module UKM-HOOKS-BYTES
             )
         => ukmBytesDecode(BufferIdId, str)
 
+    rule
+        normalizedFunctionCall
+            ( :: bytes_hooks :: hash :: .PathExprSegments
+            , BufferIdId:Ptr, .PtrList
+            )
+        => ukmBytesHash(BufferIdId)
+
     // ---------------------------------------
 
     rule
@@ -187,6 +195,8 @@ module UKM-HOOKS-BYTES
                             | ukmBytesDecode(Int, Bytes, Type)
                             | ukmBytesDecodeInt(Int, Bytes, Type)
                             | ukmBytesDecode(ValueOrError, Bytes)
+                            | ukmBytesHash(Expression)  [strict(1)]
+                            | ukmBytesHash(UkmExpression)  [strict(1)]
 
     rule
         <k>
@@ -269,6 +279,20 @@ module UKM-HOOKS-BYTES
         => ukmBytesDecode(integerToValue(Value, T), B)
     rule ukmBytesDecode(Value:Value, B:Bytes)
         => tupleExpression(ukmBytesNew(B) , ptrValue(null, Value) , .TupleElementsNoEndComma)
+
+    rule ukmBytesHash(ptrValue(_, u64(BytesId)))
+        => ukmBytesHash(ukmBytesId(BytesId))
+    rule ukmBytesHash(ukmBytesValue(B:Bytes))
+        => ptrValue(null, u64(Int2MInt(#ukmBytesHash(Bytes2Int(B, BE, Unsigned)))))
+
+    syntax Int ::= #ukmBytesHash(Int)  [function, total]
+    rule #ukmBytesHash(I:Int) => #ukmBytesHash(0 -Int I)  requires I <Int 0
+    rule #ukmBytesHash(I:Int) => I requires 0 <=Int I andBool I <Int (1 <<Int 64)
+    rule #ukmBytesHash(I:Int)
+        => #ukmBytesHash
+            ( (I &Int ((1 <<Int 64) -Int 1))
+            |Int #ukmBytesHash(I >>Int 64)
+            )
 endmodule
 
 ```
