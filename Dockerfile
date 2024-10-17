@@ -14,6 +14,8 @@ RUN    apt-get update              \
     && apt-get upgrade --yes       \
     && apt-get install --yes       \
                       curl \
+                      lsb-release \
+                      software-properties-common \
                       wget
 
 ARG LLVM_VERSION
