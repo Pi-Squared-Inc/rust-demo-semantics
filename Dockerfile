@@ -13,7 +13,8 @@ COPY --from=Z3 /usr/bin/z3 /usr/bin/z3
 RUN    apt-get update              \
     && apt-get upgrade --yes       \
     && apt-get install --yes       \
-                      curl
+                      curl \
+                      wget
 
 ARG LLVM_VERSION
 RUN wget https://apt.llvm.org/llvm.sh
