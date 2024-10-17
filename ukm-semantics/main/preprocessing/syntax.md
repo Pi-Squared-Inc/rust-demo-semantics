@@ -46,6 +46,10 @@ module UKM-PREPROCESSING-SYNTAX-PRIVATE
                                   , mapperValueType: Type
                                   , appendParamsInstructions: NonEmptyStatementsOrError
                                   )
+                            | ukmPreprocessEvent
+                                ( fullMethodPath: PathInExpression
+                                , eventName: String
+                                )
 
 endmodule
 
