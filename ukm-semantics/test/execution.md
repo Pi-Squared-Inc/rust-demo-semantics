@@ -12,6 +12,7 @@ module UKM-TEST-SYNTAX
                             | "output_to_arg"
                             | "push_status"
                             | "check_eq" Int
+                            | "expect_cancel"
 endmodule
 
 module UKM-TEST-EXECUTION
@@ -20,6 +21,7 @@ module UKM-TEST-EXECUTION
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-HOOKS-BYTES-CONFIGURATION
     imports private UKM-HOOKS-BYTES-SYNTAX
+    imports private UKM-HOOKS-HELPERS-SYNTAX
     imports private UKM-HOOKS-STATE-CONFIGURATION
     imports private UKM-HOOKS-UKM-SYNTAX
     imports private UKM-TEST-SYNTAX
@@ -69,6 +71,9 @@ module UKM-TEST-EXECUTION
     rule
         <k> check_eq I:Int => .K ... </k>
         <test-stack> ListItem(I) => .List ... </test-stack>
+
+    rule (ukmCancel ~> expect_cancel) => .K
+
 endmodule
 
 ```
