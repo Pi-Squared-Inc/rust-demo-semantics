@@ -1,3 +1,3 @@
-fn is_zero(address: u64) -> bool {
-  address == 0_u64
+fn is_zero(address: u160) -> bool {
+    address == 0_u160
 }

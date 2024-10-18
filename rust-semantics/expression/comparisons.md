@@ -115,6 +115,20 @@ module RUST-INTEGER-RELATIONAL-OPERATIONS
     rule ptrValue(_, u128(A):Value) >= ptrValue(_, u128(B):Value) => ptrValue(null, A >=uMInt B)
     rule ptrValue(_, u128(A):Value) <= ptrValue(_, u128(B):Value) => ptrValue(null, A <=uMInt B)
 
+    rule ptrValue(_, u160(A):Value) == ptrValue(_, u160(B):Value) => ptrValue(null, A ==MInt  B)
+    rule ptrValue(_, u160(A):Value) != ptrValue(_, u160(B):Value) => ptrValue(null, A =/=MInt B)
+    rule ptrValue(_, u160(A):Value) >  ptrValue(_, u160(B):Value) => ptrValue(null, A >uMInt  B)
+    rule ptrValue(_, u160(A):Value) <  ptrValue(_, u160(B):Value) => ptrValue(null, A <uMInt  B)
+    rule ptrValue(_, u160(A):Value) >= ptrValue(_, u160(B):Value) => ptrValue(null, A >=uMInt B)
+    rule ptrValue(_, u160(A):Value) <= ptrValue(_, u160(B):Value) => ptrValue(null, A <=uMInt B)
+
+    rule ptrValue(_, u256(A):Value) == ptrValue(_, u256(B):Value) => ptrValue(null, A ==MInt  B)
+    rule ptrValue(_, u256(A):Value) != ptrValue(_, u256(B):Value) => ptrValue(null, A =/=MInt B)
+    rule ptrValue(_, u256(A):Value) >  ptrValue(_, u256(B):Value) => ptrValue(null, A >uMInt  B)
+    rule ptrValue(_, u256(A):Value) <  ptrValue(_, u256(B):Value) => ptrValue(null, A <uMInt  B)
+    rule ptrValue(_, u256(A):Value) >= ptrValue(_, u256(B):Value) => ptrValue(null, A >=uMInt B)
+    rule ptrValue(_, u256(A):Value) <= ptrValue(_, u256(B):Value) => ptrValue(null, A <=uMInt B)
+
 endmodule
 
 ```

@@ -69,6 +69,9 @@ module UKM-PREPROCESSING-STORAGE
                         | "append_u16"  [token]
                         | "append_u32"  [token]
                         | "append_u64"  [token]
+                        | "append_u128"  [token]
+                        | "append_u160"  [token]
+                        | "append_u256"  [token]
                         | "empty"  [token]
                         | "hash"  [token]
                         | "new"  [token]
@@ -109,6 +112,12 @@ module UKM-PREPROCESSING-STORAGE
         => v(:: bytes_hooks :: append_u32 ( buffer_id , Name , .CallParamsList ))
     rule encodeForType(Name:Identifier, u64)
         => v(:: bytes_hooks :: append_u64 ( buffer_id , Name , .CallParamsList ))
+    rule encodeForType(Name:Identifier, u128)
+        => v(:: bytes_hooks :: append_u128 ( buffer_id , Name , .CallParamsList ))
+    rule encodeForType(Name:Identifier, u160)
+        => v(:: bytes_hooks :: append_u160 ( buffer_id , Name , .CallParamsList ))
+    rule encodeForType(Name:Identifier, u256)
+        => v(:: bytes_hooks :: append_u256 ( buffer_id , Name , .CallParamsList ))
 
 endmodule
 

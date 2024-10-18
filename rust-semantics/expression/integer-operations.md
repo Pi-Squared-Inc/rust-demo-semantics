@@ -86,6 +86,22 @@ module RUST-INTEGER-ARITHMETIC-OPERATIONS
     rule ptrValue(_, u128(A):Value) % ptrValue(_, u128(B):Value) => ptrValue(null, u128(A %uMInt B))
         requires B =/=K 0p128
 
+    rule ptrValue(_, u160(A):Value) * ptrValue(_, u160(B):Value) => ptrValue(null, u160(A *MInt B))
+    rule ptrValue(_, u160(A):Value) + ptrValue(_, u160(B):Value) => ptrValue(null, u160(A +MInt B))
+    rule ptrValue(_, u160(A):Value) - ptrValue(_, u160(B):Value) => ptrValue(null, u160(A -MInt B))
+    rule ptrValue(_, u160(A):Value) / ptrValue(_, u160(B):Value) => ptrValue(null, u160(A /uMInt B))
+        requires B =/=K 0p160
+    rule ptrValue(_, u160(A):Value) % ptrValue(_, u160(B):Value) => ptrValue(null, u160(A %uMInt B))
+        requires B =/=K 0p160
+
+    rule ptrValue(_, u256(A):Value) * ptrValue(_, u256(B):Value) => ptrValue(null, u256(A *MInt B))
+    rule ptrValue(_, u256(A):Value) + ptrValue(_, u256(B):Value) => ptrValue(null, u256(A +MInt B))
+    rule ptrValue(_, u256(A):Value) - ptrValue(_, u256(B):Value) => ptrValue(null, u256(A -MInt B))
+    rule ptrValue(_, u256(A):Value) / ptrValue(_, u256(B):Value) => ptrValue(null, u256(A /uMInt B))
+        requires B =/=K 0p256
+    rule ptrValue(_, u256(A):Value) % ptrValue(_, u256(B):Value) => ptrValue(null, u256(A %uMInt B))
+        requires B =/=K 0p256
+
 endmodule
 
 
@@ -102,6 +118,8 @@ module RUST-INTEGER-RANGE-OPERATIONS
     rule (ptrValue(_, i64(A):Value) .. ptrValue(_, i64(B):Value)):Expression => ptrValue(null, intRange(i64(A), i64(B)))
     rule (ptrValue(_, u64(A):Value) .. ptrValue(_, u64(B):Value)):Expression => ptrValue(null, intRange(u64(A), u64(B)))
     rule (ptrValue(_, u128(A):Value) .. ptrValue(_, u128(B):Value)):Expression => ptrValue(null, intRange(u128(A), u128(B)))
+    rule (ptrValue(_, u160(A):Value) .. ptrValue(_, u160(B):Value)):Expression => ptrValue(null, intRange(u160(A), u160(B)))
+    rule (ptrValue(_, u256(A):Value) .. ptrValue(_, u256(B):Value)):Expression => ptrValue(null, intRange(u256(A), u256(B)))
 
 endmodule
 
