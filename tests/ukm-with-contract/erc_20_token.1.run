@@ -1,37 +1,37 @@
-list_mock GetAccountStorageHook ( 7809087261546347641 ) ukmInt64Result(0);
+list_mock GetAccountStorageHook ( 7809087261546347641 ) ukmInt256Result(0);
 list_mock SetAccountStorageHook ( 7809087261546347641 , 10000 ) ukmNoResult();
-list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt64Result(0);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt256Result(0);
 list_mock SetAccountStorageHook ( 7162266444907899391 , 10000 ) ukmNoResult();
-list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt64Result(10000);
-list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt64Result(10000);
-list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt64Result(10000);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt256Result(10000);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt256Result(10000);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt256Result(10000);
 list_mock SetAccountStorageHook ( 7162266444907899391 , 9900 ) ukmNoResult();
-list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmInt64Result(0);
+list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmInt256Result(0);
 list_mock SetAccountStorageHook ( 7162266444908917614 , 100 ) ukmNoResult();
-list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt64Result(9900);
-list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmInt64Result(100);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt256Result(9900);
+list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmInt256Result(100);
 list_mock SetAccountStorageHook ( 8028228613167873919 , 200 ) ukmNoResult();
-list_mock GetAccountStorageHook ( 8028228613167873919 ) ukmInt64Result(200);
+list_mock GetAccountStorageHook ( 8028228613167873919 ) ukmInt256Result(200);
 list_mock SetAccountStorageHook ( 8028228613167873919 , 0 ) ukmNoResult();
-list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt64Result(9900);
-list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt64Result(9900);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt256Result(9900);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt256Result(9900);
 list_mock SetAccountStorageHook ( 7162266444907899391 , 9700 ) ukmNoResult();
-list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmInt64Result(100);
+list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmInt256Result(100);
 list_mock SetAccountStorageHook ( 7162266444908917614 , 300 ) ukmNoResult();
-list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt64Result(9700);
-list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmInt64Result(300);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmInt256Result(9700);
+list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmInt256Result(300);
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "#init(Uint64)";
+push "#init(Uint256)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
-push 10000_u64;
-call :: bytes_hooks :: append_u64;
+push 10000_u256;
+call :: bytes_hooks :: append_u256;
 return_value;
 mock CallData;
 
-push_value 1010101_u64;
+push_value 1010101_u160;
 mock Caller;
 
 call_contract 12345;
@@ -52,11 +52,11 @@ check_eq 0_u32;
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "balanceOf(Uint64)";
+push "balanceOf(Uint160)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
-push 1010101_u64;
-call :: bytes_hooks :: append_u64;
+push 1010101_u160;
+call :: bytes_hooks :: append_u160;
 return_value;
 mock CallData;
 
@@ -68,27 +68,27 @@ push_status;
 check_eq 2;
 
 output_to_arg;
-call :: test_helpers :: decode_single_u64;
+call :: test_helpers :: decode_single_u256;
 return_value;
 
-check_eq 10000_u64;
+check_eq 10000_u256;
 
 
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "transfer(Uint64,Uint64)";
+push "transfer(Uint160,Uint256)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
-push 2020202_u64;
-call :: bytes_hooks :: append_u64;
+push 2020202_u160;
+call :: bytes_hooks :: append_u160;
 return_value_to_arg;
-push 100_u64;
-call :: bytes_hooks :: append_u64;
+push 100_u256;
+call :: bytes_hooks :: append_u256;
 return_value;
 mock CallData;
 
-push_value 1010101_u64;
+push_value 1010101_u160;
 mock Caller;
 
 call_contract 12345;
@@ -108,11 +108,11 @@ check_eq 1_u64;
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "balanceOf(Uint64)";
+push "balanceOf(Uint160)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
-push 1010101_u64;
-call :: bytes_hooks :: append_u64;
+push 1010101_u160;
+call :: bytes_hooks :: append_u160;
 return_value;
 mock CallData;
 
@@ -124,21 +124,21 @@ push_status;
 check_eq 2;
 
 output_to_arg;
-call :: test_helpers :: decode_single_u64;
+call :: test_helpers :: decode_single_u256;
 return_value;
 
-check_eq 9900_u64;
+check_eq 9900_u256;
 
 
 
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "balanceOf(Uint64)";
+push "balanceOf(Uint160)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
-push 2020202_u64;
-call :: bytes_hooks :: append_u64;
+push 2020202_u160;
+call :: bytes_hooks :: append_u160;
 return_value;
 mock CallData;
 
@@ -150,10 +150,10 @@ push_status;
 check_eq 2;
 
 output_to_arg;
-call :: test_helpers :: decode_single_u64;
+call :: test_helpers :: decode_single_u256;
 return_value;
 
-check_eq 100_u64;
+check_eq 100_u256;
 
 
 
@@ -162,18 +162,18 @@ check_eq 100_u64;
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "approve(Uint64,Uint64)";
+push "approve(Uint160,Uint256)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
-push 3030303_u64;
-call :: bytes_hooks :: append_u64;
+push 3030303_u160;
+call :: bytes_hooks :: append_u160;
 return_value_to_arg;
-push 200_u64;
-call :: bytes_hooks :: append_u64;
+push 200_u256;
+call :: bytes_hooks :: append_u256;
 return_value;
 mock CallData;
 
-push_value 1010101_u64;
+push_value 1010101_u160;
 mock Caller;
 
 call_contract 12345;
@@ -193,21 +193,21 @@ check_eq 1_u64;
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "transferFrom(Uint64,Uint64,Uint64)";
+push "transferFrom(Uint160,Uint160,Uint256)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
-push 1010101_u64;
-call :: bytes_hooks :: append_u64;
+push 1010101_u160;
+call :: bytes_hooks :: append_u160;
 return_value_to_arg;
-push 2020202_u64;
-call :: bytes_hooks :: append_u64;
+push 2020202_u160;
+call :: bytes_hooks :: append_u160;
 return_value_to_arg;
-push 200_u64;
-call :: bytes_hooks :: append_u64;
+push 200_u256;
+call :: bytes_hooks :: append_u256;
 return_value;
 mock CallData;
 
-push_value 3030303_u64;
+push_value 3030303_u160;
 mock Caller;
 
 call_contract 12345;
@@ -229,11 +229,11 @@ check_eq 1_u64;
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "balanceOf(Uint64)";
+push "balanceOf(Uint160)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
-push 1010101_u64;
-call :: bytes_hooks :: append_u64;
+push 1010101_u160;
+call :: bytes_hooks :: append_u160;
 return_value;
 mock CallData;
 
@@ -245,21 +245,21 @@ push_status;
 check_eq 2;
 
 output_to_arg;
-call :: test_helpers :: decode_single_u64;
+call :: test_helpers :: decode_single_u256;
 return_value;
 
-check_eq 9700_u64;
+check_eq 9700_u256;
 
 
 
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "balanceOf(Uint64)";
+push "balanceOf(Uint160)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
-push 2020202_u64;
-call :: bytes_hooks :: append_u64;
+push 2020202_u160;
+call :: bytes_hooks :: append_u160;
 return_value;
 mock CallData;
 
@@ -271,9 +271,9 @@ push_status;
 check_eq 2;
 
 output_to_arg;
-call :: test_helpers :: decode_single_u64;
+call :: test_helpers :: decode_single_u256;
 return_value;
 
-check_eq 300_u64
+check_eq 300_u256
 
 

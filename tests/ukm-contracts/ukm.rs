@@ -23,8 +23,8 @@ pub const EVMC_NONCE_EXCEEDED: u64 = 15_u64;
 extern {    
     // block parameters
     fn sample_method(&self) -> u64;
-    fn GasLimit(&self) -> u64;
-    fn BaseFee(&self) -> u64;
+    fn GasLimit(&self) -> u256;
+    fn BaseFee(&self) -> u256;
     fn Coinbase(&self) -> u64;
     fn BlockTimestamp(&self) -> u64;
     fn BlockNumber(&self) -> u64;
@@ -37,30 +37,30 @@ extern {
     fn Origin(&self) -> u64;
     
     // message parameters
-    fn Address(&self) -> u64;
-    fn Caller(&self) -> u64;
-    fn CallValue(&self) -> u64;
+    fn Address(&self) -> u160;
+    fn Caller(&self) -> u160;
+    fn CallValue(&self) -> u256;
     fn CallData(&self) -> Bytes;
 
     // chain parameters
     fn ChainId(&self) -> u64;
     
     // account getters
-    fn GetAccountBalance(&self, acct: u64) -> u64;
-    fn GetAccountCode(&self, acct: u64) -> u64;
-    fn GetAccountStorage(&self, key: u64) -> u64;
-    fn GetAccountOrigStorage(&self, key: u64) -> u64;
-    fn GetAccountTransientStorage(&self, key: u64) -> u64;
-    fn IsAccountEmpty(&self, acct: u64) -> bool;
+    fn GetAccountBalance(&self, acct: u160) -> u256;
+    fn GetAccountCode(&self, acct: u160) -> Bytes;
+    fn GetAccountStorage(&self, key: u256) -> u256;
+    fn GetAccountOrigStorage(&self, key: u256) -> u256;
+    fn GetAccountTransientStorage(&self, key: u256) -> u256;
+    fn IsAccountEmpty(&self, acct: u160) -> bool;
 
     // to be removed in final version
-    fn AccessedStorage(&self, key: u64) -> bool;
-    fn AccessedAccount(&self, acct: u64) -> bool;
+    fn AccessedStorage(&self, key: u256) -> bool;
+    fn AccessedAccount(&self, acct: u256) -> bool;
 
-    fn Transfer(&self, to: u64, value: u64) -> bool;
+    fn Transfer(&self, to: u160, value: u256) -> bool;
     fn SelfDestruct(&self, to: u64);
-    fn SetAccountStorage(&self, key: u64, value: u64);
-    fn SetAccountTransientStorage(&self, key: u64, value: u64);
+    fn SetAccountStorage(&self, key: u256, value: u256);
+    fn SetAccountTransientStorage(&self, key: u256, value: u256);
 
     fn Log0(data: Bytes);
     fn Log1(topic0: u64, data: Bytes);
@@ -68,11 +68,11 @@ extern {
     fn Log3(topic0: u64, topic1: u64, topic2: u64, data: Bytes);
     fn Log4(topic0: u64, topic1: u64, topic2: u64, topic3: u64, data: Bytes); 
     
-    fn MessageResult(gas: u64, data: Bytes, status: u64, target: u64) -> MessageResult;
-    fn Create(value: u64, data: Bytes, gas: u64) -> MessageResult;
-    fn Create2(value: u64, data: Bytes, salt: Bytes, gas: u64) -> MessageResult;
-    fn Call(gas: u64, to: u64, value: u64, data: Bytes) -> MessageResult;
-    fn CallCode(gas: u64, to: u64, value: u64, data: Bytes) -> MessageResult;
-    fn DelegateCall(gas: u64, to: u64, data: Bytes) -> MessageResult;
-    fn StaticCall(gas: u64, to: u64, data: Bytes) -> MessageResult;
+    fn MessageResult(gas: u256, data: Bytes, status: u64, target: u64) -> MessageResult;
+    fn Create(value: u256, data: Bytes, gas: u256) -> MessageResult;
+    fn Create2(value: u256, data: Bytes, salt: Bytes, gas: u256) -> MessageResult;
+    fn Call(gas: u256, to: u160, value: u256, data: Bytes) -> MessageResult;
+    fn CallCode(gas: u256, to: u160, value: u256, data: Bytes) -> MessageResult;
+    fn DelegateCall(gas: u256, to: u160, data: Bytes) -> MessageResult;
+    fn StaticCall(gas: u256, to: u160, data: Bytes) -> MessageResult;
 }

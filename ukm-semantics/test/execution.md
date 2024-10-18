@@ -39,7 +39,7 @@ module UKM-TEST-EXECUTION
     rule
         <k> mock Caller => mock(CallerHook(), V) ... </k>
         <test-stack>
-            (ListItem(ptrValue(_, u64(_BytesId)) #as V:PtrValue) => .List)
+            (ListItem(ptrValue(_, u160(_AccountId)) #as V:PtrValue) => .List)
             ...
         </test-stack>
 
