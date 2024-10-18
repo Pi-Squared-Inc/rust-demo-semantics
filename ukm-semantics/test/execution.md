@@ -5,6 +5,8 @@ module UKM-TEST-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
     imports UKM-HOOKS-UKM-SYNTAX
 
+    syntax UkmInstruction ::= "ukmDecodePreprocessedCell"
+
     syntax ExecutionItem  ::= "mock" "CallData"
                             | "mock" "Caller"
                             | "mock" UkmHook UkmHookResult
@@ -19,6 +21,8 @@ endmodule
 module UKM-TEST-EXECUTION
     imports private COMMON-K-CELL
     imports private RUST-EXECUTION-TEST-CONFIGURATION
+    imports private UKM-DECODING-SYNTAX
+    imports private UKM-ENCODING-SYNTAX
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-HOOKS-BYTES-CONFIGURATION
     imports private UKM-HOOKS-BYTES-SYNTAX
@@ -26,6 +30,10 @@ module UKM-TEST-EXECUTION
     imports private UKM-HOOKS-STATE-CONFIGURATION
     imports private UKM-HOOKS-UKM-SYNTAX
     imports private UKM-TEST-SYNTAX
+
+    // Patching the encoding result to decoding for test purposes
+    rule ukmEncodedPreprocessedCell(B:Bytes) ~> ukmDecodePreprocessedCell
+        => ukmDecodePreprocessedCell(B)
 
     syntax Mockable ::= UkmHook
 
