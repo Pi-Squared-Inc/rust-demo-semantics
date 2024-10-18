@@ -4,13 +4,31 @@ requires "blockchain-k-plugin/plugin/krypto.md"
 module UKM-CALLDATA-ENCODER
     imports private COMMON-K-CELL
     imports private UKM-ENCODING-SYNTAX
+    imports private UKM-PREPROCESSING-ENDPOINTS
     imports STRING
     imports BYTES
     imports INT
     imports KRYPTO
 
-    // EncodeCallData must map to something that receives two bytes (and has seqstrict). It evaluates the 
-    // params and, once evaluated, concatenate the two.
+    syntax String ::= Identifier2String(Identifier)  [function, total, hook(STRING.token2string)]
+                    | Type2String(Type)  [function, total, hook(STRING.token2string)]
+
+    rule encodeFunctionSignature (P:PathInExpression, N:NormalizedFunctionParameterList) => 
+                encodeFunctionSignature(convertPathInExprToString(P), convertFuncParamListToStrList(N, .List), "")
+
+    rule convertPathInExprToString(( :: I:Identifier :: R:PathExprSegments):PathInExpression ) =>
+            convertPathInExprToString(R) [priority(80)]
+    rule convertPathInExprToString(( I:Identifier :: R:PathExprSegments):PathInExpression ) =>
+            convertPathInExprToString(R) [priority(80)]
+    rule convertPathInExprToString(( I:Identifier :: .PathExprSegments):PathInExpression ) =>
+            Identifier2String(I) [priority(70)]
+            
+    rule convertFuncParamListToStrList(((self : _), N:NormalizedFunctionParameterList), .List) => 
+        convertFuncParamListToStrList( N, .List) [priority(60)]
+    rule convertFuncParamListToStrList(((_ : T:Type), N:NormalizedFunctionParameterList), L:List) =>
+        convertFuncParamListToStrList(N, L ListItem(signatureType(T))) [priority(70)]
+    rule convertFuncParamListToStrList(.NormalizedFunctionParameterList, L:List) => L
+
     rule encodeCallData(FN:String, FAT:List, FAL:List) => 
             encodeFunctionSignature(FN, FAT, "") +Bytes encodeFunctionParams(FAL, FAT, b"")  
 

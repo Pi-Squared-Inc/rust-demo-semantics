@@ -12,11 +12,10 @@ module UKM-TEST-SYNTAX
 
     syntax UKMTestTypeHolderList ::= List{UKMTestTypeHolder, ","}
 
-    syntax UKMMockOperations ::= "Caller"
-                               | "CallData"
-                               | "Encode"
-
-    syntax ExecutionItem  ::= "mock" UKMMockOperations
+    syntax ExecutionItem  ::= "mock" "Caller"
+                            | "mock" "CallData"
+                            | "mock" "EncodeOp"
+                            | "mock" "DecodeOp"
                             | "call_contract" Int
                             | "output_to_arg"
                             | "push_status"
@@ -29,6 +28,7 @@ module UKM-TEST-EXECUTION
     imports private COMMON-K-CELL
     imports private RUST-EXECUTION-TEST-CONFIGURATION
     imports private UKM-ENCODING-SYNTAX
+    imports private UKM-DECODING-SYNTAX
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-HOOKS-BYTES-CONFIGURATION
     imports private UKM-HOOKS-BYTES-SYNTAX
@@ -61,9 +61,14 @@ module UKM-TEST-EXECUTION
     rule <k> list_ptrs_holder .List => .K ... </k>
 
 
-    rule <k> mock Encode
+    rule <k> mock EncodeOp
              ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .UKMTestTypeHolderList
              => Bytes2String(encodeCallData(FNAME, PTYPES, ARGS)) 
+            ...
+         </k> 
+
+     rule <k> mock DecodeOp ~> value_holder CALLDATASTRING  => 
+                decodeCallData(String2Bytes(CALLDATASTRING)) 
             ...
          </k> 
 

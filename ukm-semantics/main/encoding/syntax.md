@@ -3,13 +3,15 @@
 module UKM-ENCODING-SYNTAX
     imports BYTES-SYNTAX
     imports LIST
-    imports RUST-VALUE-SYNTAX
+    imports RUST-REPRESENTATION
 
     syntax UKMInstruction ::= "ukmEncodePreprocessedCell"
+    
+    syntax Bytes ::= encodeFunctionSignature (PathInExpression, NormalizedFunctionParameterList) [function]
 
-    // syntax Bytes ::= (CodingOperations, CodingOperations) [function, seqstrict]
+    syntax String ::= convertPathInExprToString(PathInExpression) [function]
+    syntax List ::= convertFuncParamListToStrList(NormalizedFunctionParameterList, List) [function]
 
-    syntax KItem ::= "CodingOperations"
     syntax Bytes ::= encodeCallData (String, List, List) [function] //Function name, argument types, argument list
                    | encodeFunctionSignature (String, List, String) [function]
                    | encodeFunctionParams (List, List, Bytes) [function]

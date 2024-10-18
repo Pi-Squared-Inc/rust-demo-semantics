@@ -1,6 +1,6 @@
 call :: bytes_hooks :: empty;
 return_value_to_arg;
-push "myEndpoint(Uint64)";
+push "myEndpoint(uint64)";
 call :: bytes_hooks :: append_str;
 return_value_to_arg;
 push 123_u64;
