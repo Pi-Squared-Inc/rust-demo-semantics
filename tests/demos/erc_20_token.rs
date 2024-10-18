@@ -15,23 +15,23 @@ use multiversx_sc::imports::*;
 
 #[multiversx_sc::contract]
 pub trait Erc20Token {
-    #[view(totalSupply)]
+    // #[view(totalSupply)]
     #[storage_mapper("total_supply")]
     fn s_total_supply(&self) -> SingleValueMapper<BigUint>;
 
-    #[view(getName)]
+    // #[view(getName)]
     #[storage_mapper("name")]
     fn s_name(&self) -> SingleValueMapper<ManagedBuffer>;
 
-    #[view(getSymbol)]
+    // #[view(getSymbol)]
     #[storage_mapper("symbol")]
     fn s_symbol(&self) -> SingleValueMapper<ManagedBuffer>;
 
-    #[view(getBalances)]
+    // #[view(getBalances)]
     #[storage_mapper("balances")]
     fn s_balances(&self, address: &ManagedAddress) -> SingleValueMapper<BigUint>;
 
-    #[view(getAllowances)]
+    // #[view(getAllowances)]
     #[storage_mapper("allowances")]
     fn s_allowances(&self, account: &ManagedAddress, spender: &ManagedAddress) -> SingleValueMapper<BigUint>;
 
