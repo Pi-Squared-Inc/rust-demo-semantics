@@ -87,6 +87,23 @@ UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR ::= .build/ukm-with-contract/output
 UKM_WITH_CONTRACT_TESTING_INPUTS ::= $(wildcard $(UKM_WITH_CONTRACT_TESTING_INPUT_DIR)/*.run)
 UKM_WITH_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(UKM_WITH_CONTRACT_TESTING_INPUT_DIR)/%,$(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(UKM_WITH_CONTRACT_TESTING_INPUTS))
 
+UKM_FLAGS ::= -I deps/ulm/kllvm \
+        -ccopt -Ldeps/ulm/kllvm \
+				-ccopt -lulmkllvm
+
+# TODO: Use a plugin directory that is accessible from the current project
+CRYPTO_FLAGS ::= -I ../evm-semantics/kevm-pyk/src/kevm_pyk/kproj/plugin \
+				-ccopt -lssl \
+				-ccopt -lcrypto \
+				-ccopt -lsecp256k1 \
+        -ccopt $KRYPTO_DIR/evm-semantics/plugin/krypto.a  \
+
+# PLUGIN_FLAGS ::= --hook-namespaces 'ULM KRYPTO'
+PLUGIN_FLAGS ::= --hook-namespaces 'ULM' \
+								-ccopt -std=c++17 \
+								${UKM_FLAGS} \
+								# ${CRYPTO_FLAGS}
+
 .PHONY: clean build build-legacy test test-legacy syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test ukm-no-contracts-test
 
 all: build test
@@ -133,6 +150,10 @@ demos-test: $(DEMOS_TESTING_OUTPUTS)
 ukm-no-contracts-test: $(UKM_NO_CONTRACT_TESTING_OUTPUTS)
 
 ukm-with-contracts-test: $(UKM_WITH_CONTRACT_TESTING_OUTPUTS)
+
+ulm-plugin:
+	make -C deps/ulm/kllvm/ libulmkllvm.so
+.PHONY: ulm-plugin
 
 $(RUST_PREPROCESSING_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
@@ -197,10 +218,11 @@ $(UKM_PREPROCESSING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 			-I . \
 			--debug
 
-$(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
+$(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) ulm-plugin
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_TESTING_KOMPILED)
 	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md \
+			${PLUGIN_FLAGS} \
 			--emit-json -o $(UKM_TESTING_KOMPILED) \
 			-I . \
 			--debug

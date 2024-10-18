@@ -12,7 +12,8 @@ COPY --from=Z3 /usr/bin/z3 /usr/bin/z3
 RUN    apt-get update              \
     && apt-get upgrade --yes       \
     && apt-get install --yes       \
-                       curl
+                       curl \
+                       libcrypto++-dev
 #                        cmake       \
 #                        pandoc      \
 #                        python3     \

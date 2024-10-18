@@ -1,5 +1,7 @@
 ```k
 
+requires "../../main/decoding.md"
+requires "../../main/encoding.md"
 requires "../../main/execution.md"
 requires "../../main/preprocessing.md"
 requires "../../test/execution.md"
@@ -18,6 +20,8 @@ module UKM-TARGET
     imports private RUST-COMMON
     imports private RUST-FULL-PREPROCESSING
     imports private RUST-EXECUTION-TEST
+    imports private UKM-DECODING
+    imports private UKM-ENCODING
     imports private UKM-EXECUTION
     imports private UKM-PREPROCESSING
     imports private UKM-TARGET-CONFIGURATION
