@@ -4,9 +4,10 @@ module UKM-TEST-SYNTAX
     imports INT-SYNTAX
     imports STRING-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
+    imports BYTES-SYNTAX
 
     syntax UKMTestTypeHolder ::= "ptr_holder" KItem [strict]
-                                | "value_holder" Value
+                                | "value_holder" KItem
                                 | "list_ptrs_holder" List
                                 | "list_values_holder" List
 
@@ -17,6 +18,7 @@ module UKM-TEST-SYNTAX
                             | "mock" "EncodeOp"
                             | "mock" "DecodeOp"
                             | "call_contract" Int
+                            | "hold" KItem 
                             | "output_to_arg"
                             | "push_status"
                             | "check_eq" Int
@@ -35,6 +37,7 @@ module UKM-TEST-EXECUTION
     imports private UKM-HOOKS-STATE-CONFIGURATION
     imports private UKM-HOOKS-UKM-SYNTAX
     imports private UKM-TEST-SYNTAX
+    imports RUST-SHARED-SYNTAX
     imports private BYTES
 
     syntax Mockable ::= UkmHook
@@ -60,6 +63,7 @@ module UKM-TEST-EXECUTION
                 => list_ptrs_holder LPH ~> list_values_holder ListItem(V) LLH ... </k> 
     rule <k> list_ptrs_holder .List => .K ... </k>
 
+    rule <k> hold I => value_holder I ... </k>
 
     rule <k> mock EncodeOp
              ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .UKMTestTypeHolderList
@@ -67,10 +71,7 @@ module UKM-TEST-EXECUTION
             ...
          </k> 
 
-     rule <k> mock DecodeOp ~> value_holder CALLDATASTRING  => 
-                decodeCallData(String2Bytes(CALLDATASTRING)) 
-            ...
-         </k> 
+    rule <k> mock DecodeOp ~> value_holder B:Bytes  => decodeCallData(B) ... </k> 
 
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>

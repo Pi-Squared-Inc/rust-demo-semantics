@@ -8,9 +8,9 @@ module UKM-PREPROCESSING-CONFIGURATION
             <ukm-contract-trait>
                 (#token("not#initialized", "Identifier"):Identifier):TypePath
             </ukm-contract-trait>
-            <ukm-method-signatures>
+            <ukm-method-hash-to-signatures>
                 .Map
-            </ukm-method-signatures>
+            </ukm-method-hash-to-signatures>
         </ukm-preprocessed>
 endmodule
 

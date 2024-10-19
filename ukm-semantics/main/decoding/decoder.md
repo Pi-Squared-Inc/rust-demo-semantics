@@ -5,19 +5,48 @@ module UKM-CALLDATA-DECODER
     imports UKM-DECODING-SYNTAX
     imports BYTES-HOOKED
     imports BYTES-SYNTAX
+    imports private COMMON-K-CELL
+    imports private RUST-PREPROCESSING-CONFIGURATION
+    imports private UKM-PREPROCESSING-CONFIGURATION
+    imports private RUST-REPRESENTATION
     imports INT
 
-    // Convert the bytes to integer and do a bit shifting operation to get the values
-    rule decodeCallData(D:Bytes) =>
-        substrBytes(D, 0, 8)
+    rule decodeCallData(D:Bytes) => 
+            // (
+            //     decodeFunctionSignature(substrBytes(D, 0, 8)) ,
+                decodeArguments(loadArgumentsFromHash(substrBytes(D, 0, 8)), substrBytes(D, 8, lengthBytes(D)), .List) 
+            // ): TupleExpression
+            
+    rule [[ decodeFunctionSignature(FuncSigHash:Bytes) => P ]]
+        <ukm-method-hash-to-signatures>
+            ... FuncSigHash |-> P:PathInExpression ...
+        </ukm-method-hash-to-signatures>
+
+    rule [[ loadArgumentsFromHash(FuncSigHash:Bytes) => loadArgumentsFromHash(P) ]]
+        <ukm-method-hash-to-signatures>
+            ... FuncSigHash |-> P:PathInExpression ...
+        </ukm-method-hash-to-signatures>
         
-        // Int2Bytes(64:Int, 
-        //     (Bytes2Int(D:Bytes, BE:Endianness, Unsigned:Signedness) >>Int (lengthBytes(D) -Int 4)):Int,
-        // BE:Endianness) 
-        // (Bytes2Int(D:Bytes, BE:Endianness, Unsigned:Signedness)
-        // ( Int2Bytes(D[0]) +Bytes Int2Bytes(D[1]) +Bytes Int2Bytes(D[2]) +Bytes Int2Bytes(D[3]), decodeCallDataArguments(D:Bytes))
+    rule [[ loadArgumentsFromHash(Method:PathInExpression) => L ]]
+        <method-name> Method </method-name>
+        <method-params> (self : $selftype), L:NormalizedFunctionParameterList </method-params>
+        
+    rule decodeArguments(((_ : T:Type), R):NormalizedFunctionParameterList, D:Bytes, L:List) => 
+        decodeArguments(R, substrBytes(D, 0, sizeOfType(T)), 
+             convertKBytesToPtrValue (T, Bytes2Int ( substrBytes(D, 0, sizeOfType(T)), BE, Unsigned ) ) , L )
 
+    rule decodeArguments(.NormalizedFunctionParameterList, _, L:List) => L
 
+    rule convertKBytesToPtrValue(u32, I:Int) => ptrValue(null, u32(Int2MInt(I)))
+    rule convertKBytesToPtrValue(i32, I:Int) => ptrValue(null, i32(Int2MInt(I)))
+    rule convertKBytesToPtrValue(i64, I:Int) => ptrValue(null, i64(Int2MInt(I)))
+    rule convertKBytesToPtrValue(u64, I:Int) => ptrValue(null, u64(Int2MInt(I)))
+    rule convertKBytesToPtrValue(u128, I:Int) => ptrValue(null, u128(Int2MInt(I)))
 
+    rule sizeOfType(i32)  => 32
+    rule sizeOfType(u32)  => 32
+    rule sizeOfType(u64)  => 64
+    rule sizeOfType(i64)  => 64
+    rule sizeOfType(u128) => 128    
 endmodule
 ```

@@ -17,9 +17,9 @@ module UKM-PREPROCESSING-METHODS
         <method-params> L:NormalizedFunctionParameterList </method-params>
 
     rule <k> ukmPreprocessingStoreMethodSignature(B:Bytes, P:PathInExpression) => .K ... </k> 
-        <ukm-method-signatures>
+        <ukm-method-hash-to-signatures>
             STATE => STATE [ B <- P ]
-        </ukm-method-signatures>
+        </ukm-method-hash-to-signatures>
 
 
     rule ukmPreprocessMethods(_:TypePath, .List) => .K
