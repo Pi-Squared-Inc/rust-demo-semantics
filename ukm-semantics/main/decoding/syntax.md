@@ -7,14 +7,18 @@ module UKM-DECODING-SYNTAX
     imports RUST-VALUE-SYNTAX
     imports private RUST-REPRESENTATION
 
+    syntax UKMDecodedCallArguments ::= UKMDecodedCallArgs( PathInExpression , List ) //List 
+                                | decodeCallData(Bytes) [function] 
+
     syntax UKMInstruction ::= ukmDecodePreprocessedCell(Bytes)
 
     syntax NormalizedFunctionParameterList ::= loadArgumentsFromHash(Bytes) [function]
                                              | loadArgumentsFromHash(PathInExpression) [function]
 
-    syntax KItem ::= decodeCallDataArguments(Bytes) [function] 
-                   | decodeCallData(Bytes) [function] 
+    syntax List ::= decodeCallDataArguments(Bytes) [function] 
                    | decodeArguments(NormalizedFunctionParameterList, Bytes, List) [function]
+
+
 
     syntax PathInExpression ::= decodeFunctionSignature(Bytes) [function] 
 

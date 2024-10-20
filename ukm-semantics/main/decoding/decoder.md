@@ -12,11 +12,8 @@ module UKM-CALLDATA-DECODER
     imports INT
 
     rule decodeCallData(D:Bytes) => 
-            // (
-            //     decodeFunctionSignature(substrBytes(D, 0, 8)) ,
-                decodeArguments(loadArgumentsFromHash(substrBytes(D, 0, 8)), substrBytes(D, 8, lengthBytes(D)), .List) 
-            // ): TupleExpression
-            
+            UKMDecodedCallArgs(decodeFunctionSignature(substrBytes(D, 0, 8)), decodeArguments(loadArgumentsFromHash(substrBytes(D, 0, 8)), substrBytes(D, 8, lengthBytes(D)), .List) )
+
     rule [[ decodeFunctionSignature(FuncSigHash:Bytes) => P ]]
         <ukm-method-hash-to-signatures>
             ... FuncSigHash |-> P:PathInExpression ...
