@@ -72,6 +72,7 @@ module UKM-TEST-EXECUTION
          </k> 
 
     rule <k> mock DecodeOp ~> value_holder B:Bytes  => decodeCallData(B) ... </k> 
+    rule <k> UKMDecodedCallData(P:PathInExpression , L:PtrList) => normalizedFunctionCall(P, L) ... </k>
 
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>
