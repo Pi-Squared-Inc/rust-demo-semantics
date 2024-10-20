@@ -33,7 +33,7 @@ module UKM-CALLDATA-DECODER
         
     rule decodeArguments(((_ : T:Type), R):NormalizedFunctionParameterList, D:Bytes, L:List) => 
         decodeArguments(R, substrBytes(D, 0, sizeOfType(T)), 
-             convertKBytesToPtrValue (T, Bytes2Int ( substrBytes(D, 0, sizeOfType(T)), BE, Unsigned ) ) , L )
+            ListItem(convertKBytesToPtrValue (T, Bytes2Int ( substrBytes(D, 0, sizeOfType(T)), BE, Unsigned ) ) ) L )
 
     rule decodeArguments(.NormalizedFunctionParameterList, _, L:List) => L
 

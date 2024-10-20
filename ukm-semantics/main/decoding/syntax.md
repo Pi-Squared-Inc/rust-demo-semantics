@@ -8,7 +8,7 @@ module UKM-DECODING-SYNTAX
     imports private RUST-REPRESENTATION
 
     syntax UKMInstruction ::= ukmDecodePreprocessedCell(Bytes)
-    //c6b6e1790000000000000000000000000000000000000000000000000000000000000001
+
     syntax NormalizedFunctionParameterList ::= loadArgumentsFromHash(Bytes) [function]
                                              | loadArgumentsFromHash(PathInExpression) [function]
 
