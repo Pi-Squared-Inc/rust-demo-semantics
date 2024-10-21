@@ -12,6 +12,9 @@ module RUST-HELPERS
     rule isSameType(_, _) => false  [owise]
     rule isSameType(_:Value, & T => T)
     rule isSameType(_, $selftype) => true
+    rule isSameType(u256(_), u256) => true
+    rule isSameType(u160(_), u160) => true
+    rule isSameType(u128(_), u128) => true
     rule isSameType(i64(_), i64) => true
     rule isSameType(u64(_), u64) => true
     rule isSameType(i32(_), i32) => true
@@ -32,6 +35,8 @@ module RUST-HELPERS
     rule isUnsignedInt(u32) => true
     rule isUnsignedInt(u64) => true
     rule isUnsignedInt(u128) => true
+    rule isUnsignedInt(u160) => true
+    rule isUnsignedInt(u256) => true
     rule isUnsignedInt(&T => T)
 
     syntax Bool ::= isSignedInt(Type)  [function, total]
