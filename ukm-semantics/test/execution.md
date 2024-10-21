@@ -14,6 +14,14 @@ module UKM-TEST-SYNTAX
                             | "push_status"
                             | "check_eq" Int
                             | "expect_cancel"
+
+    syntax Identifier ::= "u8"  [token]
+                        | "u16"  [token]
+                        | "u32"  [token]
+                        | "u64"  [token]
+                        | "u128"  [token]
+                        | "u160"  [token]
+                        | "u256"  [token]
 endmodule
 
 module UKM-TEST-EXECUTION
