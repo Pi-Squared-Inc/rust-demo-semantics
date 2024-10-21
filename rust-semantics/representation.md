@@ -27,6 +27,8 @@ module RUST-VALUE-SYNTAX
                     | i64(MInt{64})
                     | u64(MInt{64})
                     | u128(MInt{128})
+                    // TODO: u160 and u256 are not real Rust types, remove them
+                    // after the demo.
                     | u160(MInt{160})
                     | u256(MInt{256})
                     | tuple(ValueList)
