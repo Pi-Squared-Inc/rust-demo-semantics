@@ -10,6 +10,7 @@ module UKM-HOOKS-UKM-SYNTAX
 
     syntax UkmHookResult  ::= ukmNoResult()
                             | ukmInt64Result(Int)
+                            | ukmInt256Result(Int)
 endmodule
 
 
@@ -52,9 +53,14 @@ module UKM-HOOKS-UKM
         => GetAccountStorageHook(MInt2Unsigned(Key))
 
     rule ukmNoResult() => ptrValue(null, tuple(.ValueList))
+
     syntax UkmHook ::= #ukmInt64Result(ValueOrError)
     rule ukmInt64Result(Value:Int) => #ukmInt64Result(integerToValue(Value, u64))
     rule #ukmInt64Result(V:Value) => ptrValue(null, V)
+
+    syntax UkmHook ::= #ukmInt256Result(ValueOrError)
+    rule ukmInt256Result(Value:Int) => #ukmInt256Result(integerToValue(Value, u256))
+    rule #ukmInt256Result(V:Value) => ptrValue(null, V)
 
 endmodule
 
