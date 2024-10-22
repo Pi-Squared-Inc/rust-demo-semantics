@@ -186,6 +186,7 @@ $(UKM_EXECUTION_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	-rm -r $(UKM_EXECUTION_KOMPILED)
 	$$(which kompile) ukm-semantics/targets/execution/ukm-target.md \
 			--emit-json -o $(UKM_EXECUTION_KOMPILED) \
+			-I kllvm \
 			-I . \
 			--debug
 
@@ -201,8 +202,10 @@ $(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_TESTING_KOMPILED)
 	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md \
+			${PLUGIN_FLAGS} \
 			--emit-json -o $(UKM_TESTING_KOMPILED) \
 			-I . \
+			-I kllvm \
 			--debug
 
 $(RUST_SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(RUST_SYNTAX_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)

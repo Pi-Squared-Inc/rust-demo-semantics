@@ -24,12 +24,10 @@ module UKM-TARGET-CONFIGURATION
     imports UKM-FULL-PREPROCESSED-CONFIGURATION
 
     configuration
-        <ukm-target>
-            <ukm-full-preprocessed/>
-            <ukm/>
-            <execution/>
-            <k/>
-        </ukm-target>
+        <ukm-full-preprocessed/>
+        <ukm/>
+        <execution/>
+        <k/>
 endmodule
 
 ```

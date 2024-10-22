@@ -116,6 +116,7 @@ module RUST-EXECUTION-TEST
     rule
         <k> listMock(Mocked:Mockable, Result:K) => .K ... </k>
         <mock-list> L:List => L ListItem(listMock(Mocked, Result)) </mock-list>
+        [priority(10)]
 
     rule
         <k> (Mocked:Mockable => Result) ...</k>

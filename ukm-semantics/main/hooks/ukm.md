@@ -8,15 +8,18 @@ module UKM-HOOKS-UKM-SYNTAX
                       | SetAccountStorageHook(Int, Int)
                       | GetAccountStorageHook(Int)
 
+    syntax K
+    syntax Type
     syntax UkmHookResult  ::= ukmNoResult()
-                            | ukmInt64Result(Int)
-                            | ukmInt256Result(Int)
+                            | ukmIntResult(Int, Type)
 endmodule
 
 
 module UKM-HOOKS-UKM
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
+    imports private UKM-HOOKS-BYTES-SYNTAX
+    imports private UKM-HOOKS-SIGNATURE
     imports private UKM-HOOKS-UKM-SYNTAX
 
     syntax Identifier ::= "ukm"  [token]
@@ -53,14 +56,73 @@ module UKM-HOOKS-UKM
         => GetAccountStorageHook(MInt2Unsigned(Key))
 
     rule ukmNoResult() => ptrValue(null, tuple(.ValueList))
+    rule ukmIntResult(Value:Int, T:Type) => ukmValueResult(integerToValue(Value, T))
 
-    syntax UkmHook ::= #ukmInt64Result(ValueOrError)
-    rule ukmInt64Result(Value:Int) => #ukmInt64Result(integerToValue(Value, u64))
-    rule #ukmInt64Result(V:Value) => ptrValue(null, V)
+    syntax UkmHook ::= ukmValueResult(ValueOrError)
+    rule ukmValueResult(V:Value) => ptrValue(null, V)
 
-    syntax UkmHook ::= #ukmInt256Result(ValueOrError)
-    rule ukmInt256Result(Value:Int) => #ukmInt256Result(integerToValue(Value, u256))
-    rule #ukmInt256Result(V:Value) => ptrValue(null, V)
+endmodule
+
+// This module should be used only in kompilation targets which have implementations
+// for the ULM hooks.
+module UKM-HOOKS-TO-ULM-FUNCTIONS
+    imports private RUST-REPRESENTATION
+    imports private UKM-HOOKS-BYTES-SYNTAX
+    imports private UKM-HOOKS-UKM-SYNTAX
+    imports private ULM-HOOKS
+
+    rule CallDataHook() => ukmBytesNew(CallData())
+    rule CallerHook() => ukmIntResult(Caller(), u160)
+    rule SetAccountStorageHook(Key:Int, Value:Int) => SetAccountStorage(Key, Value) ~> ukmNoResult()
+    rule GetAccountStorageHook(Key:Int) => ukmIntResult(GetAccountStorage(Key), u256)
+endmodule
+
+module UKM-HOOKS-SIGNATURE
+    imports private ULM-SIGNATURE
+    imports private UKM-HOOKS-STATE-CONFIGURATION
+    imports private UKM-TARGET-CONFIGURATION
+
+    rule getOutput
+            (   <generatedTop>
+                    <ukm>
+                        <ukm-state>
+                            <ukm-output> Value:Bytes </ukm-output>
+                            ...
+                        </ukm-state>
+                        ...
+                    </ukm>
+                    ...
+                </generatedTop>
+            )
+        => Value
+
+    rule getStatus
+            (   <generatedTop>
+                    <ukm>
+                        <ukm-state>
+                            <ukm-status> Value:Int </ukm-status>
+                            ...
+                        </ukm-state>
+                        ...
+                    </ukm>
+                    ...
+                </generatedTop>
+            )
+        => Value
+
+    rule getGasLeft
+            (   <generatedTop>
+                    <ukm>
+                        <ukm-state>
+                            <ukm-gas> Value:Int </ukm-gas>
+                            ...
+                        </ukm-state>
+                        ...
+                    </ukm>
+                    ...
+                </generatedTop>
+            )
+        => Value
 
 endmodule
 

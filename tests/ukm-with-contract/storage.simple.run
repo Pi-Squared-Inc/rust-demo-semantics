@@ -1,5 +1,5 @@
 mock SetAccountStorageHook ( 1809217465971809 , 123 ) ukmNoResult();
-mock GetAccountStorageHook ( 1809217465971809 ) ukmInt64Result(123);
+mock GetAccountStorageHook ( 1809217465971809 ) ukmIntResult(123, u64);
 
 call :: bytes_hooks :: empty;
 return_value_to_arg;

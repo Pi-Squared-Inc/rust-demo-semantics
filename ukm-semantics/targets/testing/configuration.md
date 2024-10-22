@@ -29,15 +29,13 @@ module UKM-TARGET-CONFIGURATION
     imports UKM-TEST-CONFIGURATION
 
     configuration
-        <ukm-target>
-            <ukm-full-preprocessed/>
-            <ukm-preprocessing-ephemeral/>
-            <ukm/>
-            <ukm-test/>
-            <rust-test/>
-            <execution/>
-            <k/>
-        </ukm-target>
+        <ukm-full-preprocessed/>
+        <ukm-preprocessing-ephemeral/>
+        <ukm/>
+        <ukm-test/>
+        <rust-test/>
+        <execution/>
+        <k/>
 endmodule
 
 ```
