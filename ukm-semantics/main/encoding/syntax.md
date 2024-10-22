@@ -14,8 +14,11 @@ module UKM-ENCODING-SYNTAX
 
     syntax Bytes ::= encodeCallData (String, List, List) [function] //Function name, argument types, argument list
                    | encodeFunctionSignature (String, List, String) [function]
+                   | encodeFunctionSignature (StringOrError) [function]
                    | encodeFunctionParams (List, List, Bytes) [function]
                    | convertToKBytes ( Value , String ) [function]
+
+    syntax String ::= encodeFunctionSignatureAsString(StringOrError) [function]
 
 endmodule
 

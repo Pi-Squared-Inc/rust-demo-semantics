@@ -15,8 +15,8 @@ module UKM-TEST-SYNTAX
 
     syntax ExecutionItem  ::= "mock" "Caller"
                             | "mock" "CallData"
-                            | "mock" "EncodeOp"
-                            | "mock" "DecodeOp"
+                            | "mock" "EncodeCallData"
+                            | "mock" "EncodeCallDataToString"
                             | "call_contract" Int
                             | "hold" KItem 
                             | "output_to_arg"
@@ -65,14 +65,17 @@ module UKM-TEST-EXECUTION
 
     rule <k> hold I => value_holder I ... </k>
 
-    rule <k> mock EncodeOp
+    rule <k> mock EncodeCallDataToString
              ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .UKMTestTypeHolderList
              => Bytes2String(encodeCallData(FNAME, PTYPES, ARGS)) 
             ...
          </k> 
-
-    rule <k> mock DecodeOp ~> value_holder B:Bytes  => decodeCallData(B) ... </k> 
-    rule <k> UKMDecodedCallData(P:PathInExpression , L:PtrList) => normalizedFunctionCall(P, L) ... </k>
+    
+    rule <k> mock EncodeCallData
+             ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .UKMTestTypeHolderList
+             => ukmBytesNew(encodeCallData(FNAME, PTYPES, ARGS)) 
+            ...
+         </k> 
 
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>

@@ -46,6 +46,7 @@ module UKM-HOOKS-BYTES
                         | "decode_u16"  [token]
                         | "decode_u8"  [token]
                         | "decode_str"  [token]
+                        | "decode_signature"  [token]
 
     rule
         <k>
@@ -125,35 +126,40 @@ module UKM-HOOKS-BYTES
             ( :: bytes_hooks :: decode_u128 :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
-        => ukmBytesDecode(BufferIdId, u32)
+        => ukmBytesDecodeWithLength(BufferIdId, u32, 32)
+        // => ukmBytesDecode(BufferIdId, u32)
 
     rule
         normalizedFunctionCall
             ( :: bytes_hooks :: decode_u64 :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
-        => ukmBytesDecode(BufferIdId, u64)
+        => ukmBytesDecodeWithLength(BufferIdId, u64, 32)
+        // => ukmBytesDecode(BufferIdId, u64)
 
     rule
         normalizedFunctionCall
             ( :: bytes_hooks :: decode_u32 :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
-        => ukmBytesDecode(BufferIdId, u32)
+        => ukmBytesDecodeWithLength(BufferIdId, u32, 32)
+        // => ukmBytesDecode(BufferIdId, u32)
 
     rule
         normalizedFunctionCall
             ( :: bytes_hooks :: decode_u16 :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
-        => ukmBytesDecode(BufferIdId, u16)
+        => ukmBytesDecodeWithLength(BufferIdId, u16, 32)
+        // => ukmBytesDecode(BufferIdId, u16)
 
     rule
         normalizedFunctionCall
             ( :: bytes_hooks :: decode_u8 :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
-        => ukmBytesDecode(BufferIdId, u8)
+        => ukmBytesDecodeWithLength(BufferIdId, u8, 32)
+        // => ukmBytesDecode(BufferIdId, u8)
 
     rule
         normalizedFunctionCall
@@ -161,6 +167,13 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesDecode(BufferIdId, str)
+
+    rule
+        normalizedFunctionCall
+            ( :: bytes_hooks :: decode_signature :: .PathExprSegments
+            , BufferIdId:Ptr, .PtrList
+            )
+        => ukmBytesDecodeWithLength(BufferIdId, str, 8)
 
     // ---------------------------------------
 
@@ -184,6 +197,8 @@ module UKM-HOOKS-BYTES
                             | ukmBytesAppendLenAndBytes(Bytes, Bytes)
                             | ukmBytesDecode(Expression, Type)  [strict(1)]
                             | ukmBytesDecode(UkmExpression, Type)  [strict(1)]
+                            | ukmBytesDecodeWithLength(Expression, Type, Int)  [strict(1)]
+                            | ukmBytesDecodeWithLength(UkmExpression, Type, Int)  [strict(1)]
                             | ukmBytesDecode(Int, Bytes, Type)
                             | ukmBytesDecodeInt(Int, Bytes, Type)
                             | ukmBytesDecode(ValueOrError, Bytes)
@@ -235,6 +250,18 @@ module UKM-HOOKS-BYTES
     rule ukmBytesAppendLenAndBytes(First:Bytes, Second:Bytes)
         => ukmBytesNew(First +Bytes Int2Bytes(2, lengthBytes(Second), BE) +Bytes Second)
         requires lengthBytes(Second) <Int (1 <<Int 16)
+
+    rule ukmBytesDecodeWithLength(ptrValue(_, u64(BytesId)), T:Type, L:Int)
+        => ukmBytesDecodeWithLength(ukmBytesId(BytesId), T:Type, L:Int)
+    rule ukmBytesDecodeWithLength(ukmBytesValue(B:Bytes), T:Type, L:Int) 
+        => ukmBytesDecode
+            ( L
+            , B
+            , T:Type
+            )
+        requires L <=Int lengthBytes(B)
+    rule ukmBytesDecodeWithLength(ukmBytesValue(B:Bytes), T:Type, _:Int)
+        => ukmBytesDecode(ukmBytesValue(B), T) [owise]
 
     rule ukmBytesDecode(ptrValue(_, u64(BytesId)), T:Type)
         => ukmBytesDecode(ukmBytesId(BytesId), T:Type)

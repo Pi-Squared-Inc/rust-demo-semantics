@@ -9,6 +9,21 @@ module UKM-PREPROCESSING-ENDPOINTS
     imports private UKM-COMMON-TOOLS-SYNTAX
     imports private UKM-PREPROCESSING-EPHEMERAL-CONFIGURATION
     imports private UKM-PREPROCESSING-SYNTAX-PRIVATE
+    imports private UKM-PREPROCESSING-CONFIGURATION
+    imports private UKM-ENCODING-SYNTAX
+
+    rule <k>
+            ukmPreprocessSignatureHash(Method, EndpointMethod) => ukmPreprocessingStoreSignatureHash(encodeFunctionSignature(Method, L), EndpointMethod) 
+            ...
+        </k>
+        <method-name> Method </method-name>
+        <method-params> L:NormalizedFunctionParameterList </method-params>
+
+    rule <k> ukmPreprocessingStoreSignatureHash(B:Bytes, P:PathInExpression) => .K ... </k> 
+        <ukm-method-hash-to-signatures>
+            STATE => STATE [ B <- P ]
+        </ukm-method-hash-to-signatures>
+
 
     rule
         <k>
@@ -157,6 +172,7 @@ module UKM-PREPROCESSING-ENDPOINTS
                         | "decode_u32"  [token]
                         | "decode_u64"  [token]
                         | "decode_str"  [token]
+                        | "decode_signature"  [token]
                         | "empty"  [token]
                         | "ukm"  [token]
                         | "CallData"  [token]
@@ -168,7 +184,7 @@ module UKM-PREPROCESSING-ENDPOINTS
                             | signatureType(Type)  [function, total]
 
     rule methodSignature(S:String, Ps:NormalizedFunctionParameterList)
-        => concat(concat(S +String "(", signatureTypes(Ps)), ")")
+        => encodeFunctionSignatureAsString(concat(concat(S +String "(", signatureTypes(Ps)), ")"))
 
     rule signatureTypes(.NormalizedFunctionParameterList) => ""
     rule signatureTypes(_ : T:Type , .NormalizedFunctionParameterList)
@@ -222,7 +238,7 @@ module UKM-PREPROCESSING-ENDPOINTS
             };
 
     syntax Expression ::= decodeSignature(Identifier)  [function, total]
-    rule decodeSignature(BufferId) => :: bytes_hooks :: decode_str ( BufferId , .CallParamsList )
+    rule decodeSignature(BufferId) => :: bytes_hooks :: decode_signature ( BufferId , .CallParamsList )
 
     syntax ExpressionOrError ::= appendValue(bufferId: Identifier, value: Identifier, Type)  [function, total]
     rule appendValue(BufferId:Identifier, Value:Identifier, u8)

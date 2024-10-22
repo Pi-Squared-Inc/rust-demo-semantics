@@ -1,23 +1,19 @@
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "myEndpoint(uint64)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
-push 123_u64;
-call :: bytes_hooks :: append_u64;
-return_value;
-mock CallData;
+push "myEndpoint"; 
+hold_string_from_test_stack; 
+push "uint64";
+hold_list_values_from_test_stack; 
+push 123_u64; 
+hold_list_values_from_test_stack; 
+mock EncodeCallData; 
+
+return_value; 
+mock CallData; 
 
 call_contract 12345;
-return_value;
+return_value; 
 check_eq ();
 
-push_status;
-check_eq 2;
-
-output_to_arg;
-call :: test_helpers :: decode_single_u64;
-return_value;
-
+push_status; 
+check_eq 2; 
+output_to_arg; call :: test_helpers :: decode_single_u64; return_value;
 check_eq 126_u64
-

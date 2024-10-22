@@ -34,7 +34,7 @@ module UKM-CALLDATA-DECODER
         <next-value-id> NextId:Int => NextId +Int 1 </next-value-id>
         <values> Values:Map => Values[NextId <- V] </values> [priority(70)]
 
-    rule <k> UKMDecodedCallData1(P:PathInExpression, .List)
+    rule <k> UKMDecodedCallData1(_:PathInExpression, .List)
                 => .K ... </k>         
         
     rule <k> UKMDecodedCallData2(P:PathInExpression, L:List)
@@ -55,8 +55,8 @@ module UKM-CALLDATA-DECODER
         <method-params> (self : $selftype), L:NormalizedFunctionParameterList </method-params>
         
     rule decodeArguments(((_ : T:Type), R):NormalizedFunctionParameterList, D:Bytes, L:List) => 
-        decodeArguments(R, substrBytes(D, 0, sizeOfType(T)), 
-            ListItem( convertKBytesToPtrValue (T, Bytes2Int ( substrBytes(D, 0, sizeOfType(T)), BE, Unsigned ) ) ) L ) 
+        decodeArguments(R, substrBytes(D, 0, 32), 
+            ListItem( convertKBytesToPtrValue (T, Bytes2Int ( substrBytes(D, 0, 32), BE, Unsigned ) ) ) L ) 
 
     rule decodeArguments(.NormalizedFunctionParameterList, _, L:List) => L
 
@@ -65,11 +65,5 @@ module UKM-CALLDATA-DECODER
     rule convertKBytesToPtrValue(i64, I:Int) => ptrValue(null, i64(Int2MInt(I)))
     rule convertKBytesToPtrValue(u64, I:Int) => ptrValue(null, u64(Int2MInt(I)))
     rule convertKBytesToPtrValue(u128, I:Int) => ptrValue(null, u128(Int2MInt(I)))
-
-    rule sizeOfType(i32)  => 32
-    rule sizeOfType(u32)  => 32
-    rule sizeOfType(u64)  => 64
-    rule sizeOfType(i64)  => 64
-    rule sizeOfType(u128) => 128    
 endmodule
 ```

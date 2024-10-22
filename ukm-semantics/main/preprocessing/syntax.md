@@ -16,8 +16,8 @@ module UKM-PREPROCESSING-SYNTAX-PRIVATE
                             | ukmPreprocessTrait(TypePath)
                             | ukmPreprocessMethods(trait: TypePath, List)
                             | ukmPreprocessMethod(trait: TypePath, methodId: Identifier, fullMethodPath: PathInExpression)
-                            | ukmPreprocessMethodSignature(PathInExpression)
-                            | ukmPreprocessingStoreMethodSignature(Bytes, PathInExpression)
+                            | ukmPreprocessSignatureHash(PathInExpression, PathInExpression)
+                            | ukmPreprocessingStoreSignatureHash(Bytes, PathInExpression)
                             | ukmPreprocessEndpoint
                                 ( trait: TypePath
                                 , method: Identifier

@@ -7,20 +7,6 @@ module UKM-PREPROCESSING-METHODS
     imports private RUST-PREPROCESSING-CONFIGURATION
     imports private UKM-PREPROCESSING-CONFIGURATION
     imports private UKM-PREPROCESSING-SYNTAX-PRIVATE
-    imports private UKM-ENCODING-SYNTAX
-
-    rule <k>
-            ukmPreprocessMethodSignature(Method) => ukmPreprocessingStoreMethodSignature(encodeFunctionSignature(Method, L), Method) 
-            ...
-        </k>
-        <method-name> Method </method-name>
-        <method-params> L:NormalizedFunctionParameterList </method-params>
-
-    rule <k> ukmPreprocessingStoreMethodSignature(B:Bytes, P:PathInExpression) => .K ... </k> 
-        <ukm-method-hash-to-signatures>
-            STATE => STATE [ B <- P ]
-        </ukm-method-hash-to-signatures>
-
 
     rule ukmPreprocessMethods(_:TypePath, .List) => .K
     rule ukmPreprocessMethods(Trait:TypePath, ListItem(Name:Identifier) Methods:List)
@@ -35,7 +21,7 @@ module UKM-PREPROCESSING-METHODS
                 , method: MethodIdentifier
                 , fullMethodPath: Method
                 , endpointName: getEndpointName(Atts, MethodIdentifier)
-                ) ~> ukmPreprocessMethodSignature(Method)
+                )
             ...
         </k>
         <method-name> Method </method-name>
