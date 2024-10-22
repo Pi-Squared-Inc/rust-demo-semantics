@@ -14,7 +14,9 @@ module RUST-EXECUTION-TEST-PARSING-SYNTAX
                             | "check_eq" Expression  [strict]
                             | "push" Expression [strict]
                             | "push_value" Expression [strict]
-    syntax KItem ::= mock(KItem, K)
+    syntax Mockable
+    syntax KItem  ::= mock(Mockable, K)
+                    | listMock(Mockable, K)
 endmodule
 
 module RUST-EXECUTION-TEST
@@ -101,7 +103,6 @@ module RUST-EXECUTION-TEST
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
 
     syntax KItem ::= wrappedK(K)
-    syntax Mockable
 
     rule
         <k> mock(Mocked:Mockable, Result:K) => .K ... </k>
@@ -111,6 +112,19 @@ module RUST-EXECUTION-TEST
         <k> (Mocked:Mockable => Result) ...</k>
         <mocks> Mocked |-> wrappedK(Result:K) ...</mocks>
         [priority(10)]
+
+    rule
+        <k> listMock(Mocked:Mockable, Result:K) => .K ... </k>
+        <mock-list> L:List => L ListItem(listMock(Mocked, Result)) </mock-list>
+        [priority(10)]
+
+    rule
+        <k> (Mocked:Mockable => Result) ...</k>
+        <mock-list>
+            (ListItem(listMock(Mocked:Mockable, Result:K)) => .List)
+            ...
+        </mock-list>
+        [priority(9)]
 endmodule
 
 ```

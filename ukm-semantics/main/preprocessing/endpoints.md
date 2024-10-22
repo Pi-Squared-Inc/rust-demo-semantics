@@ -166,11 +166,17 @@ module UKM-PREPROCESSING-ENDPOINTS
                         | "append_u16"  [token]
                         | "append_u32"  [token]
                         | "append_u64"  [token]
+                        | "append_u128"  [token]
+                        | "append_u160"  [token]
+                        | "append_u256"  [token]
                         | "append_bool"  [token]
                         | "decode_u8"  [token]
                         | "decode_u16"  [token]
                         | "decode_u32"  [token]
                         | "decode_u64"  [token]
+                        | "decode_u128"  [token]
+                        | "decode_u160"  [token]
+                        | "decode_u256"  [token]
                         | "decode_str"  [token]
                         | "decode_signature"  [token]
                         | "empty"  [token]
@@ -196,10 +202,13 @@ module UKM-PREPROCESSING-ENDPOINTS
             )
         => concat(signatureType(T), concat(",", signatureTypes(Ps)))
 
-    rule signatureType(u8) => "uint8"
-    rule signatureType(u16) => "uint16"
-    rule signatureType(u32) => "uint32"
-    rule signatureType(u64) => "uint64"
+    rule signatureType(u8) => "Uint8"
+    rule signatureType(u16) => "Uint16"
+    rule signatureType(u32) => "Uint32"
+    rule signatureType(u64) => "Uint64"
+    rule signatureType(u128) => "uint128"
+    rule signatureType(u160) => "uint160"
+    rule signatureType(u256) => "uint256"
     rule signatureType(T) => error("Unknown type in signatureType:", ListItem(T))
         [owise]
 
@@ -249,6 +258,12 @@ module UKM-PREPROCESSING-ENDPOINTS
         => v(:: bytes_hooks :: append_u32 ( BufferId , Value , .CallParamsList ))
     rule appendValue(BufferId:Identifier, Value:Identifier, u64)
         => v(:: bytes_hooks :: append_u64 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, u128)
+        => v(:: bytes_hooks :: append_u128 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, u160)
+        => v(:: bytes_hooks :: append_u160 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, u256)
+        => v(:: bytes_hooks :: append_u256 ( BufferId , Value , .CallParamsList ))
     rule appendValue(BufferId:Identifier, Value:Identifier, bool)
         => v(:: bytes_hooks :: append_bool ( BufferId , Value , .CallParamsList ))
     rule appendValue(BufferId:Identifier, _Value:Identifier, ()) => v(BufferId)
@@ -279,6 +294,9 @@ module UKM-PREPROCESSING-ENDPOINTS
     rule decodeForType(u16) => v(:: bytes_hooks :: decode_u16 ( buffer_id , .CallParamsList ))
     rule decodeForType(u32) => v(:: bytes_hooks :: decode_u32 ( buffer_id , .CallParamsList ))
     rule decodeForType(u64) => v(:: bytes_hooks :: decode_u64 ( buffer_id , .CallParamsList ))
+    rule decodeForType(u128) => v(:: bytes_hooks :: decode_u128 ( buffer_id , .CallParamsList ))
+    rule decodeForType(u160) => v(:: bytes_hooks :: decode_u160 ( buffer_id , .CallParamsList ))
+    rule decodeForType(u256) => v(:: bytes_hooks :: decode_u256 ( buffer_id , .CallParamsList ))
 
     syntax Expression ::= callMethod(Identifier, NormalizedFunctionParameterList)  [function, total]
     syntax Expression ::= callMethod(Identifier, CallParamsList)  [function, total]

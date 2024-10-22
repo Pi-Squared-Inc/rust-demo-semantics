@@ -7,89 +7,35 @@ module RUST-CASTS
     rule implicitCast(V:Value, T:Type) => error("Unknown implicitCast.", ListItem(V) ListItem(T))
         [owise]
 
-    // https://doc.rust-lang.org/stable/reference/expressions/operator-expr.html#numeric-implicitCast
+    // https://doc.rust-lang.org/stable/reference/expressions/operator-expr.html#numeric-cast
 
-    rule implicitCast(i8(Value), i8 ) => i8 (Value)
-    rule implicitCast(i8(Value), u8 ) => u8 (Value)
-    rule implicitCast(i8(Value), i16) => i16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i8(Value), u16) => u16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i8(Value), i32) => i32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(i8(Value), u32) => u32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(i8(Value), i64) => i64(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(i8(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
+    syntax ValueOrError ::= implicitCast(Int, Type)  [function, total]
+    rule implicitCast(Value:Int, T:Type)
+        => error("implicitCast(Int, Type)", ListItem(Value) ListItem(T))
+        [owise]
+    rule implicitCast(Value:Int, i8  ) => i8  (Int2MInt(Value))
+    rule implicitCast(Value:Int, u8  ) => u8  (Int2MInt(Value))
+    rule implicitCast(Value:Int, i16 ) => i16 (Int2MInt(Value))
+    rule implicitCast(Value:Int, u16 ) => u16 (Int2MInt(Value))
+    rule implicitCast(Value:Int, i32 ) => i32 (Int2MInt(Value))
+    rule implicitCast(Value:Int, u32 ) => u32 (Int2MInt(Value))
+    rule implicitCast(Value:Int, i64 ) => i64 (Int2MInt(Value))
+    rule implicitCast(Value:Int, u64 ) => u64 (Int2MInt(Value))
+    rule implicitCast(Value:Int, u128) => u128(Int2MInt(Value))
+    rule implicitCast(Value:Int, u160) => u160(Int2MInt(Value))
+    rule implicitCast(Value:Int, u256) => u256(Int2MInt(Value))
 
-    rule implicitCast(u8(Value), i8 ) => i8 (Value)
-    rule implicitCast(u8(Value), u8 ) => u8 (Value)
-    rule implicitCast(u8(Value), i16) => i16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u8(Value), u16) => u16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u8(Value), i32) => i32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u8(Value), u32) => u32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u8(Value), i64) => i64(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u8(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
-
-    rule implicitCast(i16(Value), i8 ) => i8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i16(Value), u8 ) => u8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i16(Value), i16) => i16(Value)
-    rule implicitCast(i16(Value), u16) => u16(Value)
-    rule implicitCast(i16(Value), i32) => i32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(i16(Value), u32) => u32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(i16(Value), i64) => i64(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(i16(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
-
-    rule implicitCast(u16(Value), i8 ) => i8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u16(Value), u8 ) => u8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u16(Value), i16) => i16(Value)
-    rule implicitCast(u16(Value), u16) => u16(Value)
-    rule implicitCast(u16(Value), i32) => i32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u16(Value), u32) => u32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u16(Value), i64) => i64(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u16(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
-
-    rule implicitCast(i32(Value), i8 ) => i8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i32(Value), u8 ) => u8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i32(Value), i16) => i16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i32(Value), u16) => u16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i32(Value), i32) => i32(Value)
-    rule implicitCast(i32(Value), u32) => u32(Value)
-    rule implicitCast(i32(Value), i64) => i64(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i32(Value), u64) => u64(Int2MInt(MInt2Signed(Value)))
-
-    rule implicitCast(u32(Value), i8 ) => i8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u32(Value), u8 ) => u8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u32(Value), i16) => i16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u32(Value), u16) => u16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u32(Value), i32) => i32(Value)
-    rule implicitCast(u32(Value), u32) => u32(Value)
-    rule implicitCast(u32(Value), i64) => i64(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u32(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
-
-
-    rule implicitCast(i64(Value), i8 ) => i8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i64(Value), u8 ) => u8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i64(Value), i16) => i16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i64(Value), u16) => u16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i64(Value), i32) => i32(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i64(Value), u32) => u32(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(i64(Value), i64) => i64(Value)
-    rule implicitCast(i64(Value), u64) => u64(Value)
-
-    rule implicitCast(u64(Value), i8 ) => i8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u64(Value), u8 ) => u8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u64(Value), i16) => i16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u64(Value), u16) => u16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u64(Value), i32) => i32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u64(Value), u32) => u32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u64(Value), i64) => i64(Value)
-    rule implicitCast(u64(Value), u64) => u64(Value)
-
-    rule implicitCast(u128(Value), i8 ) => i8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u128(Value), u8 ) => u8 (Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u128(Value), i16) => i16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u128(Value), u16) => u16(Int2MInt(MInt2Signed(Value)))
-    rule implicitCast(u128(Value), i32) => i32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u128(Value), u32) => u32(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u128(Value), i64) => i64(Int2MInt(MInt2Unsigned(Value)))
-    rule implicitCast(u128(Value), u64) => u64(Int2MInt(MInt2Unsigned(Value)))
+    rule implicitCast(i8  (Value), T:Type ) => implicitCast(MInt2Signed(Value), T)
+    rule implicitCast(u8  (Value), T:Type ) => implicitCast(MInt2Unsigned(Value), T)
+    rule implicitCast(i16 (Value), T:Type ) => implicitCast(MInt2Signed(Value), T)
+    rule implicitCast(u16 (Value), T:Type ) => implicitCast(MInt2Unsigned(Value), T)
+    rule implicitCast(i32 (Value), T:Type ) => implicitCast(MInt2Signed(Value), T)
+    rule implicitCast(u32 (Value), T:Type ) => implicitCast(MInt2Unsigned(Value), T)
+    rule implicitCast(i64 (Value), T:Type ) => implicitCast(MInt2Signed(Value), T)
+    rule implicitCast(u64 (Value), T:Type ) => implicitCast(MInt2Unsigned(Value), T)
+    rule implicitCast(u128(Value), T:Type ) => implicitCast(MInt2Unsigned(Value), T)
+    rule implicitCast(u160(Value), T:Type ) => implicitCast(MInt2Unsigned(Value), T)
+    rule implicitCast(u256(Value), T:Type ) => implicitCast(MInt2Unsigned(Value), T)
 
     rule implicitCast(V:Bool, bool) => V
     rule implicitCast(S:String, str) => S
@@ -100,6 +46,7 @@ module RUST-CASTS
 
     rule implicitCast(struct(T, _) #as V, T) => V
     rule implicitCast(struct(T, _) #as V, T < _ >) => V
+    rule implicitCast(struct(:: A :: T, _) #as V, :: A :: T < _ >) => V
 
     // Rewrites
 

@@ -4,6 +4,7 @@ module UKM-TEST-SYNTAX
     imports INT-SYNTAX
     imports STRING-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
+    imports UKM-HOOKS-UKM-SYNTAX
     imports BYTES-SYNTAX
 
     syntax UKMTestTypeHolder ::= "ptr_holder" KItem [strict]
@@ -11,10 +12,10 @@ module UKM-TEST-SYNTAX
                                 | "list_ptrs_holder" List
                                 | "list_values_holder" List
 
-    syntax UKMTestTypeHolderList ::= List{UKMTestTypeHolder, ","}
-
-    syntax ExecutionItem  ::= "mock" "Caller"
-                            | "mock" "CallData"
+    syntax ExecutionItem  ::= "mock" "CallData"
+                            | "mock" "Caller"
+                            | "mock" UkmHook UkmHookResult
+                            | "list_mock" UkmHook UkmHookResult
                             | "mock" "EncodeCallData"
                             | "mock" "EncodeCallDataToString"
                             | "call_contract" Int
@@ -24,6 +25,15 @@ module UKM-TEST-SYNTAX
                             | "check_eq" Int
                             | "hold_string_from_test_stack"
                             | "hold_list_values_from_test_stack"
+                            | "expect_cancel"
+
+    syntax Identifier ::= "u8"  [token]
+                        | "u16"  [token]
+                        | "u32"  [token]
+                        | "u64"  [token]
+                        | "u128"  [token]
+                        | "u160"  [token]
+                        | "u256"  [token]
 endmodule
 
 module UKM-TEST-EXECUTION
@@ -34,6 +44,7 @@ module UKM-TEST-EXECUTION
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-HOOKS-BYTES-CONFIGURATION
     imports private UKM-HOOKS-BYTES-SYNTAX
+    imports private UKM-HOOKS-HELPERS-SYNTAX
     imports private UKM-HOOKS-STATE-CONFIGURATION
     imports private UKM-HOOKS-UKM-SYNTAX
     imports private UKM-TEST-SYNTAX
@@ -87,9 +98,12 @@ module UKM-TEST-EXECUTION
     rule
         <k> mock Caller => mock(CallerHook(), V) ... </k>
         <test-stack>
-            (ListItem(ptrValue(_, u64(_BytesId)) #as V:PtrValue) => .List)
+            (ListItem(ptrValue(_, u160(_AccountId)) #as V:PtrValue) => .List)
             ...
         </test-stack>
+
+    rule mock Hook:UkmHook Result:UkmHookResult => mock(Hook, Result)
+    rule list_mock Hook:UkmHook Result:UkmHookResult => listMock(Hook, Result)
 
     rule call_contract Account => ukmExecute(Account, 100)
 
@@ -118,6 +132,9 @@ module UKM-TEST-EXECUTION
     rule
         <k> check_eq I:Int => .K ... </k>
         <test-stack> ListItem(I) => .List ... </test-stack>
+
+    rule (ukmCancel ~> expect_cancel) => .K
+
 endmodule
 
 ```

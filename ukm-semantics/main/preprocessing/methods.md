@@ -27,7 +27,36 @@ module UKM-PREPROCESSING-METHODS
         <method-name> Method </method-name>
         <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
         requires getEndpointName(Atts, MethodIdentifier) =/=K ""
-        [priority(50)]
+            andBool getStorageName(Atts) ==K ""
+            andBool getEventName(Atts) ==K ""
+    rule
+        <k>
+            ukmPreprocessMethod(_Trait:TypePath, MethodIdentifier:Identifier, Method:PathInExpression)
+            => ukmPreprocessStorage
+                (... fullMethodPath: Method
+                , storageName: getStorageName(Atts)
+                )
+            ...
+        </k>
+        <method-name> Method </method-name>
+        <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
+        requires getStorageName(Atts) =/=K ""
+            andBool getEndpointName(Atts, MethodIdentifier) ==K ""
+            andBool getEventName(Atts) ==K ""
+    rule
+        <k>
+            ukmPreprocessMethod(_Trait:TypePath, MethodIdentifier:Identifier, Method:PathInExpression)
+            => ukmPreprocessEvent
+                (... fullMethodPath: Method
+                , eventName: getEventName(Atts)
+                )
+            ...
+        </k>
+        <method-name> Method </method-name>
+        <method-outer-attributes> Atts:OuterAttributes </method-outer-attributes>
+        requires getEventName(Atts) =/=K ""
+            andBool getEndpointName(Atts, MethodIdentifier) ==K ""
+            andBool getStorageName(Atts) ==K ""
     rule ukmPreprocessMethod(_:TypePath, _:Identifier, _:PathInExpression) => .K
         [owise]
 
@@ -65,6 +94,32 @@ module UKM-PREPROCESSING-METHODS
         => getEndpointName(Atts, Default)
         [owise]
 
+    // This is identical to the function in the mx-rust semantics.
+    syntax String ::= getStorageName(atts:OuterAttributes)  [function, total]
+    rule getStorageName() => ""
+    rule getStorageName(.NonEmptyOuterAttributes) => ""
+    rule getStorageName
+            (   (#[ #token("storage_mapper", "Identifier") :: .SimplePathList
+                    ( Name:String, .CallParamsList )
+                ])
+                _:NonEmptyOuterAttributes
+            ) => Name
+    rule getStorageName(_:OuterAttribute Atts:NonEmptyOuterAttributes)
+        => getStorageName(Atts)
+        [owise]
+
+    syntax String ::= getEventName(atts:OuterAttributes)  [function, total]
+    rule getEventName() => ""
+    rule getEventName(.NonEmptyOuterAttributes) => ""
+    rule getEventName
+            (   (#[ #token("event", "Identifier") :: .SimplePathList
+                    ( Name:String, .CallParamsList )
+                ])
+                _:NonEmptyOuterAttributes
+            ) => Name
+    rule getEventName(_:OuterAttribute Atts:NonEmptyOuterAttributes)
+        => getEventName(Atts)
+        [owise]
 endmodule
 
 ```

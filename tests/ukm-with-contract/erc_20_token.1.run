@@ -1,0 +1,279 @@
+list_mock GetAccountStorageHook ( 7809087261546347641 ) ukmIntResult(0, u256);
+list_mock SetAccountStorageHook ( 7809087261546347641 , 10000 ) ukmNoResult();
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmIntResult(0, u256);
+list_mock SetAccountStorageHook ( 7162266444907899391 , 10000 ) ukmNoResult();
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmIntResult(10000, u256);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmIntResult(10000, u256);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmIntResult(10000, u256);
+list_mock SetAccountStorageHook ( 7162266444907899391 , 9900 ) ukmNoResult();
+list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmIntResult(0, u256);
+list_mock SetAccountStorageHook ( 7162266444908917614 , 100 ) ukmNoResult();
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmIntResult(9900, u256);
+list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmIntResult(100, u256);
+list_mock SetAccountStorageHook ( 8028228613167873919 , 200 ) ukmNoResult();
+list_mock GetAccountStorageHook ( 8028228613167873919 ) ukmIntResult(200, u256);
+list_mock SetAccountStorageHook ( 8028228613167873919 , 0 ) ukmNoResult();
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmIntResult(9900, u256);
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmIntResult(9900, u256);
+list_mock SetAccountStorageHook ( 7162266444907899391 , 9700 ) ukmNoResult();
+list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmIntResult(100, u256);
+list_mock SetAccountStorageHook ( 7162266444908917614 , 300 ) ukmNoResult();
+list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmIntResult(9700, u256);
+list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmIntResult(300, u256);
+
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "#init(Uint256)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 10000_u256;
+call :: bytes_hooks :: append_u256;
+return_value;
+mock CallData;
+
+push_value 1010101_u160;
+mock Caller;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: bytes_hooks :: length;
+return_value;
+
+check_eq 0_u32;
+
+
+
+
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "balanceOf(Uint160)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 1010101_u160;
+call :: bytes_hooks :: append_u160;
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 10000_u256;
+
+
+
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "transfer(Uint160,Uint256)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 2020202_u160;
+call :: bytes_hooks :: append_u160;
+return_value_to_arg;
+push 100_u256;
+call :: bytes_hooks :: append_u256;
+return_value;
+mock CallData;
+
+push_value 1010101_u160;
+mock Caller;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u64;
+return_value;
+
+check_eq 1_u64;
+
+
+
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "balanceOf(Uint160)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 1010101_u160;
+call :: bytes_hooks :: append_u160;
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 9900_u256;
+
+
+
+
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "balanceOf(Uint160)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 2020202_u160;
+call :: bytes_hooks :: append_u160;
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 100_u256;
+
+
+
+
+
+
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "approve(Uint160,Uint256)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 3030303_u160;
+call :: bytes_hooks :: append_u160;
+return_value_to_arg;
+push 200_u256;
+call :: bytes_hooks :: append_u256;
+return_value;
+mock CallData;
+
+push_value 1010101_u160;
+mock Caller;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u64;
+return_value;
+
+check_eq 1_u64;
+
+
+
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "transferFrom(Uint160,Uint160,Uint256)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 1010101_u160;
+call :: bytes_hooks :: append_u160;
+return_value_to_arg;
+push 2020202_u160;
+call :: bytes_hooks :: append_u160;
+return_value_to_arg;
+push 200_u256;
+call :: bytes_hooks :: append_u256;
+return_value;
+mock CallData;
+
+push_value 3030303_u160;
+mock Caller;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u64;
+return_value;
+
+check_eq 1_u64;
+
+
+
+
+
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "balanceOf(Uint160)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 1010101_u160;
+call :: bytes_hooks :: append_u160;
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 9700_u256;
+
+
+
+
+call :: bytes_hooks :: empty;
+return_value_to_arg;
+push "balanceOf(Uint160)";
+call :: bytes_hooks :: append_str;
+return_value_to_arg;
+push 2020202_u160;
+call :: bytes_hooks :: append_u160;
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 300_u256
+
+

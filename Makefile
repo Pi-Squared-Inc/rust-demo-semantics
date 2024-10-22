@@ -188,6 +188,7 @@ $(UKM_EXECUTION_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(UKM_EXECUTION_KOMPILED) \
+			-I kllvm \
 			-I . \
 			--debug
 
@@ -205,10 +206,12 @@ $(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_TESTING_KOMPILED)
 	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md  \
+			${PLUGIN_FLAGS}
 			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(UKM_TESTING_KOMPILED) \
 			-I . \
+			-I kllvm \
 			--debug
 
 $(RUST_SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(RUST_SYNTAX_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)
@@ -452,6 +455,12 @@ $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 	mkdir -p $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)
 
 	echo "<(<" > $@.in.tmp
+	echo "::address" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/address.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
 	echo "::bytes_hooks" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
 	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
@@ -464,9 +473,21 @@ $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
+	echo "::helpers" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/helpers.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
 	echo "::state_hooks" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
 	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/state_hooks.rs >> $@.in.tmp
+	echo ">)>" >> $@.in.tmp
+
+	echo "<(<" >> $@.in.tmp
+	echo "::single_value_mapper" >> $@.in.tmp
+	echo "<|>" >> $@.in.tmp
+	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/single_value_mapper.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
