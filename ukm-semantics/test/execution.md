@@ -84,11 +84,23 @@ module UKM-TEST-EXECUTION
             ...
          </k> 
     
+    rule <k> mock EncodeCallDataToString
+             ~> value_holder FNAME 
+             => Bytes2String(encodeCallData(FNAME, .List, .List)) 
+            ...
+         </k> [owise]
+
     rule <k> mock EncodeCallData
              ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .UKMTestTypeHolderList
              => ukmBytesNew(encodeCallData(FNAME, PTYPES, ARGS)) 
             ...
          </k> 
+
+    rule <k> mock EncodeCallData
+             ~> value_holder FNAME
+             => ukmBytesNew(encodeCallData(FNAME, .List, .List)) 
+            ...
+         </k> [owise]
 
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>

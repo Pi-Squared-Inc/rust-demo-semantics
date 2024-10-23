@@ -1,13 +1,13 @@
 mock SetAccountStorageHook ( 1809217465971809 , 123 ) ukmNoResult();
 mock GetAccountStorageHook ( 1809217465971809 ) ukmIntResult(123, u64);
 
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "setMyData(Uint64)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "setMyData";
+hold_string_from_test_stack; 
+push "uint64";
+hold_list_values_from_test_stack;
 push 123_u64;
-call :: bytes_hooks :: append_u64;
+hold_list_values_from_test_stack; 
+mock EncodeCallData; 
 return_value;
 mock CallData;
 
@@ -19,10 +19,9 @@ push_status;
 check_eq 2;
 
 
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "getMyData()";
-call :: bytes_hooks :: append_str;
+push "getMyData";
+hold_string_from_test_stack; 
+mock EncodeCallData; 
 return_value;
 mock CallData;
 

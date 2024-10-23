@@ -34,16 +34,16 @@ module UKM-CALLDATA-ENCODER
 
     // Function signature encoding
     rule encodeFunctionSignature(FuncName:String, RL:List, "") => 
-            encodeFunctionSignature("", RL:List, FuncName +String "(") 
+            encodeFunctionSignature("", RL:List, FuncName +String "(") [priority(40)]
         
     rule encodeFunctionSignature("", ListItem(FuncParam:String) RL:List, FS) => 
                 encodeFunctionSignature("", RL, FS +String FuncParam +String ",") [owise]
     
     // The last param does not have a follow up comma
     rule encodeFunctionSignature("", ListItem(FuncParam:String) .List, FS) => 
-                encodeFunctionSignature("", .List, FS +String FuncParam +String ")" ) 
+                encodeFunctionSignature("", .List, FS +String FuncParam ) 
          
-    rule encodeFunctionSignature("", .List, FS) => String2Bytes(substrString(Keccak256(String2Bytes(FS)), 0, 8)) 
+    rule encodeFunctionSignature("", .List, FS) => String2Bytes(substrString(Keccak256(String2Bytes(FS  +String ")")), 0, 8)) 
 
     rule encodeFunctionSignatureAsString(FS) => substrString(Keccak256(String2Bytes(FS)), 0, 8)
     rule encodeFunctionSignature(FS:String:StringOrError) => String2Bytes(substrString(Keccak256(String2Bytes(FS)), 0, 8)) 
@@ -68,10 +68,9 @@ module UKM-CALLDATA-ENCODER
     rule convertToKBytes(u128(V), "uint128") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness) 
     rule convertToKBytes(true,  "bool") => Int2Bytes(32, 1, BE:Endianness) 
     rule convertToKBytes(false, "bool") => Int2Bytes(32, 0, BE:Endianness)
-    // TODO: as we currently do not support u160 (addresses) or u256, we're converting them to u64 for now
-    rule convertToKBytes(u64(V), "uint256") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness) 
-    rule convertToKBytes(u64(V), "uint160") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)  
-    rule convertToKBytes(u64(V), "address") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)  
+    rule convertToKBytes(u256(V), "uint256") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness) 
+    rule convertToKBytes(u160(V), "uint160") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)  
+    rule convertToKBytes(u160(V), "address") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)  
 
 endmodule
 
