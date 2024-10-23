@@ -42,7 +42,6 @@ module UKM-TEST-EXECUTION
     imports private COMMON-K-CELL
     imports private RUST-EXECUTION-TEST-CONFIGURATION
     imports private UKM-ENCODING-SYNTAX
-    imports private UKM-DECODING-SYNTAX
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-HOOKS-BYTES-CONFIGURATION
     imports private UKM-HOOKS-BYTES-SYNTAX

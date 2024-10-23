@@ -10,14 +10,11 @@ module UKM-PREPROCESSING-SYNTAX-PRIVATE
     imports LIST
     imports RUST-REPRESENTATION
     imports RUST-SHARED-SYNTAX
-    imports private BYTES-SYNTAX
 
     syntax UKMInstruction ::= ukmPreprocessTraits(List)
                             | ukmPreprocessTrait(TypePath)
                             | ukmPreprocessMethods(trait: TypePath, List)
                             | ukmPreprocessMethod(trait: TypePath, methodId: Identifier, fullMethodPath: PathInExpression)
-                            | ukmPreprocessSignatureHash(PathInExpression, PathInExpression)
-                            | ukmPreprocessingStoreSignatureHash(Bytes, PathInExpression)
                             | ukmPreprocessEndpoint
                                 ( trait: TypePath
                                 , method: Identifier

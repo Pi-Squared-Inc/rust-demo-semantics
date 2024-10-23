@@ -5,7 +5,6 @@ module UKM-PREPROCESSING-METHODS
     imports private K-EQUAL-SYNTAX
     imports private RUST-CONVERSIONS-SYNTAX
     imports private RUST-PREPROCESSING-CONFIGURATION
-    imports private UKM-PREPROCESSING-CONFIGURATION
     imports private UKM-PREPROCESSING-SYNTAX-PRIVATE
 
     rule ukmPreprocessMethods(_:TypePath, .List) => .K
