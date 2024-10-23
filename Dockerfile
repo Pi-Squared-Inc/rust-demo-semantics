@@ -8,7 +8,11 @@ FROM runtimeverificationinc/kframework-k:ubuntu-noble-${K_COMMIT}
 RUN    apt-get update              \
     && apt-get upgrade --yes       \
     && apt-get install --yes       \
-                       curl
+                       curl                \
+                       libcrypto++-dev     \
+                       libprocps-dev       \
+                       libsecp256k1-dev    \
+                       libssl-dev          \
 
 ARG USER_ID=1001
 ARG GROUP_ID=1001
