@@ -16,9 +16,9 @@ module UKM-CALLDATA-ENCODER
     rule encodeFunctionSignature (P:PathInExpression, N:NormalizedFunctionParameterList) => 
                 encodeFunctionSignature(convertPathInExprToString(P), convertFuncParamListToStrList(N, .List), "")
 
-    rule convertPathInExprToString(( :: I:Identifier :: R:PathExprSegments):PathInExpression ) =>
+    rule convertPathInExprToString(( :: _I:Identifier :: R:PathExprSegments):PathInExpression ) =>
             convertPathInExprToString(R) [priority(80)]
-    rule convertPathInExprToString(( I:Identifier :: R:PathExprSegments):PathInExpression ) =>
+    rule convertPathInExprToString(( _I:Identifier :: R:PathExprSegments):PathInExpression ) =>
             convertPathInExprToString(R) [priority(80)]
     rule convertPathInExprToString(( I:Identifier :: .PathExprSegments):PathInExpression ) =>
             Identifier2String(I) [priority(70)]

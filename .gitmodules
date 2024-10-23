@@ -1,3 +1,3 @@
 [submodule "blockchain-k-plugin"]
-	path = blockchain-k-plugin
+	path = deps/blockchain-k-plugin
 	url = https://github.com/runtimeverification/blockchain-k-plugin
