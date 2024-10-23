@@ -8,12 +8,12 @@ module UKM-ENCODING-SYNTAX
     syntax UKMInstruction ::= "ukmEncodePreprocessedCell"
 
     syntax Bytes ::= encodeCallData (String, List, List) [function] //Function name, argument types, argument list
-                   | encodeFunctionSignature (String, List, String) [function]
-                   | encodeFunctionSignature (StringOrError) [function]
+                   | encodeFunctionSignature (String, List) [function]
+                   | encodeFunctionSignatureHelper (List, String) [function]
                    | encodeFunctionParams (List, List, Bytes) [function]
                    | convertToKBytes ( Value , String ) [function]
 
-    syntax String ::= encodeFunctionSignatureAsString(StringOrError) [function]
+    syntax StringOrError ::= encodeFunctionSignatureAsString(StringOrError) [function, total]
 
 endmodule
 

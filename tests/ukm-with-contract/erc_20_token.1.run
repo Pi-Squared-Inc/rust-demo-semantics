@@ -27,7 +27,7 @@ push "uint256";
 hold_list_values_from_test_stack; 
 push 10000_u256;
 hold_list_values_from_test_stack; 
-mock EncodeCallData; 
+encode_call_data; 
 
 
 return_value;
@@ -57,7 +57,7 @@ push "uint160";
 hold_list_values_from_test_stack; 
 push 1010101_u160;
 hold_list_values_from_test_stack; 
-mock EncodeCallData; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -83,7 +83,7 @@ hold_list_values_from_test_stack;
 push 2020202_u160;
 push 100_u256;
 hold_list_values_from_test_stack; 
-mock EncodeCallData; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -110,7 +110,7 @@ push "uint160";
 hold_list_values_from_test_stack; 
 push 1010101_u160;
 hold_list_values_from_test_stack; 
-mock EncodeCallData; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -134,7 +134,7 @@ push "uint160";
 hold_list_values_from_test_stack; 
 push 2020202_u160;
 hold_list_values_from_test_stack;
-mock EncodeCallData; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -160,7 +160,7 @@ hold_list_values_from_test_stack;
 push 3030303_u160;
 push 200_u256;
 hold_list_values_from_test_stack;
-mock EncodeCallData; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -191,7 +191,7 @@ push 1010101_u160;
 push 2020202_u160;
 push 200_u256;
 hold_list_values_from_test_stack;
-mock EncodeCallData; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -219,7 +219,7 @@ push "uint160";
 hold_list_values_from_test_stack;
 push 1010101_u160;
 hold_list_values_from_test_stack;
-mock EncodeCallData; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -244,7 +244,7 @@ push "uint160";
 hold_list_values_from_test_stack;
 push 2020202_u160;
 hold_list_values_from_test_stack;
-mock EncodeCallData; 
+encode_call_data; 
 return_value;
 mock CallData;
 

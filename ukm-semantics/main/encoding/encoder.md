@@ -10,24 +10,35 @@ module UKM-CALLDATA-ENCODER
     imports INT
     imports KRYPTO
 
+    // TODO: Properly encode the call data. Currently, we are returning the
+    // representation of the encoded function signature from a string using
+    // two characters to represent a byte in hexadecimal. We need to return the
+    // correct four bytes representation of signature.
+    // TODO: it may be worth extracting the substrString(Keccak256(String2Bytes(FS)), 0, 8) 
+    // thing to a function that takes a String and produces a String or Bytes (as opposed to
+    // taking a StringOrError as below) (perhaps with an encodeAsBytes(...) on top of it) and 
+    // then use it here and in the rules below.
     rule encodeCallData(FN:String, FAT:List, FAL:List) => 
-            encodeFunctionSignature(FN, FAT, "") +Bytes encodeFunctionParams(FAL, FAT, b"")  
+            encodeFunctionSignature(FN, FAT) +Bytes encodeFunctionParams(FAL, FAT, b"")  
 
     // Function signature encoding
-    rule encodeFunctionSignature(FuncName:String, RL:List, "") => 
-            encodeFunctionSignature("", RL:List, FuncName +String "(") [priority(40)]
+    rule encodeFunctionSignature(FuncName:String, RL:List) => 
+            encodeFunctionSignatureHelper(RL:List, FuncName +String "(") [priority(40)]
         
-    rule encodeFunctionSignature("", ListItem(FuncParam:String) RL:List, FS) => 
-                encodeFunctionSignature("", RL, FS +String FuncParam +String ",") [owise]
+    rule encodeFunctionSignatureHelper(ListItem(FuncParam:String) RL:List, FS) => 
+                encodeFunctionSignatureHelper(RL, FS +String FuncParam +String ",") [owise]
     
     // The last param does not have a follow up comma
-    rule encodeFunctionSignature("", ListItem(FuncParam:String) .List, FS) => 
-                encodeFunctionSignature("", .List, FS +String FuncParam ) 
+    rule encodeFunctionSignatureHelper(ListItem(FuncParam:String) .List, FS) => 
+                encodeFunctionSignatureHelper(.List, FS +String FuncParam ) 
          
-    rule encodeFunctionSignature("", .List, FS) => String2Bytes(substrString(Keccak256(String2Bytes(FS  +String ")")), 0, 8)) 
+    rule encodeFunctionSignatureHelper(.List, FS) => String2Bytes(substrString(Keccak256(String2Bytes(FS  +String ")")), 0, 8)) 
 
+    // TODO: Implement helper functions and break down encodeFunctionSignatureAsString  
+    // into smaller productions. Trigger errors for each of the 
+    // possible functions which can be failure causes.
     rule encodeFunctionSignatureAsString(FS) => substrString(Keccak256(String2Bytes(FS)), 0, 8)
-    rule encodeFunctionSignature(FS:String:StringOrError) => String2Bytes(substrString(Keccak256(String2Bytes(FS)), 0, 8)) 
+    rule encodeFunctionSignatureAsString(FS) => error("Failed to apply the Keccak256 of function signature.", FS) [owise]
 
     // Function parameters encoding
     rule encodeFunctionParams(ListItem(V:Value) ARGS:List, ListItem(T:String) PTYPES:List, B:Bytes) =>

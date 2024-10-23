@@ -4,7 +4,7 @@ push "uint64";
 hold_list_values_from_test_stack; 
 push 123_u64; 
 hold_list_values_from_test_stack; 
-mock EncodeCallData; 
+encode_call_data; 
 
 return_value; 
 mock CallData; 

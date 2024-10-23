@@ -7,6 +7,10 @@ module UKM-TEST-SYNTAX
     imports UKM-HOOKS-UKM-SYNTAX
     imports BYTES-SYNTAX
 
+    // TODO: Do not use KItem for ptr_holder and value_holder. This is
+    // too generic and can lead to problems.
+    // TODO: Replace the list_ptrs_holder and list_values_holder with
+    // PtrList and ValueList.
     syntax UKMTestTypeHolder ::= "ptr_holder" KItem [strict]
                                 | "value_holder" KItem
                                 | "list_ptrs_holder" List
@@ -18,8 +22,8 @@ module UKM-TEST-SYNTAX
                             | "mock" "Caller"
                             | "mock" UkmHook UkmHookResult
                             | "list_mock" UkmHook UkmHookResult
-                            | "mock" "EncodeCallData"
-                            | "mock" "EncodeCallDataToString"
+                            | "encode_call_data"
+                            | "encode_call_data_to_string"
                             | "call_contract" Int
                             | "hold" KItem 
                             | "output_to_arg"
@@ -66,7 +70,10 @@ module UKM-TEST-EXECUTION
     rule <k> hold_string_from_test_stack => ptr_holder P ... </k>
          <test-stack> ListItem(P) L:List => L </test-stack>
     rule <k> ptr_holder ptrValue(_, V) => value_holder V ... </k>
-         
+    
+
+    // TODO: Rework the implementation of the productions related to list value holding
+    // Ref - https://github.com/Pi-Squared-Inc/rust-demo-semantics/pull/167#discussion_r1813386536
     rule <k> hold_list_values_from_test_stack => list_ptrs_holder L ~> list_values_holder .List ... </k>
          <test-stack> L:List => .List </test-stack>
     rule <k> list_ptrs_holder ListItem(I) LPH ~> list_values_holder LLH   
@@ -77,25 +84,25 @@ module UKM-TEST-EXECUTION
 
     rule <k> hold I => value_holder I ... </k>
 
-    rule <k> mock EncodeCallDataToString
+    rule <k> encode_call_data_to_string
              ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .UKMTestTypeHolderList
              => Bytes2String(encodeCallData(FNAME, PTYPES, ARGS)) 
             ...
          </k> 
     
-    rule <k> mock EncodeCallDataToString
+    rule <k> encode_call_data_to_string
              ~> value_holder FNAME 
              => Bytes2String(encodeCallData(FNAME, .List, .List)) 
             ...
          </k> [owise]
 
-    rule <k> mock EncodeCallData
+    rule <k> encode_call_data
              ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .UKMTestTypeHolderList
              => ukmBytesNew(encodeCallData(FNAME, PTYPES, ARGS)) 
             ...
          </k> 
 
-    rule <k> mock EncodeCallData
+    rule <k> encode_call_data
              ~> value_holder FNAME
              => ukmBytesNew(encodeCallData(FNAME, .List, .List)) 
             ...
