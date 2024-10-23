@@ -189,6 +189,7 @@ $(UKM_EXECUTION_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(UKM_EXECUTION_KOMPILED) \
 			-I kllvm \
+			-I blockchain-k-plugin \
 			-I . \
 			--debug
 
@@ -200,17 +201,19 @@ $(UKM_PREPROCESSING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(UKM_PREPROCESSING_KOMPILED) \
 			-I . \
+			-I blockchain-k-plugin \
 			--debug
 
 $(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(UKM_TESTING_KOMPILED)
 	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md  \
-			${PLUGIN_FLAGS}
 			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'blockchain-k-plugin/build/krypto/lib/krypto.a' \
+			${PLUGIN_FLAGS} \
 			--emit-json -o $(UKM_TESTING_KOMPILED) \
 			-I . \
+			-I blockchain-k-plugin \
 			-I kllvm \
 			--debug
 

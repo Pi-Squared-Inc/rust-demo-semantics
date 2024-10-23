@@ -12,6 +12,8 @@ module UKM-TEST-SYNTAX
                                 | "list_ptrs_holder" List
                                 | "list_values_holder" List
 
+    syntax UKMTestTypeHolderList ::= List{UKMTestTypeHolder, ","}
+
     syntax ExecutionItem  ::= "mock" "CallData"
                             | "mock" "Caller"
                             | "mock" UkmHook UkmHookResult

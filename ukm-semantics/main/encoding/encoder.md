@@ -1,5 +1,5 @@
 ```k
-requires "blockchain-k-plugin/plugin/krypto.md"
+requires "plugin/krypto.md"
 
 module UKM-CALLDATA-ENCODER
     imports private COMMON-K-CELL
