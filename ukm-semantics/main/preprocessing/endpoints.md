@@ -202,10 +202,10 @@ module UKM-PREPROCESSING-ENDPOINTS
             )
         => concat(signatureType(T), concat(",", signatureTypes(Ps)))
 
-    rule signatureType(u8) => "Uint8"
-    rule signatureType(u16) => "Uint16"
-    rule signatureType(u32) => "Uint32"
-    rule signatureType(u64) => "Uint64"
+    rule signatureType(u8) => "uint8"
+    rule signatureType(u16) => "uint16"
+    rule signatureType(u32) => "uint32"
+    rule signatureType(u64) => "uint64"
     rule signatureType(u128) => "uint128"
     rule signatureType(u160) => "uint160"
     rule signatureType(u256) => "uint256"
