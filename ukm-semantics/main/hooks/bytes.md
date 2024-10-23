@@ -146,7 +146,6 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesDecodeWithLength(BufferIdId, u256, 32)
-        // ukmBytesDecode(BufferIdId, u256)
 
     rule
         normalizedFunctionCall
@@ -154,7 +153,6 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesDecodeWithLength(BufferIdId, u160, 32)
-        // ukmBytesDecode(BufferIdId, u160)
 
     rule
         normalizedFunctionCall
@@ -162,7 +160,6 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesDecodeWithLength(BufferIdId, u128, 32)
-        // => ukmBytesDecode(BufferIdId, u32)
 
     rule
         normalizedFunctionCall
@@ -170,7 +167,6 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesDecodeWithLength(BufferIdId, u64, 32)
-        // => ukmBytesDecode(BufferIdId, u64)
 
     rule
         normalizedFunctionCall
@@ -178,7 +174,6 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesDecodeWithLength(BufferIdId, u32, 32)
-        // => ukmBytesDecode(BufferIdId, u32)
 
     rule
         normalizedFunctionCall
@@ -186,7 +181,6 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesDecodeWithLength(BufferIdId, u16, 32)
-        // => ukmBytesDecode(BufferIdId, u16)
 
     rule
         normalizedFunctionCall
@@ -194,7 +188,6 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesDecodeWithLength(BufferIdId, u8, 32)
-        // => ukmBytesDecode(BufferIdId, u8)
 
     rule
         normalizedFunctionCall

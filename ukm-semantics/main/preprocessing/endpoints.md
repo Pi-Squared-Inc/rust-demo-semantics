@@ -12,19 +12,6 @@ module UKM-PREPROCESSING-ENDPOINTS
     imports private UKM-PREPROCESSING-CONFIGURATION
     imports private UKM-ENCODING-SYNTAX
 
-    rule <k>
-            ukmPreprocessSignatureHash(Method, EndpointMethod) => ukmPreprocessingStoreSignatureHash(encodeFunctionSignature(Method, L), EndpointMethod) 
-            ...
-        </k>
-        <method-name> Method </method-name>
-        <method-params> L:NormalizedFunctionParameterList </method-params>
-
-    rule <k> ukmPreprocessingStoreSignatureHash(B:Bytes, P:PathInExpression) => .K ... </k> 
-        <ukm-method-hash-to-signatures>
-            STATE => STATE [ B <- P ]
-        </ukm-method-hash-to-signatures>
-
-
     rule
         <k>
             ukmPreprocessEndpoint
