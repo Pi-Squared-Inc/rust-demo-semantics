@@ -9,6 +9,7 @@ module UKM-PREPROCESSING-ENDPOINTS
     imports private UKM-COMMON-TOOLS-SYNTAX
     imports private UKM-PREPROCESSING-EPHEMERAL-CONFIGURATION
     imports private UKM-PREPROCESSING-SYNTAX-PRIVATE
+    imports private UKM-ENCODING-SYNTAX
 
     rule
         <k>
@@ -163,6 +164,7 @@ module UKM-PREPROCESSING-ENDPOINTS
                         | "decode_u160"  [token]
                         | "decode_u256"  [token]
                         | "decode_str"  [token]
+                        | "decode_signature"  [token]
                         | "empty"  [token]
                         | "ukm"  [token]
                         | "CallData"  [token]
@@ -174,7 +176,7 @@ module UKM-PREPROCESSING-ENDPOINTS
                             | signatureType(Type)  [function, total]
 
     rule methodSignature(S:String, Ps:NormalizedFunctionParameterList)
-        => concat(concat(S +String "(", signatureTypes(Ps)), ")")
+        => encodeFunctionSignatureAsString(concat(concat(S +String "(", signatureTypes(Ps)), ")"))
 
     rule signatureTypes(.NormalizedFunctionParameterList) => ""
     rule signatureTypes(_ : T:Type , .NormalizedFunctionParameterList)
@@ -186,13 +188,13 @@ module UKM-PREPROCESSING-ENDPOINTS
             )
         => concat(signatureType(T), concat(",", signatureTypes(Ps)))
 
-    rule signatureType(u8) => "Uint8"
-    rule signatureType(u16) => "Uint16"
-    rule signatureType(u32) => "Uint32"
-    rule signatureType(u64) => "Uint64"
-    rule signatureType(u128) => "Uint128"
-    rule signatureType(u160) => "Uint160"
-    rule signatureType(u256) => "Uint256"
+    rule signatureType(u8) => "uint8"
+    rule signatureType(u16) => "uint16"
+    rule signatureType(u32) => "uint32"
+    rule signatureType(u64) => "uint64"
+    rule signatureType(u128) => "uint128"
+    rule signatureType(u160) => "uint160"
+    rule signatureType(u256) => "uint256"
     rule signatureType(T) => error("Unknown type in signatureType:", ListItem(T))
         [owise]
 
@@ -231,7 +233,7 @@ module UKM-PREPROCESSING-ENDPOINTS
             };
 
     syntax Expression ::= decodeSignature(Identifier)  [function, total]
-    rule decodeSignature(BufferId) => :: bytes_hooks :: decode_str ( BufferId , .CallParamsList )
+    rule decodeSignature(BufferId) => :: bytes_hooks :: decode_signature ( BufferId , .CallParamsList )
 
     syntax ExpressionOrError ::= appendValue(bufferId: Identifier, value: Identifier, Type)  [function, total]
     rule appendValue(BufferId:Identifier, Value:Identifier, u8)

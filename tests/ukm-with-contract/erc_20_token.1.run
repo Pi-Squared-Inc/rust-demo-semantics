@@ -21,13 +21,15 @@ list_mock SetAccountStorageHook ( 7162266444908917614 , 300 ) ukmNoResult();
 list_mock GetAccountStorageHook ( 7162266444907899391 ) ukmIntResult(9700, u256);
 list_mock GetAccountStorageHook ( 7162266444908917614 ) ukmIntResult(300, u256);
 
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "#init(Uint256)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "#init";
+hold_string_from_test_stack; 
+push "uint256";
+hold_list_values_from_test_stack; 
 push 10000_u256;
-call :: bytes_hooks :: append_u256;
+hold_list_values_from_test_stack; 
+encode_call_data; 
+
+
 return_value;
 mock CallData;
 
@@ -49,14 +51,13 @@ check_eq 0_u32;
 
 
 
-
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "balanceOf(Uint160)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "balanceOf";
+hold_string_from_test_stack; 
+push "uint160"; 
+hold_list_values_from_test_stack; 
 push 1010101_u160;
-call :: bytes_hooks :: append_u160;
+hold_list_values_from_test_stack; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -74,17 +75,15 @@ return_value;
 check_eq 10000_u256;
 
 
-
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "transfer(Uint160,Uint256)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "transfer";
+hold_string_from_test_stack;
+push "uint160"; 
+push "uint256"; 
+hold_list_values_from_test_stack; 
 push 2020202_u160;
-call :: bytes_hooks :: append_u160;
-return_value_to_arg;
 push 100_u256;
-call :: bytes_hooks :: append_u256;
+hold_list_values_from_test_stack; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -105,14 +104,13 @@ return_value;
 check_eq 1_u64;
 
 
-
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "balanceOf(Uint160)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "balanceOf";
+hold_string_from_test_stack;
+push "uint160";
+hold_list_values_from_test_stack; 
 push 1010101_u160;
-call :: bytes_hooks :: append_u160;
+hold_list_values_from_test_stack; 
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -130,15 +128,13 @@ return_value;
 check_eq 9900_u256;
 
 
-
-
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "balanceOf(Uint160)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "balanceOf";
+hold_string_from_test_stack; 
+push "uint160";
+hold_list_values_from_test_stack; 
 push 2020202_u160;
-call :: bytes_hooks :: append_u160;
+hold_list_values_from_test_stack;
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -156,20 +152,15 @@ return_value;
 check_eq 100_u256;
 
 
-
-
-
-
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "approve(Uint160,Uint256)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "approve";
+hold_string_from_test_stack;
+push "uint160"; 
+push "uint256"; 
+hold_list_values_from_test_stack; 
 push 3030303_u160;
-call :: bytes_hooks :: append_u160;
-return_value_to_arg;
 push 200_u256;
-call :: bytes_hooks :: append_u256;
+hold_list_values_from_test_stack;
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -190,20 +181,17 @@ return_value;
 check_eq 1_u64;
 
 
-
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "transferFrom(Uint160,Uint160,Uint256)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "transferFrom";
+hold_string_from_test_stack;
+push "uint160";
+push "uint160";
+push "uint256";
+hold_list_values_from_test_stack;
 push 1010101_u160;
-call :: bytes_hooks :: append_u160;
-return_value_to_arg;
 push 2020202_u160;
-call :: bytes_hooks :: append_u160;
-return_value_to_arg;
 push 200_u256;
-call :: bytes_hooks :: append_u256;
+hold_list_values_from_test_stack;
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -225,15 +213,13 @@ check_eq 1_u64;
 
 
 
-
-
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "balanceOf(Uint160)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "balanceOf";
+hold_string_from_test_stack;
+push "uint160";
+hold_list_values_from_test_stack;
 push 1010101_u160;
-call :: bytes_hooks :: append_u160;
+hold_list_values_from_test_stack;
+encode_call_data; 
 return_value;
 mock CallData;
 
@@ -252,14 +238,13 @@ check_eq 9700_u256;
 
 
 
-
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "balanceOf(Uint160)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "balanceOf";
+hold_string_from_test_stack;
+push "uint160";
+hold_list_values_from_test_stack;
 push 2020202_u160;
-call :: bytes_hooks :: append_u160;
+hold_list_values_from_test_stack;
+encode_call_data; 
 return_value;
 mock CallData;
 

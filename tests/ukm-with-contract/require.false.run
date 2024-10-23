@@ -1,10 +1,10 @@
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "myEndpoint(Uint64)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "myEndpoint";
+hold_string_from_test_stack;
+push "uint64"; 
+hold_list_values_from_test_stack; 
 push 0_u64;
-call :: bytes_hooks :: append_u64;
+hold_list_values_from_test_stack; 
+encode_call_data; 
 return_value;
 mock CallData;
 
