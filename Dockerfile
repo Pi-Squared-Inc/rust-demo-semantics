@@ -12,7 +12,7 @@ RUN    apt-get update              \
                        libcrypto++-dev     \
                        libprocps-dev       \
                        libsecp256k1-dev    \
-                       libssl-dev          \
+                       libssl-dev
 
 ARG USER_ID=1001
 ARG GROUP_ID=1001
