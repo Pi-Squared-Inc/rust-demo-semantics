@@ -1,6 +1,7 @@
 extern "C" {
   fn empty() -> u64;
   fn length(bytes_id: u64) -> u32;
+  fn equals(bytes_id_1: u64, bytes_id_2: u64) -> bool;
 
   fn append_u256(bytes_id: u64, value: u256) -> u64;
   fn append_u160(bytes_id: u64, value: u160) -> u64;
@@ -19,7 +20,7 @@ extern "C" {
   fn decode_u32(bytes_id: u64) -> (u64, u32);
   fn decode_u16(bytes_id: u64) -> (u64, u16);
   fn decode_u8(bytes_id: u64) -> (u64, u8);
-  fn decode_str(bytes_id: u64) -> (u64, str);
 
+  fn decode_signature(bytes_id: u64) -> (u64, u64);
   fn hash(bytes_id: u64) -> u64;
 }

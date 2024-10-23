@@ -1,5 +1,6 @@
 ```k
 
+requires "../../main/encoding.md"
 requires "../../main/execution.md"
 requires "../../main/preprocessing.md"
 requires "../../test/execution.md"
@@ -18,7 +19,9 @@ module UKM-TARGET
     imports private RUST-COMMON
     imports private RUST-FULL-PREPROCESSING
     imports private RUST-EXECUTION-TEST
+    imports private UKM-CALLDATA-ENCODER-TEST
     imports private UKM-EXECUTION
+    imports private UKM-ENCODING
     imports private UKM-PREPROCESSING
     imports private UKM-TARGET-CONFIGURATION
     imports private UKM-TEST-EXECUTION

@@ -15,24 +15,21 @@ module UKM-HOOKS-BYTES-CONFIGURATION
         </ukm-bytes>
 endmodule
 
-module UKM-HOOKS-BYTES-SYNTAX
-    imports BYTES-SYNTAX
-    syntax Expression ::= ukmBytesNew(Bytes)
-endmodule
-
 module UKM-HOOKS-BYTES
     imports private BYTES
     imports private COMMON-K-CELL
+    imports private K-EQUAL-SYNTAX
     imports private RUST-HELPERS
     imports private RUST-REPRESENTATION
     imports private UKM-HOOKS-BYTES-CONFIGURATION
-    imports private UKM-HOOKS-BYTES-SYNTAX
     imports private UKM-REPRESENTATION
 
 
     syntax Identifier ::= "bytes_hooks"  [token]
                         | "empty"  [token]
                         | "length"  [token]
+                        | "equals"  [token]
+                        | "append_bool"  [token]
                         | "append_u256"  [token]
                         | "append_u160"  [token]
                         | "append_u128"  [token]
@@ -40,7 +37,6 @@ module UKM-HOOKS-BYTES
                         | "append_u32"  [token]
                         | "append_u16"  [token]
                         | "append_u8"  [token]
-                        | "append_bool"  [token]
                         | "append_str"  [token]
                         | "decode_u256"  [token]
                         | "decode_u160"  [token]
@@ -51,6 +47,7 @@ module UKM-HOOKS-BYTES
                         | "decode_u8"  [token]
                         | "decode_str"  [token]
                         | "hash"  [token]
+                        | "decode_signature"  [token]
 
     rule
         <k>
@@ -75,6 +72,13 @@ module UKM-HOOKS-BYTES
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesLength(BufferIdId)
+
+    rule
+        normalizedFunctionCall
+            ( :: bytes_hooks :: equals :: .PathExprSegments
+            , BufferIdId1:Ptr, BufferIdId2:Ptr, .PtrList
+            )
+        => ukmBytesEquals(BufferIdId1, BufferIdId2)
 
     rule
         normalizedFunctionCall
@@ -195,13 +199,19 @@ module UKM-HOOKS-BYTES
             )
         => ukmBytesDecode(BufferIdId, str)
 
-    rule
+     rule
         normalizedFunctionCall
             ( :: bytes_hooks :: hash :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
         => ukmBytesHash(BufferIdId)
 
+    rule
+        normalizedFunctionCall
+            ( :: bytes_hooks :: decode_signature :: .PathExprSegments
+            , BufferIdId:Ptr, .PtrList
+            )
+        => ukmBytesDecodeBytes(BufferIdId, 8)
     // ---------------------------------------
 
     rule
@@ -216,16 +226,21 @@ module UKM-HOOKS-BYTES
 
     syntax UKMInstruction ::= ukmBytesLength(Expression)  [strict(1)]
                             | ukmBytesLength(UkmExpression)  [strict(1)]
+                            | ukmBytesEquals(Expression, Expression)  [seqstrict]
+                            | ukmBytesEquals(UkmExpression, UkmExpression)  [seqstrict]
                             | ukmBytesAppendInt(Expression, Expression)  [seqstrict]
                             | ukmBytesAppendInt(UkmExpression, Int)  [strict(1)]
                             | ukmBytesAppendBool(Expression, Expression)  [seqstrict]
                             | ukmBytesAppendStr(Expression, Expression)  [seqstrict]
                             | ukmBytesAppendBytes(UkmExpression, Bytes)  [strict(1)]
-                            | ukmBytesAppendLenAndBytes(Bytes, Bytes)
+                            | ukmBytesAppendLenAndBytes(UkmExpression, Bytes)  [strict(1)]
                             | ukmBytesDecode(Expression, Type)  [strict(1)]
                             | ukmBytesDecode(UkmExpression, Type)  [strict(1)]
+                            | ukmBytesDecodeBytes(Expression, Int)  [strict(1)]
+                            | ukmBytesDecodeBytes(UkmExpression, Int)  [strict(1)]
                             | ukmBytesDecode(Int, Bytes, Type)
                             | ukmBytesDecodeInt(Int, Bytes, Type)
+                            | ukmBytesDecodeStr(Int, Bytes)
                             | ukmBytesDecode(ValueOrError, Bytes)
                             | ukmBytesHash(Expression)  [strict(1)]
                             | ukmBytesHash(UkmExpression)  [strict(1)]
@@ -249,6 +264,11 @@ module UKM-HOOKS-BYTES
         => ptrValue(null, u32(Int2MInt(lengthBytes(Value))))
         requires notBool uoverflowMInt(32, lengthBytes(Value))
 
+    rule ukmBytesEquals(ptrValue(_, u64(BytesId1)), ptrValue(_, u64(BytesId2)))
+        => ukmBytesEquals(ukmBytesId(BytesId1), ukmBytesId(BytesId2))
+    rule ukmBytesEquals(ukmBytesValue(Value1:Bytes), ukmBytesValue(Value2:Bytes))
+        => ptrValue(null, Value1 ==K Value2)
+
     rule ukmBytesAppendInt(ptrValue(_, u64(BytesId)), ptrValue(_, u256(Value)))
         => ukmBytesAppendInt(ukmBytesId(BytesId), MInt2Unsigned(Value))
     rule ukmBytesAppendInt(ptrValue(_, u64(BytesId)), ptrValue(_, u160(Value)))
@@ -265,54 +285,61 @@ module UKM-HOOKS-BYTES
         => ukmBytesAppendInt(ukmBytesId(BytesId), MInt2Unsigned(Value))
 
     rule ukmBytesAppendInt(ukmBytesValue(B:Bytes), Value:Int)
-        => ukmBytesAppendLenAndBytes(B, Int2Bytes(Value, BE, Unsigned))
+        => ukmBytesNew(B +Bytes Int2Bytes(32, Value, BE))
 
     rule ukmBytesAppendBool(ptrValue(P, u64(BytesId)), ptrValue(_, false))
         => ukmBytesAppendInt(ptrValue(P, u64(BytesId)), ptrValue(null, u8(0p8)))
     rule ukmBytesAppendBool(ptrValue(P, u64(BytesId)), ptrValue(_, true))
         => ukmBytesAppendInt(ptrValue(P, u64(BytesId)), ptrValue(null, u8(1p8)))
 
+    // TODO: This can create key ambiguity for storage
     rule ukmBytesAppendStr(ptrValue(_, u64(BytesId)), ptrValue(_, Value:String))
-        => ukmBytesAppendBytes(ukmBytesId(BytesId), String2Bytes(Value))
+        => ukmBytesAppendLenAndBytes(ukmBytesId(BytesId), String2Bytes(Value))
 
     rule ukmBytesAppendBytes(ukmBytesValue(B:Bytes), Value:Bytes)
-        => ukmBytesAppendLenAndBytes(B, Value)
+        => ukmBytesNew(B +Bytes Value)
 
-    rule ukmBytesAppendLenAndBytes(First:Bytes, Second:Bytes)
+    rule ukmBytesAppendLenAndBytes(ukmBytesValue(First:Bytes), Second:Bytes)
         => ukmBytesNew(First +Bytes Int2Bytes(2, lengthBytes(Second), BE) +Bytes Second)
         requires lengthBytes(Second) <Int (1 <<Int 16)
+
+    rule ukmBytesDecodeBytes(ptrValue(_, u64(BytesId)), L:Int)
+        => ukmBytesDecodeBytes(ukmBytesId(BytesId), L:Int)
+    rule ukmBytesDecodeBytes(ukmBytesValue(B:Bytes), L:Int) 
+        => tupleExpression
+            ( ukmBytesNew(substrBytes(B, L, lengthBytes(B)))
+            , ukmBytesNew(substrBytes(B, 0, L))
+            , .TupleElementsNoEndComma
+            )
+        requires L <=Int lengthBytes(B)
 
     rule ukmBytesDecode(ptrValue(_, u64(BytesId)), T:Type)
         => ukmBytesDecode(ukmBytesId(BytesId), T:Type)
     rule ukmBytesDecode(ukmBytesValue(B:Bytes), T:Type)
         => ukmBytesDecode
-            ( Bytes2Int(substrBytes(B, 0, 2), BE, Unsigned)
+            ( integerToValue(Bytes2Int(substrBytes(B, 0, 32), BE, Unsigned), T)
+            , substrBytes(B, 32, lengthBytes(B))
+            )
+        requires isUnsignedInt(T) andBool 32 <=Int lengthBytes(B)
+    rule ukmBytesDecode(ukmBytesValue(B:Bytes), T:Type)
+        => ukmBytesDecode
+            ( integerToValue(Bytes2Int(substrBytes(B, 0, 32), BE, Signed), T)
+            , substrBytes(B, 32, lengthBytes(B))
+            )
+        requires isSignedInt(T) andBool 32 <=Int lengthBytes(B)
+    rule ukmBytesDecode(ukmBytesValue(B:Bytes), str)
+        => ukmBytesDecodeStr
+            ( Bytes2Int(substrBytes(B, 0, 2), BE, Signed)
             , substrBytes(B, 2, lengthBytes(B))
-            , T:Type
             )
         requires 2 <=Int lengthBytes(B)
-    rule ukmBytesDecode(Len:Int, B:Bytes, T:Type)
-        => ukmBytesDecodeInt
-            ( Bytes2Int(substrBytes(B, 0, Len), BE, Unsigned)
-            , substrBytes(B, Len, lengthBytes(B))
-            , T:Type
-            )
-        requires Len <=Int lengthBytes(B) andBool isUnsignedInt(T)
-    rule ukmBytesDecode(Len:Int, B:Bytes, T:Type)
-        => ukmBytesDecodeInt
-            ( Bytes2Int(substrBytes(B, 0, Len), BE, Signed)
-            , substrBytes(B, Len, lengthBytes(B))
-            , T:Type
-            )
-        requires Len <=Int lengthBytes(B) andBool isSignedInt(T)
-    rule ukmBytesDecode(Len:Int, B:Bytes, str)
-        => ukmBytesDecode
-            ( Bytes2String(substrBytes(B, 0, Len))
-            , substrBytes(B, Len, lengthBytes(B))
-            )
-        requires Len <=Int lengthBytes(B)
+
     rule ukmBytesDecodeInt(Value:Int, B:Bytes, T:Type)
         => ukmBytesDecode(integerToValue(Value, T), B)
+    rule ukmBytesDecodeStr(Len:Int, B:Bytes)
+        => ukmBytesDecode(Bytes2String(substrBytes(B, 0, Len)), substrBytes(B, Len, lengthBytes(B)))
+        requires 0 <=Int Len andBool Len <=Int lengthBytes(B)
+
     rule ukmBytesDecode(Value:Value, B:Bytes)
         => tupleExpression(ukmBytesNew(B) , ptrValue(null, Value) , .TupleElementsNoEndComma)
 

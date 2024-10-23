@@ -1,14 +1,13 @@
-call :: bytes_hooks :: empty;
-return_value_to_arg;
-push "logEvent(Uint64,Uint64)";
-call :: bytes_hooks :: append_str;
-return_value_to_arg;
+push "logEvent";
+hold_string_from_test_stack;
+push "uint64";
+push "uint64";
+hold_list_values_from_test_stack; 
 push 123_u64;
-call :: bytes_hooks :: append_u64;
-return_value_to_arg;
-push 555_u64;
-call :: bytes_hooks :: append_u64;
-return_value;
+push 555_u64; 
+hold_list_values_from_test_stack; 
+encode_call_data; 
+return_value; 
 mock CallData;
 
 call_contract 12345;
