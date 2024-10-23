@@ -10,7 +10,6 @@ RUN    apt-get update              \
     && apt-get install --yes       \
                        curl                \
                        libcrypto++-dev     \
-                       libprocps-dev       \
                        libsecp256k1-dev    \
                        libssl-dev
 
