@@ -213,6 +213,7 @@ $(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/bl
 	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md  \
 			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
+			${PLUGIN_FLAGS} \
 			--emit-json -o $(UKM_TESTING_KOMPILED) \
 			-I . \
 			-I deps/blockchain-k-plugin \

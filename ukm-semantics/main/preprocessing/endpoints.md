@@ -10,6 +10,7 @@ module UKM-PREPROCESSING-ENDPOINTS
     imports private UKM-ENCODING-SYNTAX
     imports private UKM-PREPROCESSING-EPHEMERAL-CONFIGURATION
     imports private UKM-PREPROCESSING-SYNTAX-PRIVATE
+    imports private UKM-ENCODING-SYNTAX
     imports private UKM-REPRESENTATION
 
     rule

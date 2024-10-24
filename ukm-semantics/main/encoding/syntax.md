@@ -7,6 +7,7 @@ module UKM-ENCODING-SYNTAX
     imports UKM-REPRESENTATION
 
     syntax UKMInstruction ::= "ukmEncodePreprocessedCell"
+                            | ukmEncodedPreprocessedCell(Bytes)
 
     syntax BytesOrError ::= encodeFunctionSignatureAsBytes(StringOrError) [function, total]
     syntax Bytes ::= encodeHexBytes(String)  [function, total]
