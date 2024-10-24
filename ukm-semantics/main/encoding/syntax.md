@@ -6,6 +6,7 @@ module UKM-ENCODING-SYNTAX
     imports RUST-REPRESENTATION
 
     syntax UKMInstruction ::= "ukmEncodePreprocessedCell"
+                            | ukmEncodedPreprocessedCell(Bytes)
 
     syntax Bytes ::= encodeCallData (String, List, List) [function] //Function name, argument types, argument list
                    | encodeFunctionSignature (String, List) [function]
