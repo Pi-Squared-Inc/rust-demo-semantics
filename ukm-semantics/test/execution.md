@@ -49,7 +49,6 @@ module UKM-TEST-EXECUTION
     imports private RUST-EXECUTION-TEST-CONFIGURATION
     imports private RUST-SHARED-SYNTAX
     imports private UKM-ENCODING-SYNTAX
-    imports private UKM-ENCODING-TESTING-SYNTAX
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-HOOKS-BYTES-CONFIGURATION
     imports private UKM-HOOKS-HELPERS-SYNTAX

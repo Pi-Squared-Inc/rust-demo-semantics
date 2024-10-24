@@ -1,16 +1,12 @@
 ```k
 requires "plugin/krypto.md"
 
-module UKM-CALLDATA-ENCODER
+module UKM-ENCODING-HELPER
     imports private BYTES
     imports private INT-SYNTAX
     imports private KRYPTO
     imports private STRING
-    imports private UKM-ENCODING-SYNTAX
-
-    rule encodeFunctionSignatureAsBytes(FS)
-        => encodeHexBytes(substrString(Keccak256(String2Bytes(FS)), 0, 8))
-    rule encodeFunctionSignatureAsBytes(E:SemanticsError) => E
+    imports private UKM-ENCODING-HELPER-SYNTAX
 
     // TODO: Error for argument of length 1 or string not hex
     rule encodeHexBytes(_:String) => .Bytes
@@ -33,39 +29,6 @@ module UKM-CALLDATA-ENCODER
             orBool ("a" <=String S andBool S <=String "f")
             orBool ("A" <=String S andBool S <=String "F")
 
-endmodule
-
-module UKM-CALLDATA-ENCODER-TEST
-    imports private BYTES
-    imports private INT-SYNTAX
-    imports private KRYPTO
-    imports private STRING
-    imports private UKM-ENCODING-SYNTAX
-    imports private UKM-ENCODING-TESTING-SYNTAX
-
-    rule encodeCallData(FN:String, FAT:List, FAL:List) => 
-            encodeFunctionSignature(FN, FAT, "") +Bytes encodeFunctionParams(FAL, FAT, b"")  
-
-    // Function signature encoding
-    rule encodeFunctionSignature(FuncName:String, RL:List, "") => 
-            encodeFunctionSignature("", RL:List, FuncName +String "(") [priority(40)]
-        
-    rule encodeFunctionSignature("", ListItem(FuncParam:String) RL:List, FS) => 
-                encodeFunctionSignature("", RL, FS +String FuncParam +String ",") [owise]
-    
-    // The last param does not have a follow up comma
-    rule encodeFunctionSignature("", ListItem(FuncParam:String) .List, FS) => 
-                encodeFunctionSignature("", .List, FS +String FuncParam ) 
-         
-    rule encodeFunctionSignature("", .List, FS) => encodeHexBytes(substrString(Keccak256(String2Bytes(FS  +String ")")), 0, 8)) 
-
-    // Function parameters encoding
-    rule encodeFunctionParams(ListItem(V:Value) ARGS:List, ListItem(T:String) PTYPES:List, B:Bytes) =>
-            encodeFunctionParams(ARGS:List, PTYPES:List, B:Bytes +Bytes convertToKBytes(V, T))
-
-    rule encodeFunctionParams(.List, .List, B:Bytes) => B
-
-
     // Encoding of individual types
 
     rule convertToKBytes(i8(V) , "int8") => Int2Bytes(32, MInt2Signed(V), BE:Endianness) 
@@ -83,6 +46,46 @@ module UKM-CALLDATA-ENCODER-TEST
     rule convertToKBytes(u160(V), "uint160") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)  
     rule convertToKBytes(u160(V), "address") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)  
 
+endmodule
+
+module UKM-CALLDATA-ENCODER
+    imports private BYTES
+    imports private INT-SYNTAX
+    imports private KRYPTO
+    imports private STRING
+    imports private UKM-ENCODING-SYNTAX
+    imports private UKM-ENCODING-HELPER-SYNTAX
+    imports private UKM-ENCODING-HELPER
+
+    rule encodeFunctionSignatureAsBytes(FS)
+        => encodeHexBytes(substrString(Keccak256(String2Bytes(FS)), 0, 8))
+    rule encodeFunctionSignatureAsBytes(E:SemanticsError) => E
+
+    // TODO: it may be worth extracting the substrString(Keccak256(String2Bytes(FS)), 0, 8) 
+    // thing to a function that takes a String and produces a String or Bytes (as opposed to
+    // taking a StringOrError as below) (perhaps with an encodeAsBytes(...) on top of it) and 
+    // then use it here and in the rules below.
+    rule encodeCallData(FN:String, FAT:List, FAL:List) => 
+           encodeFunctionSignature(FN, FAT) +Bytes encodeFunctionParams(FAL, FAT, b"")  
+
+    // Function signature encoding
+    rule encodeFunctionSignature(FuncName:String, RL:List) => 
+            encodeFunctionSignatureHelper(RL:List, FuncName +String "(") [priority(40)]
+        
+    rule encodeFunctionSignatureHelper(ListItem(FuncParam:String) RL:List, FS) => 
+            encodeFunctionSignatureHelper(RL, FS +String FuncParam +String ",") [owise]
+    
+    // The last param does not have a follow up comma
+    rule encodeFunctionSignatureHelper(ListItem(FuncParam:String) .List, FS) => 
+            encodeFunctionSignatureHelper(.List, FS +String FuncParam ) 
+
+    rule encodeFunctionSignatureHelper(.List, FS) => encodeHexBytes(substrString(Keccak256(String2Bytes(FS  +String ")")), 0, 8)) 
+
+    // Function parameters encoding
+    rule encodeFunctionParams(ListItem(V:Value) ARGS:List, ListItem(T:String) PTYPES:List, B:Bytes) =>
+            encodeFunctionParams(ARGS:List, PTYPES:List, B:Bytes +Bytes convertToKBytes(V, T))
+
+    rule encodeFunctionParams(.List, .List, B:Bytes) => B
 endmodule
 
 ```

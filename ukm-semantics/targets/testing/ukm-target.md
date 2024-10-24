@@ -19,7 +19,7 @@ module UKM-TARGET
     imports private RUST-COMMON
     imports private RUST-FULL-PREPROCESSING
     imports private RUST-EXECUTION-TEST
-    imports private UKM-CALLDATA-ENCODER-TEST
+    imports private UKM-CALLDATA-ENCODER
     imports private UKM-EXECUTION
     imports private UKM-ENCODING
     imports private UKM-PREPROCESSING
