@@ -1,10 +1,10 @@
 ```k
 
 module UKM-REPRESENTATION
-    imports private BYTES-SYNTAX
-    imports private INT-SYNTAX
-    imports private MINT
-    imports private RUST-VALUE-SYNTAX
+    imports BYTES-SYNTAX
+    imports INT-SYNTAX
+    imports MINT
+    imports RUST-VALUE-SYNTAX
 
     syntax UkmValue ::= ukmBytesValue(Bytes)
                       | ukmIntValue(Int)
@@ -14,7 +14,11 @@ module UKM-REPRESENTATION
     syntax KResult ::= UkmValue
 
     syntax Expression ::= ukmCast(Expression, Expression)  [seqstrict]
+    syntax Expression ::= ukmBytesNew(Bytes)
+
     syntax Value ::= rustType(Type)
+
+    syntax BytesOrError ::= Bytes | SemanticsError
 
 endmodule
 

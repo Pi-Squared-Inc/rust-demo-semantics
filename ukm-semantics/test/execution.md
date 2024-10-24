@@ -1,6 +1,7 @@
 ```k
 
 module UKM-TEST-SYNTAX
+    imports BYTES-SYNTAX
     imports INT-SYNTAX
     imports STRING-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
@@ -43,15 +44,17 @@ module UKM-TEST-SYNTAX
 endmodule
 
 module UKM-TEST-EXECUTION
+    imports private BYTES
     imports private COMMON-K-CELL
     imports private RUST-EXECUTION-TEST-CONFIGURATION
+    imports private RUST-SHARED-SYNTAX
     imports private UKM-ENCODING-SYNTAX
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-HOOKS-BYTES-CONFIGURATION
-    imports private UKM-HOOKS-BYTES-SYNTAX
     imports private UKM-HOOKS-HELPERS-SYNTAX
     imports private UKM-HOOKS-STATE-CONFIGURATION
     imports private UKM-HOOKS-UKM-SYNTAX
+    imports private UKM-REPRESENTATION
     imports private UKM-TEST-SYNTAX
     imports RUST-SHARED-SYNTAX
     imports private BYTES

@@ -18,9 +18,9 @@ endmodule
 module UKM-HOOKS-UKM
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
-    imports private UKM-HOOKS-BYTES-SYNTAX
     imports private UKM-HOOKS-SIGNATURE
     imports private UKM-HOOKS-UKM-SYNTAX
+    imports private UKM-REPRESENTATION
 
     syntax Identifier ::= "ukm"  [token]
                         | "CallData"  [token]
@@ -67,9 +67,9 @@ endmodule
 // for the ULM hooks.
 module UKM-HOOKS-TO-ULM-FUNCTIONS
     imports private RUST-REPRESENTATION
-    imports private UKM-HOOKS-BYTES-SYNTAX
     imports private UKM-HOOKS-UKM-SYNTAX
     imports private ULM-HOOKS
+    imports private UKM-REPRESENTATION
 
     rule CallDataHook() => ukmBytesNew(CallData())
     rule CallerHook() => ukmIntResult(Caller(), u160)

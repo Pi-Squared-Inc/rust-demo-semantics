@@ -1,6 +1,7 @@
 ```k
 
 module UKM-PREPROCESSING-STORAGE
+    imports private BYTES
     imports private COMMON-K-CELL
     imports private RUST-ERROR-SYNTAX
     imports private RUST-PREPROCESSING-CONFIGURATION

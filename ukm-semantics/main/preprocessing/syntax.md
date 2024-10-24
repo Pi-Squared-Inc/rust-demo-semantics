@@ -10,6 +10,7 @@ module UKM-PREPROCESSING-SYNTAX-PRIVATE
     imports LIST
     imports RUST-REPRESENTATION
     imports RUST-SHARED-SYNTAX
+    imports UKM-REPRESENTATION
 
     syntax UKMInstruction ::= ukmPreprocessTraits(List)
                             | ukmPreprocessTrait(TypePath)
@@ -34,7 +35,7 @@ module UKM-PREPROCESSING-SYNTAX-PRIVATE
                                 , appendReturn: ExpressionOrError
                                 , decodeStatements: NonEmptyStatementsOrError
                                 )
-                            | ukmAddEndpointSignature(signature: StringOrError, method: Identifier)
+                            | ukmAddEndpointSignature(signature: BytesOrError, method: Identifier)
                             | ukmAddDispatcher(TypePath)
                             | ukmPreprocessStorage
                                 ( fullMethodPath: PathInExpression

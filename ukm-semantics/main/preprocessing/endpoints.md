@@ -7,9 +7,11 @@ module UKM-PREPROCESSING-ENDPOINTS
     imports private RUST-PREPROCESSING-CONFIGURATION
     imports private RUST-SHARED-SYNTAX
     imports private UKM-COMMON-TOOLS-SYNTAX
+    imports private UKM-ENCODING-SYNTAX
     imports private UKM-PREPROCESSING-EPHEMERAL-CONFIGURATION
     imports private UKM-PREPROCESSING-SYNTAX-PRIVATE
     imports private UKM-ENCODING-SYNTAX
+    imports private UKM-REPRESENTATION
 
     rule
         <k>
@@ -91,7 +93,7 @@ module UKM-PREPROCESSING-ENDPOINTS
 
     rule
         <k>
-            ukmAddEndpointSignature(Signature:String, Method:Identifier) => .K
+            ukmAddEndpointSignature(Signature:Bytes, Method:Identifier) => .K
             ...
         </k>
         <ukm-endpoint-signatures>
@@ -166,17 +168,18 @@ module UKM-PREPROCESSING-ENDPOINTS
                         | "decode_str"  [token]
                         | "decode_signature"  [token]
                         | "empty"  [token]
+                        | "equals"  [token]
                         | "ukm"  [token]
                         | "CallData"  [token]
                         | "EVMC_BAD_JUMP_DESTINATION"  [token]
                         | "EVMC_SUCCESS"  [token]
 
-    syntax StringOrError  ::= methodSignature(String, NormalizedFunctionParameterList)  [function, total]
-                            | signatureTypes(NormalizedFunctionParameterList)  [function, total]
+    syntax BytesOrError  ::= methodSignature(String, NormalizedFunctionParameterList)  [function, total]
+    syntax StringOrError  ::= signatureTypes(NormalizedFunctionParameterList)  [function, total]
                             | signatureType(Type)  [function, total]
 
     rule methodSignature(S:String, Ps:NormalizedFunctionParameterList)
-        => encodeFunctionSignatureAsString(concat(concat(S +String "(", signatureTypes(Ps)), ")"))
+        => encodeFunctionSignatureAsBytes(concat(concat(S +String "(", signatureTypes(Ps)), ")"))
 
     rule signatureTypes(.NormalizedFunctionParameterList) => ""
     rule signatureTypes(_ : T:Type , .NormalizedFunctionParameterList)
@@ -217,12 +220,13 @@ module UKM-PREPROCESSING-ENDPOINTS
 
     rule signatureToCall
             (... signature: Signature:Identifier
-            , signatures: ListItem(CurrentSignature:String) Signatures:List
+            , signatures: ListItem(CurrentSignature:Bytes) Signatures:List
             , signatureToMethod: (CurrentSignature |-> Method:Identifier _:Map) #as SignatureToMethod:Map
             , bufferId: BufferId:Identifier
             , gas: Gas:Identifier
             )
-        =>  if signature == CurrentSignature {
+        =>  if :: bytes_hooks :: equals
+                    ( Signature , ukmBytesNew(CurrentSignature) , .CallParamsList ) {
                 .InnerAttributes
                 self . Method ( BufferId , Gas , .CallParamsList );
                 .NonEmptyStatements
