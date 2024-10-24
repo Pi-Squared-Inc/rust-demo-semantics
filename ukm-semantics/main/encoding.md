@@ -1,7 +1,8 @@
 ```k
 
-requires "encoding/syntax.md"
 requires "encoding/encoder.md"
+requires "encoding/impl.md"
+requires "encoding/syntax.md"
 
 module UKM-ENCODING
     imports private UKM-CALLDATA-ENCODER
