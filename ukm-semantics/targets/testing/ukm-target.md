@@ -1,5 +1,6 @@
 ```k
 
+requires "../../main/decoding.md"
 requires "../../main/encoding.md"
 requires "../../main/execution.md"
 requires "../../main/preprocessing.md"

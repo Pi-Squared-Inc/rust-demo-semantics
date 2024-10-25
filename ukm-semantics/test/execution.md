@@ -8,6 +8,8 @@ module UKM-TEST-SYNTAX
     imports UKM-HOOKS-UKM-SYNTAX
     imports BYTES-SYNTAX
 
+    syntax UKMInstruction ::= "ukmDecodePreprocessedCell"
+
     // TODO: Do not use KItem for ptr_holder and value_holder. This is
     // too generic and can lead to problems.
     // TODO: Replace the list_ptrs_holder and list_values_holder with
@@ -51,6 +53,7 @@ module UKM-TEST-EXECUTION
     imports private COMMON-K-CELL
     imports private RUST-EXECUTION-TEST-CONFIGURATION
     imports private RUST-SHARED-SYNTAX
+    imports private UKM-DECODING-SYNTAX
     imports private UKM-ENCODING-SYNTAX
     imports private UKM-EXECUTION-SYNTAX
     imports private UKM-HOOKS-BYTES-CONFIGURATION
@@ -59,7 +62,6 @@ module UKM-TEST-EXECUTION
     imports private UKM-HOOKS-UKM-SYNTAX
     imports private UKM-REPRESENTATION
     imports private UKM-TEST-SYNTAX
-    imports private RUST-SHARED-SYNTAX
     imports private BYTES
 
     syntax Mockable ::= UkmHook
@@ -176,6 +178,8 @@ module UKM-TEST-EXECUTION
 
     rule (ukmCancel ~> expect_cancel) => .K
 
+    rule ukmEncodedPreprocessedCell(Pgm:Bytes) ~> ukmDecodePreprocessedCell
+        => ukmDecodePreprocessedCell(Pgm)
 endmodule
 
 ```
