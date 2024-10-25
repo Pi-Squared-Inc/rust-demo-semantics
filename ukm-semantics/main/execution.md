@@ -13,7 +13,7 @@ module UKM-EXECUTION
     imports private UKM-EXECUTION-CASTS
     imports private UKM-EXECUTION-DISPATCH
     imports private UKM-EXECUTION-STORAGE
-    imports private UKM-HOOKS
+    imports private UKM-SEMANTICS-HOOKS
     imports private UKM-REPRESENTATION
 endmodule
 

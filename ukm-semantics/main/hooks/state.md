@@ -1,6 +1,6 @@
 ```k
 
-module UKM-HOOKS-STATE-CONFIGURATION
+module UKM-SEMANTICS-HOOKS-STATE-CONFIGURATION
     imports BYTES-SYNTAX
     imports INT-SYNTAX
 
@@ -12,11 +12,11 @@ module UKM-HOOKS-STATE-CONFIGURATION
         </ukm-state>
 endmodule
 
-module UKM-HOOKS-STATE
+module UKM-SEMANTICS-HOOKS-STATE
     imports private COMMON-K-CELL
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
-    imports private UKM-HOOKS-STATE-CONFIGURATION
+    imports private UKM-SEMANTICS-HOOKS-STATE-CONFIGURATION
     imports private UKM-REPRESENTATION
 
     syntax UKMInstruction ::= ukmSetStatus(Expression)  [strict(1)]

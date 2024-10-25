@@ -5,7 +5,7 @@ module UKM-TEST-SYNTAX
     imports INT-SYNTAX
     imports STRING-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
-    imports UKM-HOOKS-UKM-SYNTAX
+    imports UKM-SEMANTICS-HOOKS-UKM-SYNTAX
     imports BYTES-SYNTAX
 
     // TODO: Do not use KItem for ptr_holder and value_holder. This is
@@ -53,10 +53,10 @@ module UKM-TEST-EXECUTION
     imports private RUST-SHARED-SYNTAX
     imports private UKM-ENCODING-SYNTAX
     imports private UKM-EXECUTION-SYNTAX
-    imports private UKM-HOOKS-BYTES-CONFIGURATION
-    imports private UKM-HOOKS-HELPERS-SYNTAX
-    imports private UKM-HOOKS-STATE-CONFIGURATION
-    imports private UKM-HOOKS-UKM-SYNTAX
+    imports private UKM-SEMANTICS-HOOKS-BYTES-CONFIGURATION
+    imports private UKM-SEMANTICS-HOOKS-HELPERS-SYNTAX
+    imports private UKM-SEMANTICS-HOOKS-STATE-CONFIGURATION
+    imports private UKM-SEMANTICS-HOOKS-UKM-SYNTAX
     imports private UKM-REPRESENTATION
     imports private UKM-TEST-SYNTAX
     imports private RUST-SHARED-SYNTAX

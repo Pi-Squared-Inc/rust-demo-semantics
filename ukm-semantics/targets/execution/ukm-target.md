@@ -13,7 +13,7 @@ module UKM-TARGET
     imports private RUST-COMMON
     imports private UKM-DECODING
     imports private UKM-EXECUTION
-    imports private UKM-HOOKS-TO-ULM-FUNCTIONS
+    imports private UKM-SEMANTICS-HOOKS-TO-ULM-FUNCTIONS
     imports private UKM-TARGET-CONFIGURATION
 endmodule
 

@@ -1,6 +1,6 @@
 ```k
 
-module UKM-HOOKS-UKM-SYNTAX
+module UKM-SEMANTICS-HOOKS-UKM-SYNTAX
     imports INT-SYNTAX
 
     syntax UkmHook  ::= CallDataHook()
@@ -15,11 +15,11 @@ module UKM-HOOKS-UKM-SYNTAX
 endmodule
 
 
-module UKM-HOOKS-UKM
+module UKM-SEMANTICS-HOOKS-UKM
     imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
-    imports private UKM-HOOKS-SIGNATURE
-    imports private UKM-HOOKS-UKM-SYNTAX
+    imports private UKM-SEMANTICS-HOOKS-SIGNATURE
+    imports private UKM-SEMANTICS-HOOKS-UKM-SYNTAX
     imports private UKM-REPRESENTATION
 
     syntax Identifier ::= "ukm"  [token]
@@ -65,9 +65,9 @@ endmodule
 
 // This module should be used only in kompilation targets which have implementations
 // for the ULM hooks.
-module UKM-HOOKS-TO-ULM-FUNCTIONS
+module UKM-SEMANTICS-HOOKS-TO-ULM-FUNCTIONS
     imports private RUST-REPRESENTATION
-    imports private UKM-HOOKS-UKM-SYNTAX
+    imports private UKM-SEMANTICS-HOOKS-UKM-SYNTAX
     imports private ULM-HOOKS
     imports private UKM-REPRESENTATION
 
@@ -77,9 +77,9 @@ module UKM-HOOKS-TO-ULM-FUNCTIONS
     rule GetAccountStorageHook(Key:Int) => ukmIntResult(GetAccountStorage(Key), u256)
 endmodule
 
-module UKM-HOOKS-SIGNATURE
+module UKM-SEMANTICS-HOOKS-SIGNATURE
     imports private ULM-SIGNATURE
-    imports private UKM-HOOKS-STATE-CONFIGURATION
+    imports private UKM-SEMANTICS-HOOKS-STATE-CONFIGURATION
     imports private UKM-TARGET-CONFIGURATION
 
     rule getOutput

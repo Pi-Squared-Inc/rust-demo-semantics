@@ -1,6 +1,6 @@
 ```k
 
-module UKM-HOOKS-BYTES-CONFIGURATION
+module UKM-SEMANTICS-HOOKS-BYTES-CONFIGURATION
     imports INT-SYNTAX
     imports MAP
 
@@ -15,13 +15,13 @@ module UKM-HOOKS-BYTES-CONFIGURATION
         </ukm-bytes>
 endmodule
 
-module UKM-HOOKS-BYTES
+module UKM-SEMANTICS-HOOKS-BYTES
     imports private BYTES
     imports private COMMON-K-CELL
     imports private K-EQUAL-SYNTAX
     imports private RUST-HELPERS
     imports private RUST-REPRESENTATION
-    imports private UKM-HOOKS-BYTES-CONFIGURATION
+    imports private UKM-SEMANTICS-HOOKS-BYTES-CONFIGURATION
     imports private UKM-REPRESENTATION
 
 
