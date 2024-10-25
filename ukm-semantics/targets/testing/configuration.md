@@ -9,12 +9,16 @@ requires "rust-semantics/test/configuration.md"
 module COMMON-K-CELL
     imports private RUST-EXECUTION-TEST-PARSING-SYNTAX
     imports private RUST-PREPROCESSING-SYNTAX
+    imports private UKM-ENCODING-SYNTAX
     imports private UKM-PREPROCESSING-SYNTAX
+    imports private UKM-TEST-SYNTAX
 
     configuration
         <k>
             cratesParser($PGM:WrappedCrateList)
             ~> ukmPreprocessCrates
+            ~> ukmEncodePreprocessedCell
+            ~> ukmDecodePreprocessedCell
             ~> $TEST:ExecutionTest
         </k>
 endmodule
