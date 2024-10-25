@@ -21,13 +21,11 @@ list_mock SetAccountStorageHook ( 7089066454179379067 , 300 ) ukmNoResult();
 list_mock GetAccountStorageHook ( 7089066454178295295 ) ukmIntResult(9700, u256);
 list_mock GetAccountStorageHook ( 7089066454179379067 ) ukmIntResult(300, u256);
 
-push "#init";
-hold_string_from_test_stack; 
 push "uint256";
 hold_list_values_from_test_stack; 
 push 10000_u256;
 hold_list_values_from_test_stack; 
-encode_call_data; 
+encode_constructor_data; 
 
 
 return_value;
@@ -36,7 +34,8 @@ mock CallData;
 push_value 1010101_u160;
 mock Caller;
 
-call_contract 12345;
+init_contract 12345;
+clear_pgm;
 return_value;
 check_eq ();
 
