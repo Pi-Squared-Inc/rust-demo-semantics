@@ -4,19 +4,18 @@
 # It expects two args: the contract path and the arguments for the init function.
 
 set -e
+set -x
 
-ULM_CONTRACTS_TESTING_INPUT_DIR=tests/ulm-contracts
-ULM_PREPROCESSING_KOMPILED=.build/ulm-preprocessing-kompiled
+ULM_EXECUTION_KOMPILED=.build/ulm-execution-kompiled
 TEMP_DIR=tmp
 
 mkdir -p $TEMP_DIR
 
-compilation/prepare_rust_bundle.sh $1 $TEMP_DIR/input.tmp
+compilation/prepare-rust-bundle.sh $1 $TEMP_DIR/input.tmp
 
-krun \
+kparse \
   $TEMP_DIR/input.tmp \
-  --parser $(pwd)/parsers/crates-ulm-preprocessing-execution.sh \
-  --definition $ULM_PREPROCESSING_KOMPILED \
-  --output kore \
-  --output-file $TEMP_DIR/output.kore \
+  --sort WrappedCrateList \
+  --definition $ULM_EXECUTION_KOMPILED \
+  > $2
 
