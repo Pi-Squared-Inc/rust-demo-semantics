@@ -64,30 +64,30 @@ DEMOS_TESTING_OUTPUT_DIR ::= .build/demos/output
 DEMOS_TESTING_INPUTS ::= $(wildcard $(DEMOS_TESTING_INPUT_DIR)/*.run)
 DEMOS_TESTING_OUTPUTS ::= $(patsubst $(DEMOS_TESTING_INPUT_DIR)/%,$(DEMOS_TESTING_OUTPUT_DIR)/%.executed.kore,$(DEMOS_TESTING_INPUTS))
 
-UKM_SEMANTICS_FILES ::= $(shell find ukm-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
+ULM_SEMANTICS_FILES ::= $(shell find ulm-semantics/ -type f -a '(' -name '*.md' -or -name '*.k' ')')
 
-UKM_EXECUTION_KOMPILED ::= .build/ukm-execution-kompiled
-UKM_EXECUTION_TIMESTAMP ::= $(UKM_EXECUTION_KOMPILED)/timestamp
+ULM_EXECUTION_KOMPILED ::= .build/ulm-execution-kompiled
+ULM_EXECUTION_TIMESTAMP ::= $(ULM_EXECUTION_KOMPILED)/timestamp
 
-UKM_PREPROCESSING_KOMPILED ::= .build/ukm-preprocessing-kompiled
-UKM_PREPROCESSING_TIMESTAMP ::= $(UKM_PREPROCESSING_KOMPILED)/timestamp
+ULM_PREPROCESSING_KOMPILED ::= .build/ulm-preprocessing-kompiled
+ULM_PREPROCESSING_TIMESTAMP ::= $(ULM_PREPROCESSING_KOMPILED)/timestamp
 
-UKM_TESTING_KOMPILED ::= .build/ukm-testing-kompiled
-UKM_TESTING_TIMESTAMP ::= $(UKM_TESTING_KOMPILED)/timestamp
+ULM_TESTING_KOMPILED ::= .build/ulm-testing-kompiled
+ULM_TESTING_TIMESTAMP ::= $(ULM_TESTING_KOMPILED)/timestamp
 
-UKM_CONTRACTS_TESTING_INPUT_DIR ::= tests/ukm-contracts
+ULM_CONTRACTS_TESTING_INPUT_DIR ::= tests/ulm-contracts
 
-UKM_NO_CONTRACT_TESTING_INPUT_DIR ::= tests/ukm-no-contract
-UKM_NO_CONTRACT_TESTING_OUTPUT_DIR ::= .build/ukm-no-contract/output
-UKM_NO_CONTRACT_TESTING_INPUTS ::= $(wildcard $(UKM_NO_CONTRACT_TESTING_INPUT_DIR)/*.run)
-UKM_NO_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(UKM_NO_CONTRACT_TESTING_INPUT_DIR)/%,$(UKM_NO_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(UKM_NO_CONTRACT_TESTING_INPUTS))
+ULM_NO_CONTRACT_TESTING_INPUT_DIR ::= tests/ulm-no-contract
+ULM_NO_CONTRACT_TESTING_OUTPUT_DIR ::= .build/ulm-no-contract/output
+ULM_NO_CONTRACT_TESTING_INPUTS ::= $(wildcard $(ULM_NO_CONTRACT_TESTING_INPUT_DIR)/*.run)
+ULM_NO_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(ULM_NO_CONTRACT_TESTING_INPUT_DIR)/%,$(ULM_NO_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(ULM_NO_CONTRACT_TESTING_INPUTS))
 
-UKM_WITH_CONTRACT_TESTING_INPUT_DIR ::= tests/ukm-with-contract
-UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR ::= .build/ukm-with-contract/output
-UKM_WITH_CONTRACT_TESTING_INPUTS ::= $(wildcard $(UKM_WITH_CONTRACT_TESTING_INPUT_DIR)/*.run)
-UKM_WITH_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(UKM_WITH_CONTRACT_TESTING_INPUT_DIR)/%,$(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(UKM_WITH_CONTRACT_TESTING_INPUTS))
+ULM_WITH_CONTRACT_TESTING_INPUT_DIR ::= tests/ulm-with-contract
+ULM_WITH_CONTRACT_TESTING_OUTPUT_DIR ::= .build/ulm-with-contract/output
+ULM_WITH_CONTRACT_TESTING_INPUTS ::= $(wildcard $(ULM_WITH_CONTRACT_TESTING_INPUT_DIR)/*.run)
+ULM_WITH_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(ULM_WITH_CONTRACT_TESTING_INPUT_DIR)/%,$(ULM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(ULM_WITH_CONTRACT_TESTING_INPUTS))
 
-.PHONY: clean build build-legacy test test-legacy syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test ukm-no-contracts-test
+.PHONY: clean build build-legacy test test-legacy syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test ulm-no-contracts-test
 
 all: build test
 
@@ -96,9 +96,9 @@ clean:
 
 build: $(RUST_PREPROCESSING_TIMESTAMP) \
 				$(RUST_EXECUTION_TIMESTAMP) \
-				$(UKM_EXECUTION_TIMESTAMP) \
-				$(UKM_PREPROCESSING_TIMESTAMP) \
-				$(UKM_TESTING_TIMESTAMP)
+				$(ULM_EXECUTION_TIMESTAMP) \
+				$(ULM_PREPROCESSING_TIMESTAMP) \
+				$(ULM_TESTING_TIMESTAMP)
 
 build-legacy: \
 		$(MX_TESTING_TIMESTAMP) \
@@ -108,7 +108,7 @@ build-legacy: \
 		$(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP)
 
 
-test: build syntax-test preprocessing-test execution-test crates-test ukm-no-contracts-test ukm-with-contracts-test
+test: build syntax-test preprocessing-test execution-test crates-test ulm-no-contracts-test ulm-with-contracts-test
 
 test-legacy: mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test
 
@@ -130,9 +130,9 @@ mx-rust-two-contracts-test: $(MX_RUST_TWO_CONTRACTS_TESTING_OUTPUTS)
 
 demos-test: $(DEMOS_TESTING_OUTPUTS)
 
-ukm-no-contracts-test: $(UKM_NO_CONTRACT_TESTING_OUTPUTS)
+ulm-no-contracts-test: $(ULM_NO_CONTRACT_TESTING_OUTPUTS)
 
-ukm-with-contracts-test: $(UKM_WITH_CONTRACT_TESTING_OUTPUTS)
+ulm-with-contracts-test: $(ULM_WITH_CONTRACT_TESTING_OUTPUTS)
 
 deps/blockchain-k-plugin/build/krypto/lib/krypto.a:
 	make -C deps/blockchain-k-plugin build
@@ -184,37 +184,37 @@ $(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTI
 			-I . \
 			--debug
 
-$(UKM_EXECUTION_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
+$(ULM_EXECUTION_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
-	-rm -r $(UKM_EXECUTION_KOMPILED)
-	$$(which kompile) ukm-semantics/targets/execution/ukm-target.md  \
+	-rm -r $(ULM_EXECUTION_KOMPILED)
+	$$(which kompile) ulm-semantics/targets/execution/ulm-target.md  \
 			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
-			--emit-json -o $(UKM_EXECUTION_KOMPILED) \
+			--emit-json -o $(ULM_EXECUTION_KOMPILED) \
 			-I kllvm \
 			-I deps/blockchain-k-plugin \
 			-I . \
 			--debug
 
-$(UKM_PREPROCESSING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
+$(ULM_PREPROCESSING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
-	-rm -r $(UKM_PREPROCESSING_KOMPILED)
-	$$(which kompile) ukm-semantics/targets/preprocessing/ukm-target.md  \
+	-rm -r $(ULM_PREPROCESSING_KOMPILED)
+	$$(which kompile) ulm-semantics/targets/preprocessing/ulm-target.md  \
 			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
-			--emit-json -o $(UKM_PREPROCESSING_KOMPILED) \
+			--emit-json -o $(ULM_PREPROCESSING_KOMPILED) \
 			-I . \
 			-I deps/blockchain-k-plugin \
 			--debug
 
-$(UKM_TESTING_TIMESTAMP): $(UKM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
+$(ULM_TESTING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
-	-rm -r $(UKM_TESTING_KOMPILED)
-	$$(which kompile) ukm-semantics/targets/testing/ukm-target.md  \
+	-rm -r $(ULM_TESTING_KOMPILED)
+	$$(which kompile) ulm-semantics/targets/testing/ulm-target.md  \
 			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			${PLUGIN_FLAGS} \
-			--emit-json -o $(UKM_TESTING_KOMPILED) \
+			--emit-json -o $(ULM_TESTING_KOMPILED) \
 			-I . \
 			-I deps/blockchain-k-plugin \
 			-I kllvm \
@@ -408,26 +408,26 @@ $(CRATES_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 
 # TODO: Add $(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs
 # as a dependency
-$(UKM_NO_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
-			$(UKM_NO_CONTRACT_TESTING_INPUT_DIR)/%.run \
-			$(UKM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs \
-			$(UKM_CONTRACTS_TESTING_INPUT_DIR)/ukm.rs \
-			$(UKM_TESTING_TIMESTAMP) \
+$(ULM_NO_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
+			$(ULM_NO_CONTRACT_TESTING_INPUT_DIR)/%.run \
+			$(ULM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs \
+			$(ULM_CONTRACTS_TESTING_INPUT_DIR)/ulm.rs \
+			$(ULM_TESTING_TIMESTAMP) \
 			$(wildcard parsers/inc-*.sh) \
-			parsers/crates-ukm-testing-execution.sh \
-			parsers/test-ukm-testing-execution.sh
-	mkdir -p $(UKM_NO_CONTRACT_TESTING_OUTPUT_DIR)
+			parsers/crates-ulm-testing-execution.sh \
+			parsers/test-ulm-testing-execution.sh
+	mkdir -p $(ULM_NO_CONTRACT_TESTING_OUTPUT_DIR)
 
 	echo "<(<" > $@.in.tmp
 	echo "::bytes_hooks" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
-	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
+	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	# echo "<(<" > $@.in.tmp
-	# echo "::ukm" >> $@.in.tmp
+	# echo "::ulm" >> $@.in.tmp
 	# echo "<|>" >> $@.in.tmp
-	# cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/ukm.rs >> $@.in.tmp
+	# cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/ulm.rs >> $@.in.tmp
 	# echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
@@ -438,68 +438,68 @@ $(UKM_NO_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 
 	krun \
 		$@.in.tmp \
-		--parser $(CURDIR)/parsers/crates-ukm-testing-execution.sh \
-		--definition $(UKM_TESTING_KOMPILED) \
+		--parser $(CURDIR)/parsers/crates-ulm-testing-execution.sh \
+		--definition $(ULM_TESTING_KOMPILED) \
 		--output kore \
 		--output-file $@.tmp \
 		-cTEST='$(shell cat $<)' \
-		-pTEST=$(CURDIR)/parsers/test-ukm-testing-execution.sh
+		-pTEST=$(CURDIR)/parsers/test-ulm-testing-execution.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@
 
 
 # TODO: Add $(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs
 # as a dependency
-$(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
-			$(UKM_WITH_CONTRACT_TESTING_INPUT_DIR)/%.run \
-			$(UKM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs \
-			$(UKM_CONTRACTS_TESTING_INPUT_DIR)/ukm.rs \
-			$(UKM_TESTING_TIMESTAMP) \
+$(ULM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
+			$(ULM_WITH_CONTRACT_TESTING_INPUT_DIR)/%.run \
+			$(ULM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs \
+			$(ULM_CONTRACTS_TESTING_INPUT_DIR)/ulm.rs \
+			$(ULM_TESTING_TIMESTAMP) \
 			$(wildcard parsers/inc-*.sh) \
-			parsers/crates-ukm-testing-execution.sh \
-			parsers/test-ukm-testing-execution.sh
-	mkdir -p $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)
+			parsers/crates-ulm-testing-execution.sh \
+			parsers/test-ulm-testing-execution.sh
+	mkdir -p $(ULM_WITH_CONTRACT_TESTING_OUTPUT_DIR)
 
 	echo "<(<" > $@.in.tmp
 	echo "::address" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
-	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/address.rs >> $@.in.tmp
+	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/address.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
 	echo "::bytes_hooks" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
-	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
+	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
 	echo "::test_helpers" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
-	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/test_helpers.rs >> $@.in.tmp
+	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/test_helpers.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
 	echo "::helpers" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
-	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/helpers.rs >> $@.in.tmp
+	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/helpers.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
 	echo "::state_hooks" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
-	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/state_hooks.rs >> $@.in.tmp
+	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/state_hooks.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
 	echo "::single_value_mapper" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
-	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/single_value_mapper.rs >> $@.in.tmp
+	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/single_value_mapper.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
-	echo "::ukm" >> $@.in.tmp
+	echo "::ulm" >> $@.in.tmp
 	echo "<|>" >> $@.in.tmp
-	cat $(UKM_CONTRACTS_TESTING_INPUT_DIR)/ukm.rs >> $@.in.tmp
+	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/ulm.rs >> $@.in.tmp
 	echo ">)>" >> $@.in.tmp
 
 	echo "<(<" >> $@.in.tmp
@@ -510,11 +510,11 @@ $(UKM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 
 	krun \
 		$@.in.tmp \
-		--parser $(CURDIR)/parsers/crates-ukm-testing-execution.sh \
-		--definition $(UKM_TESTING_KOMPILED) \
+		--parser $(CURDIR)/parsers/crates-ulm-testing-execution.sh \
+		--definition $(ULM_TESTING_KOMPILED) \
 		--output kore \
 		--output-file $@.tmp \
 		-cTEST='$(shell cat $<)' \
-		-pTEST=$(CURDIR)/parsers/test-ukm-testing-execution.sh
+		-pTEST=$(CURDIR)/parsers/test-ulm-testing-execution.sh
 	cat $@.tmp | grep -q "Lbl'-LT-'k'-GT-'{}(dotk{}())"
 	mv -f $@.tmp $@

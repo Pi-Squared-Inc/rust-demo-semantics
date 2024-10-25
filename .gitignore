@@ -1,5 +1,4 @@
 .build
 .DS_store
-blockchain-k-plugin
 tmp
 tmp.*

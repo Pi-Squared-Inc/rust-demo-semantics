@@ -4,4 +4,4 @@
 
 set -e
 
-compilation/prepare-contract.sh tests/ukm-contracts/erc_20_token.rs "1000000000000000000_u256,"
+compilation/prepare-contract.sh tests/ulm-contracts/erc_20_token.rs "1000000000000000000_u256,"
