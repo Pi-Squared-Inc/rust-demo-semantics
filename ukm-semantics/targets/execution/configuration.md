@@ -13,7 +13,7 @@ module COMMON-K-CELL
     configuration
         <k>
             ukmDecodePreprocessedCell($PGM:Bytes)
-            ~> ukmExecute($ACCTCODE:Int, $GAS:Int)
+            ~> ukmExecute($CREATE:Bool, $PGM:Bytes, $ACCTCODE:Int, $GAS:Int)
         </k>
 endmodule
 

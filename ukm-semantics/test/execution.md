@@ -25,7 +25,10 @@ module UKM-TEST-SYNTAX
                             | "list_mock" UkmHook UkmHookResult
                             | "encode_call_data"
                             | "encode_call_data_to_string"
+                            | "encode_constructor_data"
                             | "call_contract" Int
+                            | "init_contract" Int
+                            | "clear_pgm"
                             | "hold" KItem 
                             | "output_to_arg"
                             | "push_status"
@@ -56,7 +59,7 @@ module UKM-TEST-EXECUTION
     imports private UKM-HOOKS-UKM-SYNTAX
     imports private UKM-REPRESENTATION
     imports private UKM-TEST-SYNTAX
-    imports RUST-SHARED-SYNTAX
+    imports private RUST-SHARED-SYNTAX
     imports private BYTES
 
     syntax Mockable ::= UkmHook
@@ -111,6 +114,17 @@ module UKM-TEST-EXECUTION
             ...
          </k> [owise]
 
+    rule <k> encode_constructor_data
+             ~> list_values_holder ARGS , list_values_holder PTYPES , .UKMTestTypeHolderList
+             => ukmBytesNew(encodeConstructorData(PTYPES, ARGS)) 
+            ...
+         </k> 
+
+    rule <k> encode_constructor_data
+             => ukmBytesNew(encodeConstructorData(.List, .List)) 
+            ...
+         </k> [owise]
+
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>
         <test-stack>
@@ -128,7 +142,11 @@ module UKM-TEST-EXECUTION
     rule mock Hook:UkmHook Result:UkmHookResult => mock(Hook, Result)
     rule list_mock Hook:UkmHook Result:UkmHookResult => listMock(Hook, Result)
 
-    rule call_contract Account => ukmExecute(Account, 100)
+    rule call_contract Account => ukmExecute(false, .Bytes, Account, 100)
+
+    rule init_contract Account => ukmExecute(true, b"init", Account, 100)
+
+    rule (V:PtrValue ~> b"init" ~> clear_pgm) => V
 
     rule
         <k>

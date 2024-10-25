@@ -117,22 +117,27 @@ module UKM-PREPROCESSING-ENDPOINTS
                         typePathToPathInExpression(append(TypePath, dispatcherMethodIdentifier))
                     </method-name>
                     <method-params>
-                        self : $selftype , gas : u64, .NormalizedFunctionParameterList
+                        self : $selftype , create : bool , gas : u64 , .NormalizedFunctionParameterList
                     </method-params>
                     <method-return-type> ():Type </method-return-type>
                     <method-implementation>
                         block({
                             .InnerAttributes
-                            concatNonEmptyStatements
-                                (   let buffer_id = :: ukm :: CallData();
-                                    let ( buffer_id | .PatternNoTopAlts
-                                        , signature | .PatternNoTopAlts
-                                        , .Patterns
-                                        ) = decodeSignature(buffer_id);
-                                    .NonEmptyStatements
-                                ,   signatureToCall(signature, keys_list(Signatures), Signatures, buffer_id, gas)
-                                    .NonEmptyStatements
-                                )
+                            let buffer_id = :: ukm :: CallData();
+                            if create {
+                                .InnerAttributes
+                                self . ukmWrap##init ( buffer_id , gas , .CallParamsList );
+                                .NonEmptyStatements
+                            } else {
+                                .InnerAttributes
+                                let ( buffer_id | .PatternNoTopAlts
+                                    , signature | .PatternNoTopAlts
+                                    , .Patterns
+                                    ) = decodeSignature(buffer_id);
+                                signatureToCall(signature, keys_list(Signatures), Signatures, buffer_id, gas)
+                                .NonEmptyStatements
+                            };
+                            .NonEmptyStatements
                         })
                     </method-implementation>
                     <method-outer-attributes> `emptyOuterAttributes`(.KList) </method-outer-attributes>
@@ -142,6 +147,7 @@ module UKM-PREPROCESSING-ENDPOINTS
         </methods>
 
     syntax Identifier ::= "buffer_id"  [token]
+                        | "create"  [token]
                         | "signature"  [token]
                         | "gas"  [token]
                         | "state_hooks"  [token]
@@ -170,6 +176,7 @@ module UKM-PREPROCESSING-ENDPOINTS
                         | "empty"  [token]
                         | "equals"  [token]
                         | "ukm"  [token]
+                        | "ukmWrap##init"  [token]
                         | "CallData"  [token]
                         | "EVMC_BAD_JUMP_DESTINATION"  [token]
                         | "EVMC_SUCCESS"  [token]
