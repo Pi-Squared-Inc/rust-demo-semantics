@@ -1,0 +1,263 @@
+list_mock GetAccountStorageHook ( 7809087261546347641 ) ulmIntResult(0, u256);
+list_mock SetAccountStorageHook ( 7809087261546347641 , 10000 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(0, u256);
+list_mock SetAccountStorageHook ( 7089066454178295295 , 10000 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(10000, u256);
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(10000, u256);
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(10000, u256);
+list_mock SetAccountStorageHook ( 7089066454178295295 , 9900 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454179379067 ) ulmIntResult(0, u256);
+list_mock SetAccountStorageHook ( 7089066454179379067 , 100 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9900, u256);
+list_mock GetAccountStorageHook ( 7089066454179379067 ) ulmIntResult(100, u256);
+list_mock SetAccountStorageHook ( 7089066454178299391 , 200 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454178299391 ) ulmIntResult(200, u256);
+list_mock SetAccountStorageHook ( 7089066454178299391 , 0 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9900, u256);
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9900, u256);
+list_mock SetAccountStorageHook ( 7089066454178295295 , 9700 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454179379067 ) ulmIntResult(100, u256);
+list_mock SetAccountStorageHook ( 7089066454179379067 , 300 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9700, u256);
+list_mock GetAccountStorageHook ( 7089066454179379067 ) ulmIntResult(300, u256);
+
+push "uint256";
+hold_list_values_from_test_stack; 
+push 10000_u256;
+hold_list_values_from_test_stack; 
+encode_constructor_data; 
+
+
+return_value;
+mock CallData;
+
+push_value 1010101_u160;
+mock Caller;
+
+init_contract 12345;
+clear_pgm;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: bytes_hooks :: length;
+return_value;
+
+check_eq 0_u32;
+
+
+
+push "balanceOf";
+hold_string_from_test_stack; 
+push "uint160"; 
+hold_list_values_from_test_stack; 
+push 1010101_u160;
+hold_list_values_from_test_stack; 
+encode_call_data; 
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 10000_u256;
+
+
+push "transfer";
+hold_string_from_test_stack;
+push "uint160"; 
+push "uint256"; 
+hold_list_values_from_test_stack; 
+push 2020202_u160;
+push 100_u256;
+hold_list_values_from_test_stack; 
+encode_call_data; 
+return_value;
+mock CallData;
+
+push_value 1010101_u160;
+mock Caller;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u64;
+return_value;
+
+check_eq 1_u64;
+
+
+push "balanceOf";
+hold_string_from_test_stack;
+push "uint160";
+hold_list_values_from_test_stack; 
+push 1010101_u160;
+hold_list_values_from_test_stack; 
+encode_call_data; 
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 9900_u256;
+
+
+push "balanceOf";
+hold_string_from_test_stack; 
+push "uint160";
+hold_list_values_from_test_stack; 
+push 2020202_u160;
+hold_list_values_from_test_stack;
+encode_call_data; 
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 100_u256;
+
+
+push "approve";
+hold_string_from_test_stack;
+push "uint160"; 
+push "uint256"; 
+hold_list_values_from_test_stack; 
+push 3030303_u160;
+push 200_u256;
+hold_list_values_from_test_stack;
+encode_call_data; 
+return_value;
+mock CallData;
+
+push_value 1010101_u160;
+mock Caller;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u64;
+return_value;
+
+check_eq 1_u64;
+
+
+push "transferFrom";
+hold_string_from_test_stack;
+push "uint160";
+push "uint160";
+push "uint256";
+hold_list_values_from_test_stack;
+push 1010101_u160;
+push 2020202_u160;
+push 200_u256;
+hold_list_values_from_test_stack;
+encode_call_data; 
+return_value;
+mock CallData;
+
+push_value 3030303_u160;
+mock Caller;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u64;
+return_value;
+
+check_eq 1_u64;
+
+
+
+push "balanceOf";
+hold_string_from_test_stack;
+push "uint160";
+hold_list_values_from_test_stack;
+push 1010101_u160;
+hold_list_values_from_test_stack;
+encode_call_data; 
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 9700_u256;
+
+
+
+push "balanceOf";
+hold_string_from_test_stack;
+push "uint160";
+hold_list_values_from_test_stack;
+push 2020202_u160;
+hold_list_values_from_test_stack;
+encode_call_data; 
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 300_u256
+
+
