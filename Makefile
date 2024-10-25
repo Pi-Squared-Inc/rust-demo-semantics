@@ -418,23 +418,7 @@ $(ULM_NO_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 			parsers/test-ulm-testing-execution.sh
 	mkdir -p $(ULM_NO_CONTRACT_TESTING_OUTPUT_DIR)
 
-	echo "<(<" > $@.in.tmp
-	echo "::bytes_hooks" >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
-
-	# echo "<(<" > $@.in.tmp
-	# echo "::ulm" >> $@.in.tmp
-	# echo "<|>" >> $@.in.tmp
-	# cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/ulm.rs >> $@.in.tmp
-	# echo ">)>" >> $@.in.tmp
-
-	echo "<(<" >> $@.in.tmp
-	echo "$<" | sed 's%^.*/%%' | sed 's/\..*//' | sed 's/^/::/' >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat "$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
+	compilation/prepare-rust-bundle.sh "$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" "$@.in.tmp"
 
 	krun \
 		$@.in.tmp \
@@ -460,53 +444,7 @@ $(ULM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.run.executed.kore: \
 			parsers/test-ulm-testing-execution.sh
 	mkdir -p $(ULM_WITH_CONTRACT_TESTING_OUTPUT_DIR)
 
-	echo "<(<" > $@.in.tmp
-	echo "::address" >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/address.rs >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
-
-	echo "<(<" >> $@.in.tmp
-	echo "::bytes_hooks" >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/bytes_hooks.rs >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
-
-	echo "<(<" >> $@.in.tmp
-	echo "::test_helpers" >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/test_helpers.rs >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
-
-	echo "<(<" >> $@.in.tmp
-	echo "::helpers" >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/helpers.rs >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
-
-	echo "<(<" >> $@.in.tmp
-	echo "::state_hooks" >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/state_hooks.rs >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
-
-	echo "<(<" >> $@.in.tmp
-	echo "::single_value_mapper" >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/single_value_mapper.rs >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
-
-	echo "<(<" >> $@.in.tmp
-	echo "::ulm" >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat $(ULM_CONTRACTS_TESTING_INPUT_DIR)/ulm.rs >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
-
-	echo "<(<" >> $@.in.tmp
-	echo "$<" | sed 's%^.*/%%' | sed 's/\..*//' | sed 's/^/::/' >> $@.in.tmp
-	echo "<|>" >> $@.in.tmp
-	cat "$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" >> $@.in.tmp
-	echo ">)>" >> $@.in.tmp
+	compilation/prepare-rust-bundle.sh "$(shell echo "$<" | sed 's/\.[^.]*.run$$//').rs" "$@.in.tmp"
 
 	krun \
 		$@.in.tmp \
