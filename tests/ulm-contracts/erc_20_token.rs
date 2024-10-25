@@ -13,55 +13,20 @@
 #[allow(unused_imports)]
 use ulm::*;
 
-/* ----------------------------------------------------------------------------
-
-TODOs:
-    - Integers are all u64 at the moment. Implement u256 and modify appropriately;
-    - Reuse the implementation of ManagedBuffer for strings, and the annotations for
-      the contract trait identification, as well as views, storage mappers, update, and
-      inits;
-    - Support some sort of struct for implementing MessageResult within the ULM module.
-      We also have to figure out the contents of MessageResult.
-
-Observations:
-    - ManagedAddress was replaced by an integer to fit the behaviors of ULM;
-
----------------------------------------------------------------------------- */
-
 #[ulm::contract]
 pub trait Erc20Token {
-    // #[view(totalSupply)]
     #[storage_mapper("total_supply")]
     fn s_total_supply(&self) -> ::single_value_mapper::SingleValueMapper<u256>;
 
-    // #[view(getName)]
-    #[storage_mapper("name")]
-    fn s_name(&self) -> ::single_value_mapper::SingleValueMapper<ManagedBuffer>;
-
-    // #[view(getSymbol)]
-    #[storage_mapper("symbol")]
-    fn s_symbol(&self) -> ::single_value_mapper::SingleValueMapper<ManagedBuffer>;
-
-    // #[view(getBalances)]
     #[storage_mapper("balances")]
     fn s_balances(&self, address: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
 
-    // #[view(getAllowances)]
     #[storage_mapper("balances")]
     fn s_allowances(&self, account: u160, spender: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
 
-    #[event("Transfer")]
-    fn transfer_event(&self, #[indexed] from: u160, #[indexed] to: u160, value: u256);
-
-    #[event("Approval")]
-    fn approval_event(&self, #[indexed] owner: u160, #[indexed] spender: u160, value: u256);
-
-
     #[init]
-    fn init(&self, /*name: &ManagedBuffer, symbol: &ManagedBuffer, */init_supply: u256) {
-        // self.s_name().set_if_empty(name);
-        // self.s_symbol().set_if_empty(symbol);
-        self._mint(::ulm::Caller(), init_supply);
+    fn init(&self) {
+        let x = 0_u64;
     }
 
     #[upgrade]
@@ -72,19 +37,9 @@ pub trait Erc20Token {
         18
     }
 
-    #[view(totalSupply)]
-    fn total_supply(&self) -> u256 {
-        self.s_total_supply().get()
-    }
-
-    // #[view(name)]
-    // fn name(&self) -> ManagedBuffer {
-    //     self.s_name().get()
-    // }
-
-    // #[view(symbol)]
-    // fn symbol(&self) -> ManagedBuffer {
-    //     self.s_symbol().get()
+    // #[view(totalSupply)]
+    // fn total_supply(&self) -> u256 {
+    //     self.s_total_supply().get()
     // }
 
     #[view(balanceOf)]
@@ -99,10 +54,10 @@ pub trait Erc20Token {
         true
     }
 
-    #[view(allowance)]
-    fn allowance(&self, owner: u160, spender: u160) -> u256 {
-        self.s_allowances(owner, spender).get()
-    }
+    // #[view(allowance)]
+    // fn allowance(&self, owner: u160, spender: u160) -> u256 {
+    //     self.s_allowances(owner, spender).get()
+    // }
 
     #[endpoint(approve)]
     fn approve(&self, spender: u160, value: u256) -> bool {
@@ -123,7 +78,6 @@ pub trait Erc20Token {
         ::helpers::require(!::address::is_zero(from), "Invalid sender");
         ::helpers::require(!::address::is_zero(to), "Invalid receiver");
         self._update(from, to, value);
-        self.transfer_event(from, to, value);
     }
 
     fn _update(&self, from: u160, to: u160, value: u256) {
@@ -142,7 +96,8 @@ pub trait Erc20Token {
         }
     }
 
-    fn _mint(&self, account: u160, value: u256) {
+    #[endpoint(mint)]
+    fn mint(&self, account: u160, value: u256) {
         ::helpers::require(!::address::is_zero(account), "Zero address");
         self._update(0_u160, account, value);
     }
@@ -151,9 +106,6 @@ pub trait Erc20Token {
         ::helpers::require(!::address::is_zero(owner), "Invalid approver");
         ::helpers::require(!::address::is_zero(spender), "Invalid spender");
         self.s_allowances(owner, spender).set(value);
-        if emit_event {
-            self.approval_event(owner, spender, value);
-        }
     }
 
     fn _spend_allowance(&self, owner: u160, spender: u160, value: u256) {

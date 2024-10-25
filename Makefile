@@ -69,9 +69,6 @@ ULM_SEMANTICS_FILES ::= $(shell find ulm-semantics/ -type f -a '(' -name '*.md' 
 ULM_EXECUTION_KOMPILED ::= .build/ulm-execution-kompiled
 ULM_EXECUTION_TIMESTAMP ::= $(ULM_EXECUTION_KOMPILED)/timestamp
 
-ULM_PREPROCESSING_KOMPILED ::= .build/ulm-preprocessing-kompiled
-ULM_PREPROCESSING_TIMESTAMP ::= $(ULM_PREPROCESSING_KOMPILED)/timestamp
-
 ULM_TESTING_KOMPILED ::= .build/ulm-testing-kompiled
 ULM_TESTING_TIMESTAMP ::= $(ULM_TESTING_KOMPILED)/timestamp
 
@@ -87,6 +84,31 @@ ULM_WITH_CONTRACT_TESTING_OUTPUT_DIR ::= .build/ulm-with-contract/output
 ULM_WITH_CONTRACT_TESTING_INPUTS ::= $(wildcard $(ULM_WITH_CONTRACT_TESTING_INPUT_DIR)/*.run)
 ULM_WITH_CONTRACT_TESTING_OUTPUTS ::= $(patsubst $(ULM_WITH_CONTRACT_TESTING_INPUT_DIR)/%,$(ULM_WITH_CONTRACT_TESTING_OUTPUT_DIR)/%.executed.kore,$(ULM_WITH_CONTRACT_TESTING_INPUTS))
 
+CRYPTO_PLUGIN_FLAGS ::= \
+			-ccopt -lcrypto \
+			-ccopt -lsecp256k1 \
+			-ccopt -lssl \
+			-ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
+			-I deps/blockchain-k-plugin
+
+ULM_PLUGIN_FLAGS ::= \
+			-ccopt -L../ulm/kllvm \
+			-ccopt -lulmkllvm \
+			-ccopt ../ulm/kllvm/lang/ulm_language_entry.cpp \
+			-ccopt -I../ulm/kllvm \
+			-ccopt -DULM_LANG_ID=rust
+
+PLUGIN_FLAGS ::= --hook-namespaces 'KRYPTO ULM' \
+			-ccopt -g \
+			-ccopt -std=c++20 \
+			$(CRYPTO_PLUGIN_FLAGS) \
+			$(ULM_PLUGIN_FLAGS)
+
+CRYPTO_ONLY_PLUGIN_FLAGS ::= --hook-namespaces 'KRYPTO' \
+			-ccopt -g \
+			-ccopt -std=c++20 \
+			$(CRYPTO_PLUGIN_FLAGS)
+
 .PHONY: clean build build-legacy test test-legacy syntax-test preprocessing-test execution-test mx-test mx-rust-test mx-rust-contract-test mx-rust-two-contracts-test demos-test ulm-no-contracts-test
 
 all: build test
@@ -96,8 +118,6 @@ clean:
 
 build: $(RUST_PREPROCESSING_TIMESTAMP) \
 				$(RUST_EXECUTION_TIMESTAMP) \
-				$(ULM_EXECUTION_TIMESTAMP) \
-				$(ULM_PREPROCESSING_TIMESTAMP) \
 				$(ULM_TESTING_TIMESTAMP)
 
 build-legacy: \
@@ -134,8 +154,11 @@ ulm-no-contracts-test: $(ULM_NO_CONTRACT_TESTING_OUTPUTS)
 
 ulm-with-contracts-test: $(ULM_WITH_CONTRACT_TESTING_OUTPUTS)
 
+crypto-plugin: deps/blockchain-k-plugin/build/krypto/lib/krypto.a
+.PHONY: crypto-plugin
+
 deps/blockchain-k-plugin/build/krypto/lib/krypto.a:
-	make -C deps/blockchain-k-plugin build
+	$(MAKE) -C deps/blockchain-k-plugin build
 
 $(RUST_PREPROCESSING_TIMESTAMP): $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
@@ -188,35 +211,19 @@ $(ULM_EXECUTION_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(ULM_EXECUTION_KOMPILED)
 	$$(which kompile) ulm-semantics/targets/execution/ulm-target.md  \
-			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
-			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
+			${PLUGIN_FLAGS} \
 			--emit-json -o $(ULM_EXECUTION_KOMPILED) \
 			-I kllvm \
-			-I deps/blockchain-k-plugin \
 			-I . \
-			--debug
-
-$(ULM_PREPROCESSING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
-	# Workaround for https://github.com/runtimeverification/k/issues/4141
-	-rm -r $(ULM_PREPROCESSING_KOMPILED)
-	$$(which kompile) ulm-semantics/targets/preprocessing/ulm-target.md  \
-			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
-			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
-			--emit-json -o $(ULM_PREPROCESSING_KOMPILED) \
-			-I . \
-			-I deps/blockchain-k-plugin \
 			--debug
 
 $(ULM_TESTING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(ULM_TESTING_KOMPILED)
 	$$(which kompile) ulm-semantics/targets/testing/ulm-target.md  \
-			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
-			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
-			${PLUGIN_FLAGS} \
+			${CRYPTO_ONLY_PLUGIN_FLAGS} \
 			--emit-json -o $(ULM_TESTING_KOMPILED) \
 			-I . \
-			-I deps/blockchain-k-plugin \
 			-I kllvm \
 			--debug
 

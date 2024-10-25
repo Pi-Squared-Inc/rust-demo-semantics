@@ -203,7 +203,7 @@ module ULM-PREPROCESSING-ENDPOINTS
     rule signatureType(u32) => "uint32"
     rule signatureType(u64) => "uint64"
     rule signatureType(u128) => "uint128"
-    rule signatureType(u160) => "uint160"
+    rule signatureType(u160) => "address"
     rule signatureType(u256) => "uint256"
     rule signatureType(T) => error("Unknown type in signatureType:", ListItem(T))
         [owise]

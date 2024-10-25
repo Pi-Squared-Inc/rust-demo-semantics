@@ -24,7 +24,7 @@ compilation/prepare-erc20.sh
 ```
 
 The above will produce a configuration whose `<k>` cell contains
-`ulmEncodedPreprocessedCell(contract-bytes:Bytes)`
+`ulmPreprocessedContract(contract-bytes:Bytes)`
 
 Running the contract requires a different semantics (there main difference from
 the above is the setup of the `<k>` cell; there are other small differences, but

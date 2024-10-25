@@ -4,4 +4,9 @@
 
 set -e
 
-compilation/prepare-contract.sh tests/ulm-contracts/erc_20_token.rs "1000000000000000000_u256,"
+ULM_CONTRACTS_TESTING_INPUT_DIR=tests/ulm-contracts
+BUILD_DIR=.build/erc20
+
+mkdir -p $BUILD_DIR
+
+compilation/prepare-contract.sh $ULM_CONTRACTS_TESTING_INPUT_DIR/erc_20_token.rs $BUILD_DIR/erc20.kore

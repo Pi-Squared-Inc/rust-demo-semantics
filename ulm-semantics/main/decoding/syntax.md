@@ -3,7 +3,7 @@
 module ULM-DECODING-SYNTAX
     imports BYTES-SYNTAX
 
-    syntax ULMInstruction ::= ulmDecodePreprocessedCell(Bytes)
+    syntax ULMInstruction ::= ulmDecodeParseContract(Bytes)
 
 endmodule
 

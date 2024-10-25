@@ -3,16 +3,20 @@
 requires "../../main/configuration.md"
 requires "../../main/preprocessed-configuration.md"
 requires "rust-semantics/config.md"
+requires "rust-semantics/full-preprocessing.md"
+requires "rust-semantics/rust-common-syntax.md"
 
 module COMMON-K-CELL
     imports private BYTES-SYNTAX
     imports private INT-SYNTAX
     imports private ULM-DECODING-SYNTAX
     imports private ULM-EXECUTION-SYNTAX
+    imports private ULM-PREPROCESSING-SYNTAX
 
     configuration
         <k>
-            ulmDecodePreprocessedCell($PGM:Bytes)
+            ulmDecodeParseContract($PGM:Bytes)
+            ~> ulmPreprocessCrates
             ~> ulmExecute($CREATE:Bool, $PGM:Bytes, $ACCTCODE:Int, $GAS:Int)
         </k>
 endmodule
@@ -22,9 +26,11 @@ module ULM-TARGET-CONFIGURATION
     imports RUST-EXECUTION-CONFIGURATION
     imports ULM-CONFIGURATION
     imports ULM-FULL-PREPROCESSED-CONFIGURATION
+    imports ULM-PREPROCESSING-EPHEMERAL-CONFIGURATION
 
     configuration
         <ulm-full-preprocessed/>
+        <ulm-preprocessing-ephemeral/>
         <ulm/>
         <execution/>
         <k/>
