@@ -66,6 +66,9 @@ def trigger_exec_run(stripped_args: dict[str, Any]) -> None:
     execute = globals()[executor_name]
     execute(options)
 
+def exec_endpoints() -> None:
+    stripped_args = {'command': 'run', 'input_file': Path('../.build/ulm-with-contract/output/endpoints.1.run.executed.kore.in.tmp')}
+    trigger_exec_run(stripped_args)
 
 def exec_empty() -> None:
     stripped_args = {'command': 'run', 'input_file': Path('../tests/preprocessing/empty.rs')}

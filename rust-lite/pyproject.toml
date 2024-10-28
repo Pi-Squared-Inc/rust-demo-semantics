@@ -39,6 +39,7 @@ empty = "rust_lite.__main__:exec_empty"
 erc20 = "rust_lite.__main__:exec_erc20"
 lending = "rust_lite.__main__:exec_lending"
 staking = "rust_lite.__main__:exec_staking"
+endpoints = "rust_lite.__main__:exec_endpoints"
 
 [tool.isort]
 profile = "black"
