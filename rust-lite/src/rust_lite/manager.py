@@ -46,7 +46,12 @@ class RustLiteManager:
         kore_commands = KoreParser(returned_process.stdout).pattern()
         kast_commands = self.krun.kore_to_kast(kore_commands)
 
-        self.cterm = CTerm.from_kast(set_cell(self.cterm.config, 'K_CELL', KSequence([kast_commands])))
+        self.cterm = CTerm.from_kast(
+                set_cell(
+                    self.cterm.config, 'K_CELL', 
+                        KSequence(kast_commands, KApply('ulmPreprocessCrates_ULM-PREPROCESSING-SYNTAX_ULMInstruction'))
+                )
+            )
 
         pattern = self.krun.kast_to_kore(self.cterm.config, sort=GENERATED_TOP_CELL)
         output_kore = self.krun.run_pattern(pattern, pipe_stderr=False)
@@ -63,7 +68,6 @@ class RustLiteManager:
         print('K CELL TOP ELEMENT: ')
         for cell_content in k_cell_contents:
             print(cell_content)
-            break
 
     def print_constants_cell(self) -> None:
         cell = self.cterm.cell('CONSTANTS_CELL')
