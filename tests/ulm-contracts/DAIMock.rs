@@ -73,7 +73,7 @@ pub trait DAIMock {
     #[endpoint(transfer)]
     fn transfer(&self, to: u160, value: u256) -> bool {
         let owner = ::ulm::Caller();
-        self.transferFrom(&owner, to, &value);
+        self.transferFrom(&owner, to, &value)
     }
 
     #[endpoint(transferFrom)]
