@@ -36,8 +36,6 @@ mock Caller;
 
 init_contract 12345;
 clear_pgm;
-return_value;
-check_eq ();
 
 push_status;
 check_eq 2;
