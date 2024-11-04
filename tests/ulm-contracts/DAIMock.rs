@@ -10,7 +10,7 @@
 use ulm::*;
 
 #[ulm::contract]
-pub trait Erc20Token {
+pub trait DAIMock {
     #[storage_mapper("total_supply")]
     fn s_total_supply(&self) -> ::single_value_mapper::SingleValueMapper<u256>;
 
@@ -74,7 +74,6 @@ pub trait Erc20Token {
     fn transfer(&self, to: u160, value: u256) -> bool {
         let owner = ::ulm::Caller();
         self.transferFrom(&owner, to, &value);
-        true
     }
 
     #[endpoint(transferFrom)]
