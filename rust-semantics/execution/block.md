@@ -8,7 +8,7 @@ module RUST-BLOCK
     // https://doc.rust-lang.org/stable/reference/expressions/block-expr.html
     // https://doc.rust-lang.org/stable/reference/names/scopes.html
 
-    rule {.InnerAttributes}:BlockExpression => .K
+    rule {.InnerAttributes}:BlockExpression => ptrValue(null, tuple(.ValueList))
     // Pushin and popping the local state (without cleaing) should help with
     // variable shadowing
     rule {.InnerAttributes S:Statements}:BlockExpression
