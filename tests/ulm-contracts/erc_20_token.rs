@@ -25,9 +25,7 @@ pub trait Erc20Token {
     fn s_allowances(&self, account: u160, spender: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
 
     #[init]
-    fn init(&self) {
-        let x = 0_u64;
-    }
+    fn init(&self) {}
 
     #[upgrade]
     fn upgrade(&self) {}
