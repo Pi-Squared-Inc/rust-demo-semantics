@@ -58,10 +58,11 @@ pub trait Erc20Token {
 
 
     #[init]
-    fn init(&self, /*name: &ManagedBuffer, symbol: &ManagedBuffer, */init_supply: u256) {
+    fn init(&self, /*name: &ManagedBuffer, symbol: &ManagedBuffer, init_supply: u256*/) {
         // self.s_name().set_if_empty(name);
         // self.s_symbol().set_if_empty(symbol);
-        self._mint(::ulm::Caller(), init_supply);
+        // self._mint(::ulm::Caller(), init_supply);
+        let x = 0_u256;
     }
 
     #[upgrade]
@@ -117,6 +118,12 @@ pub trait Erc20Token {
         self._spend_allowance(from, &spender, value);
         self._transfer(from, to, value);
         true
+    }
+
+    #[endpoint(mint)]
+    fn mint(&self, account: u160, value: u256) {
+        ::helpers::require(!::address::is_zero(account), "Zero address");
+        self._update(0_u160, account, value);
     }
 
     fn _transfer(&self, from: u160, to: u160, value: u256) {

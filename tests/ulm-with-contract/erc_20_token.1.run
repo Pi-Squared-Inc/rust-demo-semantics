@@ -1,29 +1,27 @@
 list_mock GetAccountStorageHook ( 7809087261546347641 ) ulmIntResult(0, u256);
-list_mock SetAccountStorageHook ( 7809087261546347641 , 10000 ) ulmNoResult();
+list_mock SetAccountStorageHook ( 7809087261546347641 , 10000000000000000000000 ) ulmNoResult();
 list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(0, u256);
-list_mock SetAccountStorageHook ( 7089066454178295295 , 10000 ) ulmNoResult();
-list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(10000, u256);
-list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(10000, u256);
-list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(10000, u256);
-list_mock SetAccountStorageHook ( 7089066454178295295 , 9900 ) ulmNoResult();
+list_mock SetAccountStorageHook ( 7089066454178295295 , 10000000000000000000000 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(10000000000000000000000, u256);
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(10000000000000000000000, u256);
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(10000000000000000000000, u256);
+list_mock SetAccountStorageHook ( 7089066454178295295 , 9999999999999999999900 ) ulmNoResult();
 list_mock GetAccountStorageHook ( 7089066454179379067 ) ulmIntResult(0, u256);
 list_mock SetAccountStorageHook ( 7089066454179379067 , 100 ) ulmNoResult();
-list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9900, u256);
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9999999999999999999900, u256);
 list_mock GetAccountStorageHook ( 7089066454179379067 ) ulmIntResult(100, u256);
 list_mock SetAccountStorageHook ( 7089066454178299391 , 200 ) ulmNoResult();
 list_mock GetAccountStorageHook ( 7089066454178299391 ) ulmIntResult(200, u256);
 list_mock SetAccountStorageHook ( 7089066454178299391 , 0 ) ulmNoResult();
-list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9900, u256);
-list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9900, u256);
-list_mock SetAccountStorageHook ( 7089066454178295295 , 9700 ) ulmNoResult();
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9999999999999999999900, u256);
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9999999999999999999900, u256);
+list_mock SetAccountStorageHook ( 7089066454178295295 , 9999999999999999999700 ) ulmNoResult();
 list_mock GetAccountStorageHook ( 7089066454179379067 ) ulmIntResult(100, u256);
 list_mock SetAccountStorageHook ( 7089066454179379067 , 300 ) ulmNoResult();
-list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9700, u256);
+list_mock GetAccountStorageHook ( 7089066454178295295 ) ulmIntResult(9999999999999999999700, u256);
 list_mock GetAccountStorageHook ( 7089066454179379067 ) ulmIntResult(300, u256);
 
-push "uint256";
 hold_list_values_from_test_stack; 
-push 10000_u256;
 hold_list_values_from_test_stack; 
 encode_constructor_data; 
 
@@ -48,6 +46,27 @@ check_eq 0_u32;
 
 
 
+push "mint";
+hold_string_from_test_stack; 
+push "address"; 
+push "uint256"; 
+hold_list_values_from_test_stack; 
+push 1010101_u160;
+push 10_000_000_000_000_000_000_000_u256;
+hold_list_values_from_test_stack; 
+encode_call_data;
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+
+
 push "balanceOf";
 hold_string_from_test_stack; 
 push "address"; 
@@ -69,7 +88,7 @@ output_to_arg;
 call :: test_helpers :: decode_single_u256;
 return_value;
 
-check_eq 10000_u256;
+check_eq 10_000_000_000_000_000_000_000_u256;
 
 
 push "transfer";
@@ -122,7 +141,7 @@ output_to_arg;
 call :: test_helpers :: decode_single_u256;
 return_value;
 
-check_eq 9900_u256;
+check_eq 9_999_999_999_999_999_999_900_u256;
 
 
 push "balanceOf";
@@ -231,7 +250,7 @@ output_to_arg;
 call :: test_helpers :: decode_single_u256;
 return_value;
 
-check_eq 9700_u256;
+check_eq 9_999_999_999_999_999_999_700_u256;
 
 
 
