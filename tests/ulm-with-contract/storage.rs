@@ -8,6 +8,9 @@ pub trait Storage {
   #[storage_mapper("myData")]
   fn my_data(&self) -> ::single_value_mapper::SingleValueMapper<u64>;
 
+  #[storage_mapper("myData256")]
+  fn my_data_256(&self) -> ::single_value_mapper::SingleValueMapper<u256>;
+
   #[storage_mapper("myDataKey")]
   fn my_data_key(&self, key: u64) -> ::single_value_mapper::SingleValueMapper<u64>;
 
@@ -22,6 +25,16 @@ pub trait Storage {
   #[endpoint(getMyData)]
   fn get(&self) -> u64 {
       self.my_data().get()
+  }
+
+  #[endpoint(setMyData256)]
+  fn set_256(&self, value: u256) {
+      self.my_data_256().set(value)
+  }
+
+  #[endpoint(getMyData256)]
+  fn get_256(&self) -> u256 {
+      self.my_data_256().get()
   }
 
   #[endpoint(setMyDataKey)]

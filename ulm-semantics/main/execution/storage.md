@@ -13,6 +13,7 @@ module ULM-EXECUTION-STORAGE
                         | "single_value_mapper"  [token]
                         | "SingleValueMapper"  [token]
                         | "ulm"  [token]
+                        | "value_type"  [token]
 
     rule normalizedFunctionCall
             ( :: single_value_mapper :: SingleValueMapper :: set :: .PathExprSegments
@@ -20,7 +21,7 @@ module ULM-EXECUTION-STORAGE
             )
         =>  :: ulm :: SetAccountStorage :: .PathExprSegments
             ( SelfPtr . key
-            , ulmCast(ValuePtr, ptrValue(null, rustType(u64)))
+            , ulmCast(ValuePtr, SelfPtr . value_type)
             , .CallParamsList
             )
 
@@ -28,10 +29,13 @@ module ULM-EXECUTION-STORAGE
             ( :: single_value_mapper :: SingleValueMapper :: get :: .PathExprSegments
             , (SelfPtr:Ptr , .PtrList)
             )
-        =>  :: ulm :: GetAccountStorage :: .PathExprSegments
-            ( SelfPtr . key
-            , .CallParamsList
-            )
+        =>  ulmCast
+                ( :: ulm :: GetAccountStorage :: .PathExprSegments
+                    ( SelfPtr . key
+                    , .CallParamsList
+                    )
+                , SelfPtr . value_type
+                )
 
 endmodule
 
