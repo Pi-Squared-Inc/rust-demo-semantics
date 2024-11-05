@@ -1,4 +1,4 @@
-// Tis contract is a translation of https://github.com/Pi-Squared-Inc/solidity-demo-semantics/blob/f1204ebfed3b3c133735efe5186bcc02cf288074/test/demo-contracts/UniswapV2SwapRenamed.DAI.sol
+// This contract is a translation of https://github.com/Pi-Squared-Inc/solidity-demo-semantics/blob/f1204ebfed3b3c133735efe5186bcc02cf288074/test/demo-contracts/UniswapV2SwapRenamed.DAI.sol
 
 // The main differences are
 // - we include an init method
