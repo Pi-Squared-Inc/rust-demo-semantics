@@ -89,3 +89,19 @@ balanceOf_token_tx['data'] = balanceOf_token_data2
 
 balance = w3.eth.call(balanceOf_token_tx)
 print('balance:', balance)
+
+decimals_token_tx = {
+  'from': sender.address,
+  'data': balanceOf_token_data,
+  'to': token_address,
+  'value': 0,
+  'gas': 11000000,
+  'maxFeePerGas': 2000000000,
+  'maxPriorityFeePerGas': 1000000000,
+}
+
+decimals_token_data2 = '313ce567'
+decimals_token_tx['data'] = decimals_token_data2
+
+decimals = w3.eth.call(decimals_token_tx)
+print('decimals:', decimals)
