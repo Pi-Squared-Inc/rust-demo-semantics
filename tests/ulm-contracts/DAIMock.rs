@@ -17,7 +17,7 @@ pub trait DAIMock {
     #[storage_mapper("balances")]
     fn s_balances(&self, address: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
 
-    #[storage_mapper("allowances")]
+    #[storage_mapper("balances")]
     fn s_allowances(&self, account: u160, spender: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
 
     #[view(totalSupply)]
@@ -80,9 +80,11 @@ pub trait DAIMock {
     fn transferFrom(&self, from: u160, to: u160, value: u256) -> bool {
         ::helpers::require(self.s_balances(from).get() >= value, "Dai/insufficient-balance");
         let spender = ::ulm::Caller();
-        if from != spender && self.s_allowances(from, spender).get() != 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff {
+        if from != spender {
+            if self.s_allowances(from, spender).get() != 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff {
             ::helpers::require(self.s_allowances(from, spender).get() >= value, "Dai/insufficient-allowance");
             self.s_allowances(from, spender).set(self.s_allowances(from, spender).get() - value);
+            };
         };
         self.s_balances(from).set(self.s_balances(from).get() - value);
         self.s_balances(to).set(self.s_balances(to).get() + value);
