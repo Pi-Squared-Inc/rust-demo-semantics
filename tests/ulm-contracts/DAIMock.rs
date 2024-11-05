@@ -80,11 +80,9 @@ pub trait DAIMock {
     fn transferFrom(&self, from: u160, to: u160, value: u256) -> bool {
         ::helpers::require(self.s_balances(from).get() >= value, "Dai/insufficient-balance");
         let spender = ::ulm::Caller();
-        if from != spender {
-            if self.s_allowances(from, spender).get() != 18446744073709551615_u256 { // 2^64-1
+        if from != spender && self.s_allowances(from, spender).get() != 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff_u256 {
             ::helpers::require(self.s_allowances(from, spender).get() >= value, "Dai/insufficient-allowance");
             self.s_allowances(from, spender).set(self.s_allowances(from, spender).get() - value);
-            };
         };
         self.s_balances(from).set(self.s_balances(from).get() - value);
         self.s_balances(to).set(self.s_balances(to).get() + value);
