@@ -81,7 +81,7 @@ pub trait DAIMock {
         ::helpers::require(self.s_balances(from).get() >= value, "Dai/insufficient-balance");
         let spender = ::ulm::Caller();
         if from != spender {
-            if self.s_allowances(from, spender).get() != 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff {
+            if self.s_allowances(from, spender).get() != 18446744073709551615_u256 { // 2^64-1
             ::helpers::require(self.s_allowances(from, spender).get() >= value, "Dai/insufficient-allowance");
             self.s_allowances(from, spender).set(self.s_allowances(from, spender).get() - value);
             };
