@@ -1,0 +1,4 @@
+new :: literals :: Literals;
+call :: literals :: Literals.hex_int;
+return_value;
+check_eq 65536_u64 + 256_u64

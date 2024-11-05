@@ -28,7 +28,10 @@ module RUST-EXPRESSION-INTEGER-LITERALS
 
     syntax ValueOrError ::= parseIntegerNormalized(String)  [function, total]
     rule parseIntegerNormalized(I:String) => error("Literal not handled", I)
-        requires startsWith(I, "0b") orBool startsWith(I, "0x") orBool startsWith(I, "0o")
+        requires startsWith(I, "0b") orBool startsWith(I, "0o")
+    rule parseIntegerNormalized(I:String)
+        => parseIntegerHexadecimalSplit(substrString(I, 2, lengthString(I)), findSuffix(I))
+        requires startsWith(I, "0x")
     rule parseIntegerNormalized(I:String) => parseIntegerDecimalSplit(I, findSuffix(I))  [owise]
 
     syntax IntegerSuffix ::= findSuffix(String)  [function, total]
@@ -68,6 +71,33 @@ module RUST-EXPRESSION-INTEGER-LITERALS
     rule isDecimal(S:String) => isDecimalDigit(substrString(S, 0:Int, 1:Int)) andBool isDecimal(substrString(S, 1, lengthString(S)))
         [owise]
 
+
+    syntax ValueOrError ::= parseIntegerHexadecimalSplit(String, IntegerSuffix)  [function, total]
+    rule parseIntegerHexadecimalSplit(I:String, suffix(T:Type, Length))
+        => parseIntegerHexadecimal(substrString(I, 0, lengthString(I) -Int Length), T)
+        requires Length <=Int lengthString(I)
+    rule parseIntegerHexadecimalSplit(S:String, IS:IntegerSuffix)
+        => error("parseIntegerHexadecimalSplit", ListItem(S) ListItem(IS))
+        [owise]
+
+    syntax ValueOrError ::= parseIntegerHexadecimal(String,  Type)  [function, total]
+    rule parseIntegerHexadecimal(I:String,  T:Type) => integerToValue(String2Base(I, 16), T)
+        requires isHexadecimal(I) andBool lengthString(I) >Int 0
+    rule parseIntegerHexadecimal(S:String, T:Type)
+        => error("parseIntegerHexadecimal: Unrecognized integer", ListItem(S) ListItem(T))
+
+    syntax Bool ::= isHexadecimalDigit(String)  [function, total]
+    rule isHexadecimalDigit(S)
+        => isDecimalDigit(S)
+            orBool ("a" <=String S andBool S <=String "f")
+            orBool ("A" <=String S andBool S <=String "F")
+
+    syntax Bool ::= isHexadecimal(String)  [function, total]
+    rule isHexadecimal("") => true
+    rule isHexadecimal(S:String)
+        => isHexadecimalDigit(substrString(S, 0:Int, 1:Int))
+            andBool isHexadecimal(substrString(S, 1, lengthString(S)))
+        [owise]
 
     rule integerToValue(I:Int, i8) => i8(Int2MInt(I))
         requires sminMInt(8) <=Int I andBool I <=Int smaxMInt(8)
