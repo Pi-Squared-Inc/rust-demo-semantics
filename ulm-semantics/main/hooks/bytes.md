@@ -19,6 +19,7 @@ module ULM-SEMANTICS-HOOKS-BYTES
     imports private BYTES
     imports private COMMON-K-CELL
     imports private K-EQUAL-SYNTAX
+    imports private KRYPTO
     imports private RUST-HELPERS
     imports private RUST-REPRESENTATION
     imports private ULM-SEMANTICS-HOOKS-BYTES-CONFIGURATION
@@ -345,18 +346,8 @@ module ULM-SEMANTICS-HOOKS-BYTES
 
     rule ulmBytesHash(ptrValue(_, u64(BytesId)))
         => ulmBytesHash(ulmBytesId(BytesId))
-    // TODO: use a better hash function here (lower collision probability, use 256 bytes of hash).
     rule ulmBytesHash(ulmBytesValue(B:Bytes))
-        => ptrValue(null, u64(Int2MInt(#ulmBytesHash(Bytes2Int(B, BE, Unsigned)))))
-
-    syntax Int ::= #ulmBytesHash(Int)  [function, total]
-    rule #ulmBytesHash(I:Int) => #ulmBytesHash(0 -Int I)  requires I <Int 0
-    rule #ulmBytesHash(I:Int) => I requires 0 <=Int I andBool I <Int (1 <<Int 64)
-    rule #ulmBytesHash(I:Int)
-        => #ulmBytesHash
-            ( (I &Int ((1 <<Int 64) -Int 1))
-            |Int #ulmBytesHash(I >>Int 64)
-            )
+        => ptrValue(null, u256(Int2MInt(Bytes2Int(Keccak256raw(B), BE, Unsigned))))
 endmodule
 
 ```
