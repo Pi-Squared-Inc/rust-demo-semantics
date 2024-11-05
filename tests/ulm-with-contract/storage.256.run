@@ -1,0 +1,39 @@
+mock SetAccountStorageHook ( 8738216329480387967 , 1000000000000000000000000000000000000000000000000000000000000 ) ulmNoResult();
+mock GetAccountStorageHook ( 8738216329480387967 ) ulmIntResult(1000000000000000000000000000000000000000000000000000000000000, u256);
+
+push "setMyData256";
+hold_string_from_test_stack; 
+push "uint256";
+hold_list_values_from_test_stack;
+push 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_u256;
+hold_list_values_from_test_stack; 
+encode_call_data; 
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+
+push "getMyData256";
+hold_string_from_test_stack; 
+encode_call_data; 
+return_value;
+mock CallData;
+
+call_contract 12345;
+return_value;
+check_eq ();
+
+push_status;
+check_eq 2;
+
+output_to_arg;
+call :: test_helpers :: decode_single_u256;
+return_value;
+
+check_eq 1_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_000_u256

@@ -345,6 +345,7 @@ module ULM-SEMANTICS-HOOKS-BYTES
 
     rule ulmBytesHash(ptrValue(_, u64(BytesId)))
         => ulmBytesHash(ulmBytesId(BytesId))
+    // TODO: use Keccack here.
     rule ulmBytesHash(ulmBytesValue(B:Bytes))
         => ptrValue(null, u64(Int2MInt(#ulmBytesHash(Bytes2Int(B, BE, Unsigned)))))
 

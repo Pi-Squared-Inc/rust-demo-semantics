@@ -37,22 +37,25 @@ module ULM-SEMANTICS-HOOKS-ULM
             ( :: ulm :: SetAccountStorage :: .PathExprSegments
             , (KeyPtr:Ptr , ValuePtr:Ptr , .PtrList)
             )
-        => #SetAccountStorageHook(KeyPtr, ValuePtr)
+        => #SetAccountStorageHook
+            ( ulmCast(KeyPtr, ptrValue(null, rustType(u256)))
+            , ulmCast(ValuePtr, ptrValue(null, rustType(u256)))
+            )
 
     syntax UlmHook ::= #SetAccountStorageHook(Expression, Expression)  [seqstrict]
 
-    rule #SetAccountStorageHook(ptrValue(_, u64(Key)), ptrValue(_, u64(Value)))
+    rule #SetAccountStorageHook(ptrValue(_, u256(Key)), ptrValue(_, u256(Value)))
         => SetAccountStorageHook(MInt2Unsigned(Key), MInt2Unsigned(Value))
 
     rule normalizedFunctionCall
             ( :: ulm :: GetAccountStorage :: .PathExprSegments
             , (KeyPtr:Ptr , .PtrList)
             )
-        => #GetAccountStorageHook(KeyPtr)
+        => #GetAccountStorageHook(ulmCast(KeyPtr, ptrValue(null, rustType(u256))))
 
     syntax UlmHook ::= #GetAccountStorageHook(Expression)  [strict]
 
-    rule #GetAccountStorageHook(ptrValue(_, u64(Key)))
+    rule #GetAccountStorageHook(ptrValue(_, u256(Key)))
         => GetAccountStorageHook(MInt2Unsigned(Key))
 
     rule ulmNoResult() => ptrValue(null, tuple(.ValueList))
