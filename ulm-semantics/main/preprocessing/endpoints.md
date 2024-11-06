@@ -178,7 +178,7 @@ module ULM-PREPROCESSING-ENDPOINTS
                         | "ulm"  [token]
                         | "ulmWrap##init"  [token]
                         | "CallData"  [token]
-                        | "EVMC_BAD_JUMP_DESTINATION"  [token]
+                        | "EVMC_REVERT"  [token]
                         | "EVMC_SUCCESS"  [token]
 
     syntax BytesOrError  ::= methodSignature(String, NormalizedFunctionParameterList)  [function, total]
@@ -222,8 +222,7 @@ module ULM-PREPROCESSING-ENDPOINTS
             , bufferId: _:Identifier
             , gas: _:Identifier
             )
-        // TODO: Is this the right kind of error?
-        => :: state_hooks :: setStatus(:: ulm :: EVMC_BAD_JUMP_DESTINATION , .CallParamsList);
+        => :: state_hooks :: setStatus(:: ulm :: EVMC_REVERT , .CallParamsList);
 
     rule signatureToCall
             (... signature: Signature:Identifier
