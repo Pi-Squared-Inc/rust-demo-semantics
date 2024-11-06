@@ -1,7 +1,7 @@
 #![no_std]
 
 // TODO: Support structs and figure out the content of MessageResult
-struct MessageResult { gas: u64 }
+struct MessageResult { gas: u256 }
 
 pub const EVMC_REJECTED: u64 = 0_u64;
 pub const EVMC_INTERNAL_ERROR: u64 = 1_u64;
@@ -22,19 +22,19 @@ pub const EVMC_NONCE_EXCEEDED: u64 = 15_u64;
 
 extern {    
     // block parameters
-    fn sample_method(&self) -> u64;
+    fn sample_method(&self) -> u256;
     fn GasLimit(&self) -> u256;
     fn BaseFee(&self) -> u256;
-    fn Coinbase(&self) -> u64;
-    fn BlockTimestamp(&self) -> u64;
-    fn BlockNumber(&self) -> u64;
-    fn BlockDifficulty(&self) -> u64;
-    fn PrevRandao(&self) -> u64;
-    fn BlockHash(&self, index: u64) -> u64;
+    fn Coinbase(&self) -> u256;
+    fn BlockTimestamp(&self) -> u256;
+    fn BlockNumber(&self) -> u256;
+    fn BlockDifficulty(&self) -> u256;
+    fn PrevRandao(&self) -> u256;
+    fn BlockHash(&self, index: u256) -> u256;
 
     // transaction parameters
-    fn GasPrice(&self) -> u64;
-    fn Origin(&self) -> u64;
+    fn GasPrice(&self) -> u256;
+    fn Origin(&self) -> u256;
     
     // message parameters
     fn Address(&self) -> u160;
@@ -43,7 +43,7 @@ extern {
     fn CallData(&self) -> Bytes;
 
     // chain parameters
-    fn ChainId(&self) -> u64;
+    fn ChainId(&self) -> u256;
     
     // account getters
     fn GetAccountBalance(&self, acct: u160) -> u256;
@@ -58,17 +58,17 @@ extern {
     fn AccessedAccount(&self, acct: u256) -> bool;
 
     fn Transfer(&self, to: u160, value: u256) -> bool;
-    fn SelfDestruct(&self, to: u64);
+    fn SelfDestruct(&self, to: u256);
     fn SetAccountStorage(&self, key: u256, value: u256);
     fn SetAccountTransientStorage(&self, key: u256, value: u256);
 
     fn Log0(data: Bytes);
-    fn Log1(topic0: u64, data: Bytes);
-    fn Log2(topic0: u64, topic1: u64, data: Bytes);
-    fn Log3(topic0: u64, topic1: u64, topic2: u64, data: Bytes);
-    fn Log4(topic0: u64, topic1: u64, topic2: u64, topic3: u64, data: Bytes); 
+    fn Log1(topic0: u256, data: Bytes);
+    fn Log2(topic0: u256, topic1: u256, data: Bytes);
+    fn Log3(topic0: u256, topic1: u256, topic2: u256, data: Bytes);
+    fn Log4(topic0: u256, topic1: u256, topic2: u256, topic3: u256, data: Bytes);
     
-    fn MessageResult(gas: u256, data: Bytes, status: u64, target: u64) -> MessageResult;
+    fn MessageResult(gas: u256, data: Bytes, status: u256, target: u256) -> MessageResult;
     fn Create(value: u256, data: Bytes, gas: u256) -> MessageResult;
     fn Create2(value: u256, data: Bytes, salt: Bytes, gas: u256) -> MessageResult;
     fn Call(gas: u256, to: u160, value: u256, data: Bytes) -> MessageResult;

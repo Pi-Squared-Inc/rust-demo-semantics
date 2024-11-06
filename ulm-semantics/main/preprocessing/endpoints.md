@@ -181,33 +181,6 @@ module ULM-PREPROCESSING-ENDPOINTS
                         | "EVMC_REVERT"  [token]
                         | "EVMC_SUCCESS"  [token]
 
-    syntax BytesOrError  ::= methodSignature(String, NormalizedFunctionParameterList)  [function, total]
-    syntax StringOrError  ::= signatureTypes(NormalizedFunctionParameterList)  [function, total]
-                            | signatureType(Type)  [function, total]
-
-    rule methodSignature(S:String, Ps:NormalizedFunctionParameterList)
-        => encodeFunctionSignatureAsBytes(concat(concat(S +String "(", signatureTypes(Ps)), ")"))
-
-    rule signatureTypes(.NormalizedFunctionParameterList) => ""
-    rule signatureTypes(_ : T:Type , .NormalizedFunctionParameterList)
-        => signatureType(T)
-    rule signatureTypes
-            ( _ : T:Type
-            , ((_:NormalizedFunctionParameter , _:NormalizedFunctionParameterList)
-                #as Ps:NormalizedFunctionParameterList)
-            )
-        => concat(signatureType(T), concat(",", signatureTypes(Ps)))
-
-    rule signatureType(u8) => "uint8"
-    rule signatureType(u16) => "uint16"
-    rule signatureType(u32) => "uint32"
-    rule signatureType(u64) => "uint64"
-    rule signatureType(u128) => "uint128"
-    rule signatureType(u160) => "uint160"
-    rule signatureType(u256) => "uint256"
-    rule signatureType(T) => error("Unknown type in signatureType:", ListItem(T))
-        [owise]
-
     syntax Statement ::= signatureToCall
                                     ( signature: Identifier
                                     , signatures: List
@@ -244,28 +217,6 @@ module ULM-PREPROCESSING-ENDPOINTS
 
     syntax Expression ::= decodeSignature(Identifier)  [function, total]
     rule decodeSignature(BufferId) => :: bytes_hooks :: decode_signature ( BufferId , .CallParamsList )
-
-    syntax ExpressionOrError ::= appendValue(bufferId: Identifier, value: Identifier, Type)  [function, total]
-    rule appendValue(BufferId:Identifier, Value:Identifier, u8)
-        => v(:: bytes_hooks :: append_u8 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u16)
-        => v(:: bytes_hooks :: append_u16 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u32)
-        => v(:: bytes_hooks :: append_u32 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u64)
-        => v(:: bytes_hooks :: append_u64 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u128)
-        => v(:: bytes_hooks :: append_u128 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u160)
-        => v(:: bytes_hooks :: append_u160 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u256)
-        => v(:: bytes_hooks :: append_u256 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, bool)
-        => v(:: bytes_hooks :: append_bool ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, _Value:Identifier, ()) => v(BufferId)
-    rule appendValue(BufferId:Identifier, Value:Identifier, T:Type)
-        => e(error("appendValue: unrecognized type", ListItem(BufferId) ListItem(Value) ListItem(T)))
-        [owise]
 
     syntax NonEmptyStatementsOrError ::= decodeParams(Int, NormalizedFunctionParameterList)  [function, total]
     rule decodeParams(_:Int, .NormalizedFunctionParameterList) => .NonEmptyStatements

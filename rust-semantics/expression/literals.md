@@ -99,6 +99,7 @@ module RUST-EXPRESSION-INTEGER-LITERALS
             andBool isHexadecimal(substrString(S, 1, lengthString(S)))
         [owise]
 
+    rule integerToValue(E:SemanticsError, _) => E
     rule integerToValue(I:Int, i8) => i8(Int2MInt(I))
         requires sminMInt(8) <=Int I andBool I <=Int smaxMInt(8)
     rule integerToValue(I:Int, u8) => u8(Int2MInt(I))

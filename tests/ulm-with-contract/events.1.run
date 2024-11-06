@@ -1,3 +1,5 @@
+list_mock Log2Hook ( 74657075023537209477280918141328480329188930599530356189395812678724488965561 , 123 , b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02+" ) ulmNoResult();
+
 push "logEvent";
 hold_string_from_test_stack;
 push "uint64";

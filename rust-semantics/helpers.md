@@ -50,5 +50,28 @@ module RUST-HELPERS
     rule concatNonEmptyStatements(.NonEmptyStatements, S:NonEmptyStatements) => S
     rule concatNonEmptyStatements(S:Statement Ss1:NonEmptyStatements, Ss2:NonEmptyStatements)
         => S concatNonEmptyStatements(Ss1, Ss2)
+
+    rule length(.NormalizedFunctionParameterList) => 0
+    rule length(_:NormalizedFunctionParameter , Ps:NormalizedFunctionParameterList)
+        => 1 +Int length(Ps)
+
+    rule last(P:NormalizedFunctionParameter, .NormalizedFunctionParameterList) => P
+    rule last
+            ( _:NormalizedFunctionParameter
+            , (P:NormalizedFunctionParameter , Ps:NormalizedFunctionParameterList)
+            )
+        => last(P, Ps)
+
+    rule allButLast(_:NormalizedFunctionParameter, .NormalizedFunctionParameterList)
+        => .NormalizedFunctionParameterList
+    rule allButLast
+            ( Q:NormalizedFunctionParameter
+            , (P:NormalizedFunctionParameter , Ps:NormalizedFunctionParameterList)
+            )
+        => Q , allButLast(P, Ps)
+
+    rule concatCallParamsList(.CallParamsList, S:CallParamsList) => S
+    rule concatCallParamsList(S:Expression , Ss1:CallParamsList, Ss2:CallParamsList)
+        => S , concatCallParamsList(Ss1, Ss2)
 endmodule
 ```
