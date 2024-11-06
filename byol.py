@@ -105,3 +105,20 @@ decimals_token_tx['data'] = decimals_token_data2
 
 decimals = w3.eth.call(decimals_token_tx)
 print('decimals:', decimals)
+
+endpoint_not_found_data = 'deadbeef'
+
+endpoint_not_found_tx = {
+  'from': sender.address,
+  'data': endpoint_not_found_data,
+  'to': token_address,
+  'value': 0,
+  'gas': 11000000,
+  'maxFeePerGas': 2000000000,
+  'maxPriorityFeePerGas': 1000000000,
+}
+
+tx_hash = w3.eth.send_transaction(endpoint_not_found_tx)
+print('endpoint not found hash:', tx_hash)
+receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
+print('mint receipt:', receipt)
