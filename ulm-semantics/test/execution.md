@@ -146,7 +146,9 @@ module ULM-TEST-EXECUTION
 
     rule init_contract Account => ulmExecute(true, b"init", Account, 100)
 
-    rule (V:PtrValue ~> b"init" ~> clear_pgm) => V
+    rule
+        <k> clear_pgm => .K ... </k>
+        <ulm-output> _ => .Bytes </ulm-output>
 
     rule
         <k>

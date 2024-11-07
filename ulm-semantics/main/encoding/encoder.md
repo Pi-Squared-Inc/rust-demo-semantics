@@ -12,7 +12,7 @@ module ULM-ENCODING-HELPER
     rule encodeHexBytes(_:String) => .Bytes
         [owise]
     rule encodeHexBytes(S:String)
-        => Int2Bytes(2, String2Base(substrString(S, 0, 2), 16), BE)
+        => Int2Bytes(1, String2Base(substrString(S, 0, 2), 16), BE)
             +Bytes encodeHexBytes(substrString(S, 2, lengthString(S)))
         requires 2 <=Int lengthString(S) andBool isHex(substrString(S, 0, 2), 0)
 

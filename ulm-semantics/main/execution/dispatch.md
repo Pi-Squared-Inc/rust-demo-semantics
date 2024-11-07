@@ -10,8 +10,10 @@ module ULM-EXECUTION-DISPATCH
     imports private ULM-COMMON-TOOLS-SYNTAX
     imports private ULM-EXECUTION-SYNTAX
     imports private ULM-PREPROCESSING-CONFIGURATION
+    imports private ULM-SEMANTICS-HOOKS-STATE-CONFIGURATION
 
     syntax UlmInstruction ::= ulmExecute(create: Bool, contract:Value, gas: ValueOrError)
+                            | setContractOutput(Bytes)
 
     rule
         <k>
@@ -19,7 +21,7 @@ module ULM-EXECUTION-DISPATCH
             // Figure out why.
             ulmExecute(Createy:Bool, Pgm:Bytes, _AccountId:Int, Gas:Int)
             => ulmExecute(Createy, struct(ContractTrait, .Map), integerToValue(Gas, u64))
-              ~> #if Createy #then Pgm #else .K #fi
+              ~> #if Createy #then setContractOutput(Pgm) #else .K #fi
             ...
         </k>
         <ulm-contract-trait>
@@ -38,6 +40,11 @@ module ULM-EXECUTION-DISPATCH
         <values> Values:Map => Values[NVI <- Contract] </values>
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
         requires notBool NVI in_keys(Values)
+
+    rule
+        <k> _:PtrValue ~> setContractOutput(B:Bytes) => .K ... </k>
+        <ulm-output> _ => B </ulm-output>
+
 endmodule
 
 ```

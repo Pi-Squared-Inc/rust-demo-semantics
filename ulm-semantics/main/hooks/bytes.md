@@ -211,7 +211,7 @@ module ULM-SEMANTICS-HOOKS-BYTES
             ( :: bytes_hooks :: decode_signature :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
-        => ulmBytesDecodeBytes(BufferIdId, 8)
+        => ulmBytesDecodeBytes(BufferIdId, 4)
     // ---------------------------------------
 
     rule
