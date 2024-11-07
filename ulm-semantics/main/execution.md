@@ -6,6 +6,7 @@ requires "execution/dispatch.md"
 requires "execution/storage.md"
 requires "execution/syntax.md"
 requires "hooks.md"
+requires "plugin/krypto.md"
 requires "representation.md"
 
 module ULM-EXECUTION

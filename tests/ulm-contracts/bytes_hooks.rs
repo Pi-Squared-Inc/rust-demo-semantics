@@ -22,5 +22,5 @@ extern "C" {
   fn decode_u8(bytes_id: u64) -> (u64, u8);
 
   fn decode_signature(bytes_id: u64) -> (u64, u64);
-  fn hash(bytes_id: u64) -> u64;
+  fn hash(bytes_id: u64) -> u256;
 }
