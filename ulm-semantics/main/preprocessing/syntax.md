@@ -32,7 +32,7 @@ module ULM-PREPROCESSING-SYNTAX-PRIVATE
                                 ( wrapperMethod: PathInExpression
                                 , params: NormalizedFunctionParameterList
                                 , method: Identifier
-                                , appendReturn: ExpressionOrError
+                                , appendReturn: NonEmptyStatementsOrError
                                 , decodeStatements: NonEmptyStatementsOrError
                                 )
                             | ulmAddEndpointSignature(signature: BytesOrError, method: Identifier)

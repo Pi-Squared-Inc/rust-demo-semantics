@@ -31,6 +31,7 @@ module ULM-SEMANTICS-HOOKS-BYTES
                         | "length"  [token]
                         | "equals"  [token]
                         | "append_bool"  [token]
+                        | "append_bytes_raw"  [token]
                         | "append_u256"  [token]
                         | "append_u160"  [token]
                         | "append_u128"  [token]
@@ -146,6 +147,13 @@ module ULM-SEMANTICS-HOOKS-BYTES
 
     rule
         normalizedFunctionCall
+            ( :: bytes_hooks :: append_bytes_raw :: .PathExprSegments
+            , BufferIdId:Ptr, ToAppendId:Ptr, .PtrList
+            )
+        => ulmBytesAppendBytesRaw(BufferIdId, ToAppendId)
+
+    rule
+        normalizedFunctionCall
             ( :: bytes_hooks :: decode_u256 :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
@@ -232,6 +240,8 @@ module ULM-SEMANTICS-HOOKS-BYTES
                             | ulmBytesAppendInt(Expression, Expression)  [seqstrict]
                             | ulmBytesAppendInt(UlmExpression, Int)  [strict(1)]
                             | ulmBytesAppendBool(Expression, Expression)  [seqstrict]
+                            | ulmBytesAppendBytesRaw(Expression, Expression)  [seqstrict]
+                            | ulmBytesAppendBytesRaw(UlmExpression, UlmExpression)  [seqstrict]
                             | ulmBytesAppendStr(Expression, Expression)  [seqstrict]
                             | ulmBytesAppendBytes(UlmExpression, Bytes)  [strict(1)]
                             | ulmBytesAppendLenAndBytes(UlmExpression, Bytes)  [strict(1)]
@@ -296,6 +306,11 @@ module ULM-SEMANTICS-HOOKS-BYTES
     // TODO: This can create key ambiguity for storage
     rule ulmBytesAppendStr(ptrValue(_, u64(BytesId)), ptrValue(_, Value:String))
         => ulmBytesAppendLenAndBytes(ulmBytesId(BytesId), String2Bytes(Value))
+
+    rule ulmBytesAppendBytesRaw(ptrValue(_, u64(BytesId)), ptrValue(_, u64(ToAppendId)))
+        => ulmBytesAppendBytesRaw(ulmBytesId(BytesId), ulmBytesId(ToAppendId))
+    rule ulmBytesAppendBytesRaw(ulmBytesValue(B:Bytes), ulmBytesValue(ToAppend))
+        => ulmBytesNew(B +Bytes ToAppend)
 
     rule ulmBytesAppendBytes(ulmBytesValue(B:Bytes), Value:Bytes)
         => ulmBytesNew(B +Bytes Value)
