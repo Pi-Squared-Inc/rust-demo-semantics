@@ -24,6 +24,12 @@ pub trait Erc20Token {
     #[storage_mapper("balances")]
     fn s_allowances(&self, account: u160, spender: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
 
+    #[event("Transfer")]
+    fn transfer_event(&self, #[indexed] from: u160, #[indexed] to: u160, value: u256);
+
+    #[event("Approval")]
+    fn approval_event(&self, #[indexed] owner: u160, #[indexed] spender: u160, value: u256);
+
     #[init]
     fn init(&self) {}
 
@@ -76,6 +82,7 @@ pub trait Erc20Token {
         ::helpers::require(!::address::is_zero(from), "Invalid sender");
         ::helpers::require(!::address::is_zero(to), "Invalid receiver");
         self._update(from, to, value);
+        self.transfer_event(from, to, value);
     }
 
     fn _update(&self, from: u160, to: u160, value: u256) {
@@ -104,6 +111,9 @@ pub trait Erc20Token {
         ::helpers::require(!::address::is_zero(owner), "Invalid approver");
         ::helpers::require(!::address::is_zero(spender), "Invalid spender");
         self.s_allowances(owner, spender).set(value);
+        if emit_event {
+          self.approval_event(owner, spender, value);
+        }
     }
 
     fn _spend_allowance(&self, owner: u160, spender: u160, value: u256) {
