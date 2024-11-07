@@ -14,6 +14,7 @@ check_eq ();
 push_status;
 check_eq 2;
 output_to_arg;
+
 call :: test_helpers :: decode_single_str;
 return_value;
 check_eq "Hello"

@@ -20,11 +20,18 @@ module ULM-TEST-SYNTAX
     syntax ULMTestTypeHolderList ::= List{ULMTestTypeHolder, ","}
     syntax BytesList ::= NeList{Bytes, "+"}
 
+    syntax EncodeArg ::= Expression ":" Type
+    syntax EncodeArgs ::= List{EncodeArg, ","}
+    syntax EncodeCall ::= Identifier "(" EncodeArgs ")"
+
+    syntax Expression ::= newBytes(Bytes)
+
     syntax ExecutionItem  ::= "mock" "CallData"
                             | "mock" "Caller"
                             | "mock" UlmHook UlmHookResult
                             | "list_mock" UlmHook UlmHookResult
                             | "encode_call_data"
+                            | "encode_call_data" EncodeCall
                             | "encode_call_data_to_string"
                             | "encode_constructor_data"
                             | "call_contract" Int
@@ -38,6 +45,7 @@ module ULM-TEST-SYNTAX
                             | "hold_list_values_from_test_stack"
                             | "expect_cancel"
                             | "check_raw_output" BytesList
+                            | "check_eq_bytes" Bytes
 
     syntax Identifier ::= "u8"  [token]
                         | "u16"  [token]
@@ -52,6 +60,7 @@ module ULM-TEST-EXECUTION
     imports private BYTES
     imports private COMMON-K-CELL
     imports private K-EQUAL-SYNTAX
+    imports private RUST-ERROR-SYNTAX
     imports private RUST-EXECUTION-TEST-CONFIGURATION
     imports private RUST-SHARED-SYNTAX
     imports private ULM-ENCODING-SYNTAX
@@ -102,6 +111,55 @@ module ULM-TEST-EXECUTION
              => Bytes2String(encodeCallData(FNAME, .List, .List))
             ...
          </k> [owise]
+
+    syntax BytesOrError ::= extractCallSignature(EncodeCall)  [function, total]
+    rule extractCallSignature(Fn:Identifier ( Args:EncodeArgs ))
+        => methodSignature(IdentifierToString(Fn), encodeArgsToNormalizedParams(Args))
+    syntax NormalizedFunctionParameterList ::= encodeArgsToNormalizedParams(EncodeArgs)  [function, total]
+    rule encodeArgsToNormalizedParams(.EncodeArgs) => .NormalizedFunctionParameterList
+    rule encodeArgsToNormalizedParams(_:Expression : T:Type ,  Eas:EncodeArgs )
+        => #token("#unused", "Identifier"):T , encodeArgsToNormalizedParams(Eas)
+
+    syntax Identifier ::= "append_bytes_raw"  [token]
+                        | "buffer_id"  [token]
+                        | "bytes_hooks"  [token]
+                        | "empty"  [token]
+
+    syntax EncodeValues ::= encodeArgsToEncodeValues(EncodeArgs)  [function, total]
+    rule encodeArgsToEncodeValues(.EncodeArgs) => .EncodeValues
+    rule encodeArgsToEncodeValues(E:Expression : T:Type , Es:EncodeArgs)
+        => E : T , encodeArgsToEncodeValues(Es)
+
+    syntax NonEmptyStatementsOrError ::= encodeInstructions(EncodeCall)  [function, total]
+    rule encodeInstructions( _:Identifier ( Args:EncodeArgs ) )
+        => concat
+            (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
+                .NonEmptyStatements
+            ,   encodeStatements(buffer_id, encodeArgsToEncodeValues(Args))
+            )
+
+    rule encode_call_data C:EncodeCall
+        => encodeCallData(extractCallSignature(C), encodeInstructions(C))
+
+    syntax ExecutionItem ::= encodeCallData(BytesOrError, NonEmptyStatementsOrError)
+    rule encodeCallData(Signature:Bytes, Statements:NonEmptyStatements)
+        =>  Statements
+            :: bytes_hooks :: append_bytes_raw
+                ( ulmBytesNew(Signature) , buffer_id , .CallParamsList ):Expression
+
+    rule
+        <k>
+            check_eq_bytes B:Bytes => .K
+            ...
+        </k>
+        <test-stack>
+            ListItem(ptrValue(_, u64(V))) => .List
+            ...
+        </test-stack>
+        <ulm-bytes-buffers>
+            Buffers:Map
+        </ulm-bytes-buffers>
+        requires B:Bytes:KItem ==K Buffers[MInt2Unsigned(V)] orDefault 0
 
     rule <k> encode_call_data
              ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .ULMTestTypeHolderList
