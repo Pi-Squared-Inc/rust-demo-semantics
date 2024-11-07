@@ -59,6 +59,7 @@ module ULM-CALLDATA-ENCODER
     imports private ULM-ENCODING-HELPER
 
     syntax Identifier ::= "bytes_hooks"  [token]
+                        | "append_bytes_raw"  [token]
                         | "append_u8"  [token]
                         | "append_u16"  [token]
                         | "append_u32"  [token]
@@ -67,6 +68,9 @@ module ULM-CALLDATA-ENCODER
                         | "append_u160"  [token]
                         | "append_u256"  [token]
                         | "append_bool"  [token]
+                        | "append_str"  [token]
+                        | "empty"  [token]
+                        | "length"  [token]
 
 
     rule encodeFunctionSignatureAsBytes(FS)
@@ -105,25 +109,269 @@ module ULM-CALLDATA-ENCODER
 
     rule encodeFunctionParams(.List, .List, B:Bytes) => B
 
-    rule appendValue(BufferId:Identifier, Value:Identifier, u8)
-        => v(:: bytes_hooks :: append_u8 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u16)
-        => v(:: bytes_hooks :: append_u16 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u32)
-        => v(:: bytes_hooks :: append_u32 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u64)
-        => v(:: bytes_hooks :: append_u64 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u128)
-        => v(:: bytes_hooks :: append_u128 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u160)
-        => v(:: bytes_hooks :: append_u160 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, u256)
-        => v(:: bytes_hooks :: append_u256 ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, Value:Identifier, bool)
-        => v(:: bytes_hooks :: append_bool ( BufferId , Value , .CallParamsList ))
-    rule appendValue(BufferId:Identifier, _Value:Identifier, ()) => v(BufferId)
-    rule appendValue(BufferId:Identifier, Value:Identifier, T:Type)
-        => e(error("appendValue: unrecognized type", ListItem(BufferId) ListItem(Value) ListItem(T)))
+    // rule appendValue(BufferId:Identifier, Value:Identifier, u8)
+    //     => v(:: bytes_hooks :: append_u8 ( BufferId , Value , .CallParamsList ))
+    // rule appendValue(BufferId:Identifier, Value:Identifier, u16)
+    //     => v(:: bytes_hooks :: append_u16 ( BufferId , Value , .CallParamsList ))
+    // rule appendValue(BufferId:Identifier, Value:Identifier, u32)
+    //     => v(:: bytes_hooks :: append_u32 ( BufferId , Value , .CallParamsList ))
+    // rule appendValue(BufferId:Identifier, Value:Identifier, u64)
+    //     => v(:: bytes_hooks :: append_u64 ( BufferId , Value , .CallParamsList ))
+    // rule appendValue(BufferId:Identifier, Value:Identifier, u128)
+    //     => v(:: bytes_hooks :: append_u128 ( BufferId , Value , .CallParamsList ))
+    // rule appendValue(BufferId:Identifier, Value:Identifier, u160)
+    //     => v(:: bytes_hooks :: append_u160 ( BufferId , Value , .CallParamsList ))
+    // rule appendValue(BufferId:Identifier, Value:Identifier, u256)
+    //     => v(:: bytes_hooks :: append_u256 ( BufferId , Value , .CallParamsList ))
+    // rule appendValue(BufferId:Identifier, Value:Identifier, bool)
+    //     => v(:: bytes_hooks :: append_bool ( BufferId , Value , .CallParamsList ))
+    // rule appendValue(BufferId:Identifier, _Value:Identifier, ()) => v(BufferId)
+    // rule appendValue(BufferId:Identifier, Value:Identifier, T:Type)
+    //     => e(error("appendValue: unrecognized type", ListItem(BufferId) ListItem(Value) ListItem(T)))
+    //     [owise]
+
+    syntax Identifier ::= "ulm#head_size"  [token]
+                        | "ulm#head"  [token]
+                        | "ulm#tail"  [token]
+
+    syntax NonEmptyStatementsOrError ::= #encodeStatements
+                                            ( bufferId: Identifier
+                                            , headSize: ExpressionOrError
+                                            , append: NonEmptyStatementsOrError
+                                            )  [function, total]
+
+    rule encodeStatements(... bufferId: BufferId:Identifier, values: Values:EncodeValues)
+        => #encodeStatements(BufferId, totalHeadSize(Values), appendValues(Values, ulm#head_size, ulm#head, ulm#tail))
+
+    rule #encodeStatements(_BufferId:Identifier, e(HeadSize:SemanticsError), _AppendValues:NonEmptyStatementsOrError)
+        => HeadSize
+    rule #encodeStatements(_BufferId:Identifier, v(_HeadSize:Expression), AppendValues:SemanticsError)
+        => AppendValues
+    rule #encodeStatements(BufferId:Identifier, v(HeadSize:Expression), AppendValues:NonEmptyStatements)
+        => concatNonEmptyStatements
+            (   let ulm#head_size = HeadSize;
+                let ulm#head = :: bytes_hooks :: empty ( .CallParamsList );
+                let ulm#tail = :: bytes_hooks :: empty ( .CallParamsList );
+                AppendValues
+            ,   let BufferId = :: bytes_hooks :: append_bytes_raw ( BufferId, ulm#head , .CallParamsList);
+                let BufferId = :: bytes_hooks :: append_bytes_raw ( BufferId, ulm#tail , .CallParamsList);
+                .NonEmptyStatements
+            )
+
+    syntax ExpressionOrError ::= totalHeadSize(EncodeValues)  [function, total]
+    rule totalHeadSize(.EncodeValues) => v(ptrValue(null, u32(0p32)))
+    rule totalHeadSize(_:Expression : T:Type , Evs:EncodeValues)
+        => addOrError(headSize(T), totalHeadSize(Evs))
+
+    syntax NonEmptyStatementsOrError ::= appendValues
+                                            ( values: EncodeValues
+                                            , headSize: Expression
+                                            , head: Expression
+                                            , tail: Expression
+                                            )  [function, total]
+    rule appendValues(.EncodeValues, _HeadSize:Expression, _Head:Expression, _Tail:Expression)
+        => .NonEmptyStatements
+    rule appendValues
+            ( V:Expression : T:Type , Evs:EncodeValues
+            , HeadSize:Expression
+            , Head:Expression
+            , Tail:Expression
+            )
+        => concat(
+            appendValue
+                ( V
+                , HeadSize
+                , Head, Tail
+                , appendType(T)
+                )
+        ,   appendValues(Evs, HeadSize, Head, Tail)
+        )
+
+    syntax AppendType ::= fixedSize(PathInExpression)
+                        | variableSize(PathInExpression)
+                        | "empty"
+    syntax AppendTypeOrError ::= AppendType | SemanticsError
+    syntax AppendTypeOrError ::= appendType(Type)  [function, total]
+
+    rule appendType(u8  ) => fixedSize(:: bytes_hooks :: append_u8)
+    rule appendType(u16 ) => fixedSize(:: bytes_hooks :: append_u16)
+    rule appendType(u32 ) => fixedSize(:: bytes_hooks :: append_u32)
+    rule appendType(u64 ) => fixedSize(:: bytes_hooks :: append_u64)
+    rule appendType(u128) => fixedSize(:: bytes_hooks :: append_u128)
+    rule appendType(u160) => fixedSize(:: bytes_hooks :: append_u160)
+    rule appendType(u256) => fixedSize(:: bytes_hooks :: append_u256)
+
+    rule appendType(bool) => fixedSize(:: bytes_hooks :: append_bool)
+    rule appendType(()) => empty
+    rule appendType(str) => variableSize(:: bytes_hooks :: append_str)
+    rule appendType(T:Type)
+        => error("appendType: unrecognized type", ListItem(T))
+        [owise]
+
+    syntax NonEmptyStatementsOrError ::= appendValue
+                                            ( value: Expression
+                                            , headSize: Expression
+                                            , head: Identifier
+                                            , tail: Identifier
+                                            , appendFn: AppendTypeOrError
+                                            )  [function, total]
+
+      rule appendValue
+              (... value: _Value:Expression
+              , headSize: _HeadSize:Expression
+              , head: _Head:Identifier
+              , tail: _Tail:Identifier
+              , appendFn: E:SemanticsError
+              )
+          =>  E
+      rule appendValue
+              (... value: Value:Expression
+              , headSize: _HeadSize:Expression
+              , head: Head:Identifier
+              , tail: _Tail:Identifier
+              , appendFn: fixedSize(P:PathInExpression)
+              )
+          =>  let Head = P ( Head , Value , .CallParamsList );
+              .NonEmptyStatements
+      rule appendValue
+              (... value: Value:Expression
+              , headSize: HeadSize:Expression
+              , head: Head:Identifier
+              , tail: Tail:Identifier
+              , appendFn: variableSize(P:PathInExpression)
+              )
+          =>  let Head = :: bytes_hooks :: append_u32
+                  ( Head
+                  , HeadSize + (:: bytes_hooks :: length( Tail, .CallParamsList ))
+                  , .CallParamsList
+                  );
+              let Tail = P ( Tail , Value , .CallParamsList );
+              .NonEmptyStatements
+      rule appendValue
+              (... value: _Value:Expression
+              , headSize: _HeadSize:Expression
+              , head: _Head:Identifier
+              , tail: _Tail:Identifier
+              , appendFn: empty
+              )
+          =>  .NonEmptyStatements
+
+    // syntax ExpressionOrError ::= appendSingleValue
+    //                                 ( bufferId: Identifier, value: Identifier, Type
+    //                                 , headLength: ExpressionOrError, tailPrefixLength:Expression
+    //                                 )  [function, total]
+    // syntax ExpressionOrError ::= appendSingleValue
+    //                                 ( bufferId: Identifier, value: Identifier
+    //                                 , headLength: Expression, tailPrefixLength:Expression
+    //                                 , headFn: AppendOperationOrError
+    //                                 , tailFn: AppendOperationOrError
+    //                                 )  [function, total]
+    // rule appendSingleValue
+    //         ( BufferId:Identifier, Value:Identifier, T:Type
+    //         , HeadLength:Expression, TailPrefixLength:Expression
+    //         )
+    //     => appendSingleValue(BufferId, Value, HeadLength, TailPrefixLength, headFunction(T), tailFunction(T))
+    // rule appendSingleValue
+    //         ( BufferId:Identifier, Value:Identifier, T:Type
+    //         , HeadLength:Expression, TailPrefixLength:Expression
+    //         )
+    //     => appendSingleValue(BufferId, Value, HeadLength, TailPrefixLength, headFunction(T), tailFunction(T))
+
+    // rule appendSingleValue
+    //     ( BufferId:Identifier, Value:Identifier
+    //     , HeadLength:Expression, TailPrefixLength:Expression
+    //     , HeadFunction:AppendOperation, TailFunction:AppendOperation
+    //     )
+    //     => v
+    //         ( applyApend
+    //             ( TailFunction
+    //             , applyApend
+    //                 ( HeadFunction
+    //                 , BufferId
+    //                 , Value
+    //                 , HeadLength + TailPrefixLength
+    //                 )
+    //             , Value
+    //             , ptrValue(null, tuple(.ValueList))
+    //             )
+    //         )
+    // rule appendSingleValue
+    //     ( _BufferId:Identifier, _Value:Identifier
+    //     , _HeadLength:Expression, _TailPrefixLength:Expression
+    //     , HeadFunction:SemanticsError, _TailFunction:AppendOperationOrError
+    //     )
+    //     => e(HeadFunction)
+    // rule appendSingleValue
+    //     ( _BufferId:Identifier, _Value:Identifier
+    //     , _HeadLength:Expression, _TailPrefixLength:Expression
+    //     , _HeadFunction:AppendOperation, TailFunction:SemanticsError
+    //     )
+    //     => e(TailFunction)
+
+    syntax AppendOperation  ::= "id"
+                              | "varHead"
+                              | fixedHeadVarTail(PathInExpression)
+    syntax AppendOperationOrError ::= AppendOperation | SemanticsError
+
+    syntax Expression ::= applyApend
+                              ( AppendOperation
+                              , buffer:Expression
+                              , value: Expression
+                              , length:Expression
+                              )  [function, total]
+    rule applyApend(id:AppendOperation, E:Expression, _F:Expression, _G:Expression)
+        => E
+    rule applyApend(fixedHeadVarTail(P:PathInExpression), E:Expression, F:Expression, _G:Expression)
+        => P ( E , F , .CallParamsList )
+    rule applyApend(varHead, E:Expression, _F:Expression, G:Expression)
+        => :: bytes_hooks :: append_u32 ( E , G , .CallParamsList )
+
+    syntax ExpressionOrError ::= headSize(Type)  [function, total]
+    rule headSize(u8  ) => v(ptrValue(null, u32(32p32)))
+    rule headSize(u16 ) => v(ptrValue(null, u32(32p32)))
+    rule headSize(u32 ) => v(ptrValue(null, u32(32p32)))
+    rule headSize(u64 ) => v(ptrValue(null, u32(32p32)))
+    rule headSize(u128) => v(ptrValue(null, u32(32p32)))
+    rule headSize(u160) => v(ptrValue(null, u32(32p32)))
+    rule headSize(u256) => v(ptrValue(null, u32(32p32)))
+
+    rule headSize(bool) => v(ptrValue(null, u32(32p32)))
+    rule headSize(()) => v(ptrValue(null, u32(0p32)))
+    rule headSize(str) => v(ptrValue(null, u32(32p32)))
+    rule headSize(T:Type)
+        => e(error("headSize: unrecognized type", ListItem(T:Type:KItem)))
+        [owise]
+
+    syntax AppendOperationOrError ::= headFunction(Type)  [function, total]
+    rule headFunction(u8  ) => fixedHeadVarTail(:: bytes_hooks :: append_u8)
+    rule headFunction(u16 ) => fixedHeadVarTail(:: bytes_hooks :: append_u16)
+    rule headFunction(u32 ) => fixedHeadVarTail(:: bytes_hooks :: append_u32)
+    rule headFunction(u64 ) => fixedHeadVarTail(:: bytes_hooks :: append_u64)
+    rule headFunction(u128) => fixedHeadVarTail(:: bytes_hooks :: append_u128)
+    rule headFunction(u160) => fixedHeadVarTail(:: bytes_hooks :: append_u160)
+    rule headFunction(u256) => fixedHeadVarTail(:: bytes_hooks :: append_u256)
+
+    rule headFunction(bool) => fixedHeadVarTail(:: bytes_hooks :: append_bool)
+    rule headFunction(()) => id
+    rule headFunction(str) => varHead
+    rule headFunction(T:Type)
+        => error("headFunction: unrecognized type", ListItem(T))
+        [owise]
+
+    syntax AppendOperationOrError ::= tailFunction(Type)  [function, total]
+    rule tailFunction(u8  ) => id
+    rule tailFunction(u16 ) => id
+    rule tailFunction(u32 ) => id
+    rule tailFunction(u64 ) => id
+    rule tailFunction(u128) => id
+    rule tailFunction(u160) => id
+    rule tailFunction(u256) => id
+
+    rule tailFunction(bool) => id
+    rule tailFunction(()) => id
+    rule tailFunction(str) => fixedHeadVarTail(:: bytes_hooks :: append_str)
+    rule tailFunction(T:Type)
+        => error("tailFunction: unrecognized type", ListItem(T))
         [owise]
 
     rule methodSignature(S:String, Ps:NormalizedFunctionParameterList)
@@ -159,6 +407,14 @@ module ULM-CALLDATA-ENCODER
     rule signatureType(u256) => "uint256"
     rule signatureType(T) => error("Unknown type in signatureType:", ListItem(T))
         [owise]
+
+    rule paramToEncodeValue(I:Identifier : T:Type) => I : T
+    rule paramToEncodeValue(I:SelfSort : T:Type) => I : T
+
+    rule paramsToEncodeValues(.NormalizedFunctionParameterList) => .EncodeValues
+    rule paramsToEncodeValues(P:NormalizedFunctionParameter , Ps:NormalizedFunctionParameterList)
+        => paramToEncodeValue(P) , paramsToEncodeValues(Ps)
+
 
 endmodule
 

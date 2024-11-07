@@ -19,7 +19,7 @@ module ULM-PREPROCESSING-EVENTS
 
     syntax UkmInstruction ::= #ulmPreprocessEvent
                                   ( method: PathInExpression
-                                  , appendLastParam: ExpressionOrError
+                                  , appendLastParam: NonEmptyStatementsOrError
                                   , logIdentifier: IdentifierOrError
                                   , eventSignature: ValueOrError
                                   )
@@ -34,7 +34,13 @@ module ULM-PREPROCESSING-EVENTS
             // but the last one are indexed. We should handle generic events.
             => #ulmPreprocessEvent
                 ( Method
-                , appendParamToBytes(data, last(Param, Params))
+                , encodeStatements
+                    ( data
+                    , paramsToEncodeValues
+                        ( last(Param, Params)
+                        , .NormalizedFunctionParameterList
+                        )
+                    )
                 , findLogIdentifier(1 +Int length(Params))
                 , eventSignature(EventName, (Param , Params))
                 )
@@ -49,7 +55,7 @@ module ULM-PREPROCESSING-EVENTS
         <k>
             #ulmPreprocessEvent
                 (... method: Method:PathInExpression
-                , appendLastParam: v(AppendLast:Expression)
+                , appendLastParam: AppendLast:NonEmptyStatements
                 , logIdentifier: LogIdentifier:Identifier
                 , eventSignature: EventSignature:Value
                 )
@@ -61,28 +67,21 @@ module ULM-PREPROCESSING-EVENTS
         <method-implementation>
             empty => block({
                 .InnerAttributes
-                let data = :: bytes_hooks :: empty ( .CallParamsList );
-                let data = AppendLast;
-                :: ulm :: LogIdentifier
-                    ( ptrValue(null, EventSignature)
-                    , concatCallParamsList
-                        ( paramsToArgs(allButLast(Param, Params))
-                        , (data , .CallParamsList)
-                        )
-                    );
-                .NonEmptyStatements
+                concatNonEmptyStatements
+                    (   let data = :: bytes_hooks :: empty ( .CallParamsList );
+                        AppendLast
+                    ,   :: ulm :: LogIdentifier
+                            ( ptrValue(null, EventSignature)
+                            , concatCallParamsList
+                                ( paramsToArgs(allButLast(Param, Params))
+                                , (data , .CallParamsList)
+                                )
+                            );
+                        .NonEmptyStatements
+                    )
             })
         </method-implementation>
         <method-return-type> () </method-return-type>
-
-    syntax ExpressionOrError ::= appendParamToBytes
-                                    ( bufferId: Identifier
-                                    , NormalizedFunctionParameter
-                                    )  [function, total]
-    rule appendParamToBytes(B:Identifier, (I:Identifier : T:Type)) => appendValue(B, I, T)
-    rule appendParamToBytes(B, P)
-        => e(error("appendParamToBytes: unrecognized param", ListItem(B) ListItem(P)))
-        [owise]
 
     syntax IdentifierOrError ::= findLogIdentifier(Int)  [function, total]
     rule findLogIdentifier(1) => Log1
