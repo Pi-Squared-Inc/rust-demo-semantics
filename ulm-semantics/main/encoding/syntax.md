@@ -16,6 +16,12 @@ module ULM-ENCODING-SYNTAX
                    | encodeFunctionParams (List, List, Bytes) [function]
 
     syntax BytesOrError ::= encodeFunctionSignatureAsBytes(StringOrError) [function, total]
+    syntax IntOrError ::= encodeEventSignatureAsInt(StringOrError) [function, total]
+
+    syntax BytesOrError  ::= methodSignature(String, NormalizedFunctionParameterList)  [function, total]
+    syntax ValueOrError  ::= eventSignature(String, NormalizedFunctionParameterList)  [function, total]
+
+    syntax ExpressionOrError ::= appendValue(bufferId: Identifier, value: Identifier, Type)  [function, total]
 
 endmodule
 

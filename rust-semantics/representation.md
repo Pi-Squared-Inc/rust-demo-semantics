@@ -138,7 +138,7 @@ module RUST-REPRESENTATION
 
     syntax IntOrError ::= Int | SemanticsError
     syntax IntOrError ::= valueToInteger(Value)  [function, total]
-    syntax ValueOrError ::= integerToValue(Int, Type)  [function, total]
+    syntax ValueOrError ::= integerToValue(IntOrError, Type)  [function, total]
 
     syntax StringOrError ::= String | SemanticsError
 
@@ -195,6 +195,12 @@ module RUST-REPRESENTATION
 
     syntax NonEmptyStatementsOrError ::= NonEmptyStatements | SemanticsError
     syntax NonEmptyStatements ::= concatNonEmptyStatements(NonEmptyStatements, NonEmptyStatements)  [function, total]
+
+    syntax CallParamsList ::= concatCallParamsList(CallParamsList, CallParamsList)  [function, total]
+
+    syntax Int ::= length(NormalizedFunctionParameterList)  [function, total]
+    syntax NormalizedFunctionParameter ::= last(NormalizedFunctionParameter, NormalizedFunctionParameterList)  [function, total]
+    syntax NormalizedFunctionParameterList ::= allButLast(NormalizedFunctionParameter, NormalizedFunctionParameterList)  [function, total]
 
 endmodule
 

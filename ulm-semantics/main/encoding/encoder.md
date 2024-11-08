@@ -52,14 +52,30 @@ module ULM-CALLDATA-ENCODER
     imports private BYTES
     imports private INT-SYNTAX
     imports private KRYPTO
+    imports private RUST-ERROR-SYNTAX
     imports private STRING
     imports private ULM-ENCODING-SYNTAX
     imports private ULM-ENCODING-HELPER-SYNTAX
     imports private ULM-ENCODING-HELPER
 
+    syntax Identifier ::= "bytes_hooks"  [token]
+                        | "append_u8"  [token]
+                        | "append_u16"  [token]
+                        | "append_u32"  [token]
+                        | "append_u64"  [token]
+                        | "append_u128"  [token]
+                        | "append_u160"  [token]
+                        | "append_u256"  [token]
+                        | "append_bool"  [token]
+
+
     rule encodeFunctionSignatureAsBytes(FS)
         => encodeHexBytes(substrString(Keccak256(String2Bytes(FS)), 0, 8))
     rule encodeFunctionSignatureAsBytes(E:SemanticsError) => E
+
+    rule encodeEventSignatureAsInt(FS)
+        => Bytes2Int(Keccak256raw(String2Bytes(FS)), BE, Unsigned)
+    rule encodeEventSignatureAsInt(E:SemanticsError) => E
 
     // TODO: it may be worth extracting the substrString(Keccak256(String2Bytes(FS)), 0, 8) 
     // thing to a function that takes a String and produces a String or Bytes (as opposed to
@@ -88,6 +104,62 @@ module ULM-CALLDATA-ENCODER
             encodeFunctionParams(ARGS:List, PTYPES:List, B:Bytes +Bytes convertToKBytes(V, T))
 
     rule encodeFunctionParams(.List, .List, B:Bytes) => B
+
+    rule appendValue(BufferId:Identifier, Value:Identifier, u8)
+        => v(:: bytes_hooks :: append_u8 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, u16)
+        => v(:: bytes_hooks :: append_u16 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, u32)
+        => v(:: bytes_hooks :: append_u32 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, u64)
+        => v(:: bytes_hooks :: append_u64 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, u128)
+        => v(:: bytes_hooks :: append_u128 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, u160)
+        => v(:: bytes_hooks :: append_u160 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, u256)
+        => v(:: bytes_hooks :: append_u256 ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, Value:Identifier, bool)
+        => v(:: bytes_hooks :: append_bool ( BufferId , Value , .CallParamsList ))
+    rule appendValue(BufferId:Identifier, _Value:Identifier, ()) => v(BufferId)
+    rule appendValue(BufferId:Identifier, Value:Identifier, T:Type)
+        => e(error("appendValue: unrecognized type", ListItem(BufferId) ListItem(Value) ListItem(T)))
+        [owise]
+
+    rule methodSignature(S:String, Ps:NormalizedFunctionParameterList)
+        => encodeFunctionSignatureAsBytes(concat(concat(S +String "(", signatureTypes(Ps)), ")"))
+
+    rule eventSignature(S, Ps)
+        => integerToValue
+            ( encodeEventSignatureAsInt
+                (concat(concat(S +String "(", signatureTypes(Ps)), ")"))
+            , u256
+            )
+
+    syntax StringOrError  ::= signatureTypes(NormalizedFunctionParameterList)  [function, total]
+                            | signatureType(Type)  [function, total]
+
+    rule signatureTypes(.NormalizedFunctionParameterList) => ""
+    rule signatureTypes(_ : T:Type , .NormalizedFunctionParameterList)
+        => signatureType(T)
+    rule signatureTypes
+            ( _ : T:Type
+            , ((_:NormalizedFunctionParameter , _:NormalizedFunctionParameterList)
+                #as Ps:NormalizedFunctionParameterList)
+            )
+        => concat(signatureType(T), concat(",", signatureTypes(Ps)))
+
+    rule signatureType(u8) => "uint8"
+    rule signatureType(u16) => "uint16"
+    rule signatureType(u32) => "uint32"
+    rule signatureType(u64) => "uint64"
+    rule signatureType(u128) => "uint128"
+    // TODO: This is the wrong signature type. We should separate addresses from u160.
+    rule signatureType(u160) => "address"
+    rule signatureType(u256) => "uint256"
+    rule signatureType(T) => error("Unknown type in signatureType:", ListItem(T))
+        [owise]
+
 endmodule
 
 ```
