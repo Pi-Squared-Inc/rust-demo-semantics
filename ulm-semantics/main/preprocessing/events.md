@@ -30,6 +30,8 @@ module ULM-PREPROCESSING-EVENTS
                 (... fullMethodPath: Method:PathInExpression
                 , eventName: EventName:String
                 )
+            // TODO: This handles a very specific type of event: all fields
+            // but the last one are indexed. We should handle generic events.
             => #ulmPreprocessEvent
                 ( Method
                 , appendParamToBytes(data, last(Param, Params))
