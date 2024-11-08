@@ -235,11 +235,6 @@ module ULM-CALLDATA-ENCODER
               )
           =>  .NonEmptyStatements
 
-    syntax AppendOperation  ::= "id"
-                              | "varHead"
-                              | fixedHeadVarTail(PathInExpression)
-    syntax AppendOperationOrError ::= AppendOperation | SemanticsError
-
     syntax ExpressionOrError ::= headSize(Type)  [function, total]
     rule headSize(u8  ) => v(ptrValue(null, u32(32p32)))
     rule headSize(u16 ) => v(ptrValue(null, u32(32p32)))
