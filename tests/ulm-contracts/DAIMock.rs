@@ -20,6 +20,12 @@ pub trait DAIMock {
     #[storage_mapper("balances")]
     fn s_allowances(&self, account: u160, spender: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
 
+    #[event("Transfer")]
+    fn transfer_event(&self, #[indexed] from: u160, #[indexed] to: u160, value: u256);
+
+    #[event("Approval")]
+    fn approval_event(&self, #[indexed] owner: u160, #[indexed] spender: u160, value: u256);
+
     #[view(totalSupply)]
     fn total_supply(&self) -> u256 {
         self.s_total_supply().get()
@@ -48,6 +54,7 @@ pub trait DAIMock {
     fn mint(&self, account: u160, value: u256) {
         self.s_balances(account).set(self.s_balances(account).get() + value);
         self.s_total_supply().set(self.s_total_supply().get() + value);
+        self.transfer_event(0_u160, account, value);
     }
 
     #[endpoint(mintOnDeposit)]
@@ -67,6 +74,7 @@ pub trait DAIMock {
     fn approve(&self, spender: u160, value: u256) -> bool {
         let owner = ::ulm::Caller();
         self.s_allowances(owner, spender).set(value);
+        self.approval_event(owner, spender, value);
         true
     }
 
@@ -86,6 +94,7 @@ pub trait DAIMock {
         };
         self.s_balances(from).set(self.s_balances(from).get() - value);
         self.s_balances(to).set(self.s_balances(to).get() + value);
+        self.transfer_event(from, to, value);
         true
     }
 
