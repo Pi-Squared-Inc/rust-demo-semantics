@@ -3,7 +3,7 @@ from web3 import Web3
 from web3.middleware import SignAndSendRawMiddlewareBuilder
 import time
 
-rust_token_hex = open('.build/erc20/rust-token.bin').read().rstrip()
+rust_token_hex = open('tests/ulm-contracts/DAIMock.kore.bin').read().rstrip()
 
 w3 = Web3(Web3.HTTPProvider('http://localhost:8545'))
 sender = w3.eth.account.create()
@@ -122,3 +122,35 @@ tx_hash = w3.eth.send_transaction(endpoint_not_found_tx)
 print('endpoint not found hash:', tx_hash)
 receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
 print('mint receipt:', receipt)
+
+# name
+name_token_data = '06fdde03'
+name_token_tx = {
+  'from': sender.address,
+  'data': name_token_data,
+  'to': token_address,
+  'value': 0,
+  'gas': 11000000,
+  'maxFeePerGas': 2000000000,
+  'maxPriorityFeePerGas': 1000000000,
+}
+
+name = w3.eth.call(name_token_tx)
+name = w3.to_text(name)
+print("Name:", name)
+
+# symbol
+symbol_token_data = '95d89b41'
+symbol_token_tx = {
+  'from': sender.address,
+  'data': symbol_token_data,
+  'to': token_address,
+  'value': 0,
+  'gas': 11000000,
+  'maxFeePerGas': 2000000000,
+  'maxPriorityFeePerGas': 1000000000,
+}
+
+symbol = w3.eth.call(symbol_token_tx)
+symbol = w3.to_text(symbol)
+print("Symbol:", symbol)

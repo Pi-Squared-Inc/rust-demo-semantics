@@ -50,6 +50,16 @@ pub trait DAIMock {
         18
     }
 
+    #[endpoint(name)]
+    fn name(&self) -> str {
+        "Wrapped Bitcoin"
+    }
+
+    #[endpoint(symbol)]
+    fn symbol(&self) -> str {
+        "WBTC"
+    }
+
     #[endpoint(mint)]
     fn mint(&self, account: u160, value: u256) {
         self.s_balances(account).set(self.s_balances(account).get() + value);
