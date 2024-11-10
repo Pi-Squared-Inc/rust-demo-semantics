@@ -309,14 +309,15 @@ module ULM-SEMANTICS-HOOKS-BYTES
 
     rule ulmBytesAppendBytesRaw(ptrValue(_, u64(BytesId)), ptrValue(_, u64(ToAppendId)))
         => ulmBytesAppendBytesRaw(ulmBytesId(BytesId), ulmBytesId(ToAppendId))
-    rule ulmBytesAppendBytesRaw(ulmBytesValue(B:Bytes), ulmBytesValue(ToAppend))
-        => ulmBytesNew(B +Bytes ToAppend)
+    // Assuming we're calling this only for string support! Fix later!
+    rule ulmBytesAppendBytesRaw(ulmBytesValue(_B:Bytes), ulmBytesValue(ToAppend))
+        => ulmBytesNew(Int2Bytes(32, 32, BE) +Bytes ToAppend)
 
     rule ulmBytesAppendBytes(ulmBytesValue(B:Bytes), Value:Bytes)
         => ulmBytesNew(B +Bytes Value)
 
     rule ulmBytesAppendLenAndBytes(ulmBytesValue(First:Bytes), Second:Bytes)
-        => ulmBytesNew(First +Bytes Int2Bytes(2, lengthBytes(Second), BE) +Bytes Second)
+        => ulmBytesNew(First +Bytes Int2Bytes(32, lengthBytes(Second), BE) +Bytes padRightBytes(Second, 32, 0))
         requires lengthBytes(Second) <Int (1 <<Int 16)
 
     rule ulmBytesDecodeBytes(ptrValue(_, u64(BytesId)), L:Int)
