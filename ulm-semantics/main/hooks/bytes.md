@@ -321,7 +321,7 @@ module ULM-SEMANTICS-HOOKS-BYTES
 
     rule ulmBytesDecodeBytes(ptrValue(_, u64(BytesId)), L:Int)
         => ulmBytesDecodeBytes(ulmBytesId(BytesId), L:Int)
-    rule ulmBytesDecodeBytes(ulmBytesValue(B:Bytes), L:Int) 
+    rule ulmBytesDecodeBytes(ulmBytesValue(B:Bytes), L:Int)
         => tupleExpression
             ( ulmBytesNew(substrBytes(B, L, lengthBytes(B)))
             , ulmBytesNew(substrBytes(B, 0, L))
