@@ -310,9 +310,8 @@ module ULM-SEMANTICS-HOOKS-BYTES
     rule ulmBytesAppendBytesRaw(ptrValue(_, u64(BytesId)), ptrValue(_, u64(ToAppendId)))
         => ulmBytesAppendBytesRaw(ulmBytesId(BytesId), ulmBytesId(ToAppendId))
     // Assuming we're calling this only for string support! Fix later!
-    rule ulmBytesAppendBytesRaw(ulmBytesValue(_B:Bytes), ulmBytesValue(ToAppend))
-        => ulmBytesNew(Int2Bytes(32, 32, BE) +Bytes ToAppend)
-
+    rule ulmBytesAppendBytesRaw(ulmBytesValue(B:Bytes), ulmBytesValue(ToAppend))
+        => ulmBytesNew(B +Bytes ToAppend)
     rule ulmBytesAppendBytes(ulmBytesValue(B:Bytes), Value:Bytes)
         => ulmBytesNew(B +Bytes Value)
 
