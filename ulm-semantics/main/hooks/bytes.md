@@ -353,15 +353,18 @@ module ULM-SEMANTICS-HOOKS-BYTES
         requires isSignedInt(T) andBool 32 <=Int lengthBytes(B)
     rule ulmBytesDecode(ulmBytesValue(B:Bytes), str)
         => ulmBytesDecodeStr
-            ( Bytes2Int(substrBytes(B, 0, 2), BE, Signed)
-            , substrBytes(B, 2, lengthBytes(B))
+            ( Bytes2Int(substrBytes(B, 0, 32), BE, Signed)
+            , substrBytes(B, 32, lengthBytes(B))
             )
         requires 2 <=Int lengthBytes(B)
 
     rule ulmBytesDecodeInt(Value:Int, B:Bytes, T:Type)
         => ulmBytesDecode(integerToValue(Value, T), B)
     rule ulmBytesDecodeStr(Len:Int, B:Bytes)
-        => ulmBytesDecode(Bytes2String(substrBytes(B, 0, Len)), substrBytes(B, Len, lengthBytes(B)))
+        => ulmBytesDecode
+            ( Bytes2String(substrBytes(B, 0, Len))
+            , substrBytes(B, ((Len +Int 31) /Int 32) *Int 32, lengthBytes(B))
+            )
         requires 0 <=Int Len andBool Len <=Int lengthBytes(B)
 
     rule ulmBytesDecode(Value:Value, B:Bytes)
