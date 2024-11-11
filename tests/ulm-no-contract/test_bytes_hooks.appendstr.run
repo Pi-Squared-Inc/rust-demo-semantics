@@ -3,11 +3,11 @@ call :: test_bytes_hooks :: append_str;
 return_value_to_arg;
 call :: bytes_hooks :: length;
 return_value;
-check_eq 7_u32;
+check_eq 64_u32;
 
-push "Everyone";
+push "Everyone12345678901234567890123456789012";
 call :: test_bytes_hooks :: append_str;
 return_value_to_arg;
 call :: bytes_hooks :: length;
 return_value;
-check_eq 10_u32
+check_eq 96_u32
