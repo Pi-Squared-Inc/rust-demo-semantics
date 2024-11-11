@@ -316,7 +316,15 @@ module ULM-SEMANTICS-HOOKS-BYTES
         => ulmBytesNew(B +Bytes Value)
 
     rule ulmBytesAppendLenAndBytes(ulmBytesValue(First:Bytes), Second:Bytes)
-        => ulmBytesNew(First +Bytes Int2Bytes(2, lengthBytes(Second), BE) +Bytes Second)
+        => ulmBytesNew
+            ( First
+                +Bytes Int2Bytes(32, lengthBytes(Second), BE)
+                +Bytes padRightBytes
+                    ( Second
+                    , ((lengthBytes(Second) +Int 31) /Int 32) *Int 32
+                    , 0
+                    )
+            )
         requires lengthBytes(Second) <Int (1 <<Int 16)
 
     rule ulmBytesDecodeBytes(ptrValue(_, u64(BytesId)), L:Int)
