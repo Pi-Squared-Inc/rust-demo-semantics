@@ -18,6 +18,7 @@ module ULM-TEST-SYNTAX
                                 | "list_values_holder" List
 
     syntax ULMTestTypeHolderList ::= List{ULMTestTypeHolder, ","}
+    syntax BytesList ::= NeList{Bytes, "+"}
 
     syntax ExecutionItem  ::= "mock" "CallData"
                             | "mock" "Caller"
@@ -36,6 +37,7 @@ module ULM-TEST-SYNTAX
                             | "hold_string_from_test_stack"
                             | "hold_list_values_from_test_stack"
                             | "expect_cancel"
+                            | "check_raw_output" BytesList
 
     syntax Identifier ::= "u8"  [token]
                         | "u16"  [token]
@@ -49,6 +51,7 @@ endmodule
 module ULM-TEST-EXECUTION
     imports private BYTES
     imports private COMMON-K-CELL
+    imports private K-EQUAL-SYNTAX
     imports private RUST-EXECUTION-TEST-CONFIGURATION
     imports private RUST-SHARED-SYNTAX
     imports private ULM-ENCODING-SYNTAX
@@ -59,8 +62,6 @@ module ULM-TEST-EXECUTION
     imports private ULM-SEMANTICS-HOOKS-ULM-SYNTAX
     imports private ULM-REPRESENTATION
     imports private ULM-TEST-SYNTAX
-    imports private RUST-SHARED-SYNTAX
-    imports private BYTES
 
     syntax Mockable ::= UlmHook
 
@@ -177,6 +178,23 @@ module ULM-TEST-EXECUTION
         <test-stack> ListItem(I) => .List ... </test-stack>
 
     rule (ulmCancel ~> expect_cancel) => .K
+
+    syntax Bytes ::= concat(BytesList)  [function, total]
+    rule concat(.BytesList) => b""
+    rule concat(B:Bytes + Bs:BytesList) => B +Bytes concat(Bs)
+
+    syntax Int ::= size(BytesList)  [function, total]
+    rule size(.BytesList) => 0
+    rule size(_:Bytes + Bs:BytesList) => 1 +Int size(Bs)
+
+    rule check_raw_output (L:BytesList => concat(L) + .BytesList)
+        requires size(L) >Int 1
+    rule
+        <k>
+            check_raw_output B:Bytes + .BytesList => .K
+            ...
+        </k>
+        <ulm-output> B:Bytes </ulm-output>
 
 endmodule
 
