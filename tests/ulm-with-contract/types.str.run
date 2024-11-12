@@ -1,9 +1,4 @@
-push "strEndpoint";
-hold_string_from_test_stack;
-hold_list_values_from_test_stack;
-hold_list_values_from_test_stack;
-encode_call_data;
-
+encode_call_data strEndpoint();
 return_value;
 mock CallData;
 
