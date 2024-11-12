@@ -81,32 +81,6 @@ module ULM-CALLDATA-ENCODER
         => Bytes2Int(Keccak256raw(String2Bytes(FS)), BE, Unsigned)
     rule encodeEventSignatureAsInt(E:SemanticsError) => E
 
-    // TODO: it may be worth extracting the substrString(Keccak256(String2Bytes(FS)), 0, 8) 
-    // thing to a function that takes a String and produces a String or Bytes (as opposed to
-    // taking a StringOrError as below) (perhaps with an encodeAsBytes(...) on top of it) and 
-    // then use it here and in the rules below.
-    rule encodeCallData(FN:String, FAT:List, FAL:List) => 
-           encodeFunctionSignature(FN, FAT) +Bytes encodeFunctionParams(FAL, FAT, b"")  
-
-    // Function signature encoding
-    rule encodeFunctionSignature(FuncName:String, RL:List) => 
-            encodeFunctionSignatureHelper(RL:List, FuncName +String "(") [priority(40)]
-        
-    rule encodeFunctionSignatureHelper(ListItem(FuncParam:String) RL:List, FS) => 
-            encodeFunctionSignatureHelper(RL, FS +String FuncParam +String ",") [owise]
-    
-    // The last param does not have a follow up comma
-    rule encodeFunctionSignatureHelper(ListItem(FuncParam:String) .List, FS) => 
-            encodeFunctionSignatureHelper(.List, FS +String FuncParam ) 
-
-    rule encodeFunctionSignatureHelper(.List, FS) => encodeHexBytes(substrString(Keccak256(String2Bytes(FS  +String ")")), 0, 8)) 
-
-    // Function parameters encoding
-    rule encodeFunctionParams(ListItem(V:Value) ARGS:List, ListItem(T:String) PTYPES:List, B:Bytes) =>
-            encodeFunctionParams(ARGS:List, PTYPES:List, B:Bytes +Bytes convertToKBytes(V, T))
-
-    rule encodeFunctionParams(.List, .List, B:Bytes) => B
-
     syntax Identifier ::= "ulm#head_size"  [token]
                         | "ulm#head"  [token]
                         | "ulm#tail"  [token]

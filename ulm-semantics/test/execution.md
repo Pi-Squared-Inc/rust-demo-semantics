@@ -8,12 +8,6 @@ module ULM-TEST-SYNTAX
     imports ULM-SEMANTICS-HOOKS-ULM-SYNTAX
     imports BYTES-SYNTAX
 
-    // TODO: Replace the list_ptrs_holder and list_values_holder with
-    // PtrList and ValueList.
-    syntax ULMTestTypeHolder ::=  "list_ptrs_holder" List
-                                | "list_values_holder" List
-
-    syntax ULMTestTypeHolderList ::= List{ULMTestTypeHolder, ","}
     syntax BytesList ::= NeList{Bytes, "+"}
 
     syntax EncodeArg ::= Expression ":" Type
@@ -34,7 +28,6 @@ module ULM-TEST-SYNTAX
                             | "output_to_arg"
                             | "push_status"
                             | "check_eq" Int
-                            | "hold_list_values_from_test_stack"
                             | "expect_cancel"
                             | "check_raw_output" BytesList
                             | "check_eq_bytes" Bytes
@@ -65,25 +58,6 @@ module ULM-TEST-EXECUTION
     imports private ULM-TEST-SYNTAX
 
     syntax Mockable ::= UlmHook
-
-    // The following constructions allows us to build more complex data structures
-    // for mocking tests
-    rule <k> UTH:ULMTestTypeHolder ~> EI:ExecutionItem => EI ~> UTH ... </k>
-    rule <k> UTHL:ULMTestTypeHolderList ~> EI:ExecutionItem => EI ~> UTHL ... </k>
-    rule <k> UTH1:ULMTestTypeHolder ~> UTH2:ULMTestTypeHolder
-                => (UTH1, UTH2):ULMTestTypeHolderList ... </k>
-    rule <k> UTH:ULMTestTypeHolder ~> UTHL:ULMTestTypeHolderList
-                => (UTH, UTHL):ULMTestTypeHolderList ... </k>
-
-    // TODO: Rework the implementation of the productions related to list value holding
-    // Ref - https://github.com/Pi-Squared-Inc/rust-demo-semantics/pull/167#discussion_r1813386536
-    rule <k> hold_list_values_from_test_stack => list_ptrs_holder L ~> list_values_holder .List ... </k>
-         <test-stack> L:List => .List </test-stack>
-    rule <k> list_ptrs_holder ListItem(I) LPH ~> list_values_holder LLH
-                => I ~> list_ptrs_holder LPH ~> list_values_holder LLH ... </k>
-    rule <k> ptrValue(_, V) ~> list_ptrs_holder LPH ~> list_values_holder LLH
-                => list_ptrs_holder LPH ~> list_values_holder ListItem(V) LLH ... </k>
-    rule <k> list_ptrs_holder .List => .K ... </k>
 
     syntax BytesOrError ::= extractCallSignature(EncodeCall)  [function, total]
     rule extractCallSignature(Fn:Identifier ( Args:EncodeArgs ))
