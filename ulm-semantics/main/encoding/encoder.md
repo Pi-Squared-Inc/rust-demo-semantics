@@ -87,8 +87,6 @@ module ULM-CALLDATA-ENCODER
     // then use it here and in the rules below.
     rule encodeCallData(FN:String, FAT:List, FAL:List) => 
            encodeFunctionSignature(FN, FAT) +Bytes encodeFunctionParams(FAL, FAT, b"")  
-    rule encodeConstructorData(FAT:List, FAL:List) => 
-           encodeFunctionParams(FAL, FAT, b"")  
 
     // Function signature encoding
     rule encodeFunctionSignature(FuncName:String, RL:List) => 

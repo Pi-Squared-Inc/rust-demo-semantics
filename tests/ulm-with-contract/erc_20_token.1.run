@@ -24,13 +24,7 @@ list_mock Log3Hook ( 10038928713678617632724760450974316890014613957597286436614
 list_mock GetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 ) ulmIntResult(9700, u256);
 list_mock GetAccountStorageHook ( 107935355587284645605585039702009686485686559005730386557515578263121021727641 ) ulmIntResult(300, u256);
 
-push "uint256";
-hold_list_values_from_test_stack;
-push 10000_u256;
-hold_list_values_from_test_stack;
-encode_constructor_data;
-
-
+encode_constructor_data 10000_u256:u256;
 return_value;
 mock CallData;
 

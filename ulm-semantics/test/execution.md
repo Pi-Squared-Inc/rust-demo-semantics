@@ -27,7 +27,7 @@ module ULM-TEST-SYNTAX
                             | "mock" UlmHook UlmHookResult
                             | "list_mock" UlmHook UlmHookResult
                             | "encode_call_data" EncodeCall
-                            | "encode_constructor_data"
+                            | "encode_constructor_data" EncodeArgs
                             | "call_contract" Int
                             | "init_contract" Int
                             | "clear_pgm"
@@ -105,6 +105,9 @@ module ULM-TEST-EXECUTION
 
     syntax NonEmptyStatementsOrError ::= encodeInstructions(EncodeCall)  [function, total]
     rule encodeInstructions( _:Identifier ( Args:EncodeArgs ) )
+        => encodeInstructions(Args)
+    syntax NonEmptyStatementsOrError ::= encodeInstructions(EncodeArgs)  [function, total]
+    rule encodeInstructions(Args:EncodeArgs)
         => concat
             (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
                 .NonEmptyStatements
@@ -134,28 +137,13 @@ module ULM-TEST-EXECUTION
         </ulm-bytes-buffers>
         requires B:Bytes:KItem ==K Buffers[MInt2Unsigned(V)] orDefault 0
 
-    rule <k> encode_call_data
-             ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .ULMTestTypeHolderList
-             => ulmBytesNew(encodeCallData(FNAME, PTYPES, ARGS))
-            ...
-         </k>
+    syntax ExecutionItem ::= encodeConstructorData(NonEmptyStatementsOrError)
 
-    rule <k> encode_call_data
-             ~> value_holder FNAME
-             => ulmBytesNew(encodeCallData(FNAME, .List, .List))
-            ...
-         </k> [owise]
-
-    rule <k> encode_constructor_data
-             ~> list_values_holder ARGS , list_values_holder PTYPES , .ULMTestTypeHolderList
-             => ulmBytesNew(encodeConstructorData(PTYPES, ARGS))
-            ...
-         </k>
-
-    rule <k> encode_constructor_data
-             => ulmBytesNew(encodeConstructorData(.List, .List))
-            ...
-         </k> [owise]
+    rule encode_constructor_data Args:EncodeArgs
+        => encodeConstructorData(encodeInstructions(Args))
+    rule encodeConstructorData(Statements:NonEmptyStatements)
+        =>  Statements
+            buffer_id:Expression
 
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>

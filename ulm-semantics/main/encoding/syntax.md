@@ -7,7 +7,6 @@ module ULM-ENCODING-SYNTAX
 
     // TODO: Make these functions total and returning BytesOrError
     syntax Bytes ::= encodeCallData (String, List, List) [function] //Function name, argument types, argument list
-                   | encodeConstructorData (List, List) [function] // argument types, argument list
                    | encodeFunctionSignature (String, List) [function]
                    | encodeFunctionSignatureHelper (List, String) [function]
                    | encodeFunctionParams (List, List, Bytes) [function]
