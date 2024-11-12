@@ -8,13 +8,9 @@ module ULM-TEST-SYNTAX
     imports ULM-SEMANTICS-HOOKS-ULM-SYNTAX
     imports BYTES-SYNTAX
 
-    // TODO: Do not use KItem for ptr_holder and value_holder. This is
-    // too generic and can lead to problems.
     // TODO: Replace the list_ptrs_holder and list_values_holder with
     // PtrList and ValueList.
-    syntax ULMTestTypeHolder ::= "ptr_holder" KItem [strict]
-                                | "value_holder" KItem
-                                | "list_ptrs_holder" List
+    syntax ULMTestTypeHolder ::=  "list_ptrs_holder" List
                                 | "list_values_holder" List
 
     syntax ULMTestTypeHolderList ::= List{ULMTestTypeHolder, ","}
@@ -30,18 +26,14 @@ module ULM-TEST-SYNTAX
                             | "mock" "Caller"
                             | "mock" UlmHook UlmHookResult
                             | "list_mock" UlmHook UlmHookResult
-                            | "encode_call_data"
                             | "encode_call_data" EncodeCall
-                            | "encode_call_data_to_string"
                             | "encode_constructor_data"
                             | "call_contract" Int
                             | "init_contract" Int
                             | "clear_pgm"
-                            | "hold" KItem
                             | "output_to_arg"
                             | "push_status"
                             | "check_eq" Int
-                            | "hold_string_from_test_stack"
                             | "hold_list_values_from_test_stack"
                             | "expect_cancel"
                             | "check_raw_output" BytesList
@@ -83,11 +75,6 @@ module ULM-TEST-EXECUTION
     rule <k> UTH:ULMTestTypeHolder ~> UTHL:ULMTestTypeHolderList
                 => (UTH, UTHL):ULMTestTypeHolderList ... </k>
 
-    rule <k> hold_string_from_test_stack => ptr_holder P ... </k>
-         <test-stack> ListItem(P) L:List => L </test-stack>
-    rule <k> ptr_holder ptrValue(_, V) => value_holder V ... </k>
-
-
     // TODO: Rework the implementation of the productions related to list value holding
     // Ref - https://github.com/Pi-Squared-Inc/rust-demo-semantics/pull/167#discussion_r1813386536
     rule <k> hold_list_values_from_test_stack => list_ptrs_holder L ~> list_values_holder .List ... </k>
@@ -97,20 +84,6 @@ module ULM-TEST-EXECUTION
     rule <k> ptrValue(_, V) ~> list_ptrs_holder LPH ~> list_values_holder LLH
                 => list_ptrs_holder LPH ~> list_values_holder ListItem(V) LLH ... </k>
     rule <k> list_ptrs_holder .List => .K ... </k>
-
-    rule <k> hold I => value_holder I ... </k>
-
-    rule <k> encode_call_data_to_string
-             ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .ULMTestTypeHolderList
-             => Bytes2String(encodeCallData(FNAME, PTYPES, ARGS))
-            ...
-         </k>
-
-    rule <k> encode_call_data_to_string
-             ~> value_holder FNAME
-             => Bytes2String(encodeCallData(FNAME, .List, .List))
-            ...
-         </k> [owise]
 
     syntax BytesOrError ::= extractCallSignature(EncodeCall)  [function, total]
     rule extractCallSignature(Fn:Identifier ( Args:EncodeArgs ))
