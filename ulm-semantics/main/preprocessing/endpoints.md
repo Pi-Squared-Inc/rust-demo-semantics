@@ -179,7 +179,6 @@ module ULM-PREPROCESSING-ENDPOINTS
                         | "decode_signature"  [token]
                         | "empty"  [token]
                         | "equals"  [token]
-                        | "head_length"  [token]
                         | "ulm"  [token]
                         | "ulmWrap##init"  [token]
                         | "CallData"  [token]
