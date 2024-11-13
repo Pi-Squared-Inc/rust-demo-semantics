@@ -19,7 +19,9 @@ module ULM-TEST-SYNTAX
     syntax ExecutionItem  ::= "mock" "CallData"
                             | "mock" "Caller"
                             | "mock" UlmHook UlmHookResult
+                            | "mock" UlmTestHook UlmHookResult  [strict(1), result(TestResult)]
                             | "list_mock" UlmHook UlmHookResult
+                            | "list_mock" UlmTestHook UlmHookResult  [strict(1), result(TestResult)]
                             | "encode_call_data" EncodeCall
                             | "encode_constructor_data" EncodeArgs
                             | "call_contract" Int
@@ -39,14 +41,21 @@ module ULM-TEST-SYNTAX
                         | "u128"  [token]
                         | "u160"  [token]
                         | "u256"  [token]
+
+    syntax UlmTestHook  ::= SetAccountStorageHook(StorageKey, Expression)  [seqstrict, result(TestResult)]
+                          | GetAccountStorageHook(StorageKey)  [seqstrict, result(TestResult)]
+
+    syntax StorageKey ::= storageKey(String, EncodeArgs)
 endmodule
 
 module ULM-TEST-EXECUTION
     imports private BYTES
     imports private COMMON-K-CELL
     imports private K-EQUAL-SYNTAX
+    imports private KRYPTO
     imports private RUST-ERROR-SYNTAX
     imports private RUST-EXECUTION-TEST-CONFIGURATION
+    imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
     imports private ULM-ENCODING-SYNTAX
     imports private ULM-EXECUTION-SYNTAX
@@ -56,6 +65,9 @@ module ULM-TEST-EXECUTION
     imports private ULM-SEMANTICS-HOOKS-ULM-SYNTAX
     imports private ULM-REPRESENTATION
     imports private ULM-TEST-SYNTAX
+
+    syntax UlmTestHook  ::= #SetAccountStorageHook(Int, IntOrError)
+                          | #GetAccountStorageHook(Int)
 
     syntax Mockable ::= UlmHook
 
@@ -71,6 +83,7 @@ module ULM-TEST-EXECUTION
                         | "buffer_id"  [token]
                         | "bytes_hooks"  [token]
                         | "empty"  [token]
+                        | "str"  [token]
 
     syntax EncodeValues ::= encodeArgsToEncodeValues(EncodeArgs)  [function, total]
     rule encodeArgsToEncodeValues(.EncodeArgs) => .EncodeValues
@@ -192,6 +205,61 @@ module ULM-TEST-EXECUTION
         </k>
         <ulm-output> B:Bytes </ulm-output>
 
+    syntax Bool ::= isTestResult(K) [symbol(isTestResult), function]
+    rule isTestResult(_:K) => false  [owise]
+    rule isTestResult(evaluatedStorageKey(_:Bytes)) => true
+    rule isTestResult(_:PtrValue) => true
+    rule isTestResult(#SetAccountStorageHook(_:Int, _:Int)) => true
+    rule isTestResult(#GetAccountStorageHook(_:Int)) => true
+
+    syntax StorageKey ::= storageKey(NonEmptyStatementsOrError)
+                        | storageKey(Expression)  [strict(1)]
+                        | storageKey(UlmExpression)  [strict(1)]
+                        | evaluatedStorageKey(Bytes)
+    rule storageKey(StorageName:String, Args:EncodeArgs)
+        => storageKey
+            ( concat
+                (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
+                    .NonEmptyStatements
+                ,   encodeStatements
+                        ( buffer_id
+                        , (StorageName : str , encodeArgsToEncodeValues(Args))
+                        )
+                )
+            )
+    rule storageKey(Statements:NonEmptyStatements)
+        =>  storageKey({.InnerAttributes Statements buffer_id })
+    rule storageKey(ptrValue(_, u64(BytesId))) => storageKey(ulmBytesId(BytesId))
+    rule storageKey(ulmBytesValue(B:Bytes)) => evaluatedStorageKey(B)
+
+    rule SetAccountStorageHook(evaluatedStorageKey(B:Bytes), ptrValue(_, Value:Value))
+        => #SetAccountStorageHook
+                ( Bytes2Int(Keccak256raw(B), BE, Unsigned)
+                , valueToInteger(Value)
+                )
+    rule mock #SetAccountStorageHook(Key:Int, Value:Int) Result:UlmHookResult
+        => mock
+            SetAccountStorageHook(Key, Value)
+            Result
+    rule list_mock #SetAccountStorageHook(Key:Int, Value:Int) Result:UlmHookResult
+        => list_mock
+            SetAccountStorageHook(Key, Value)
+            Result
+
+    rule GetAccountStorageHook(evaluatedStorageKey(B:Bytes))
+        => #GetAccountStorageHook(Bytes2Int(Keccak256raw(B), BE, Unsigned))
+    rule mock #GetAccountStorageHook(Key:Int) Result:UlmHookResult
+        => mock
+            GetAccountStorageHook(Key)
+            Result
+    rule list_mock #GetAccountStorageHook(Key:Int) Result:UlmHookResult
+        => list_mock
+            GetAccountStorageHook(Key)
+            Result
+
+    // This may seem stupid, but it's a workaround for
+    // https://github.com/runtimeverification/k/issues/4683
+    rule isKResult(X) => true requires isTestResult(X)
 endmodule
 
 ```
