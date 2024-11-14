@@ -1,5 +1,5 @@
-mock SetAccountStorageHook ( 2566766180763832229052383091904627608042490431692515280991237530682175269032 , 123 ) ulmNoResult();
-mock GetAccountStorageHook ( 2566766180763832229052383091904627608042490431692515280991237530682175269032 ) ulmIntResult(123, u256);
+mock SetAccountStorageHook ( storageKey("myData", ) , 123_u64 ) ulmNoResult();
+mock GetAccountStorageHook ( storageKey("myData", ) ) ulmIntResult(123, u256);
 
 encode_call_data setMyData(123_u64:u64);
 return_value;

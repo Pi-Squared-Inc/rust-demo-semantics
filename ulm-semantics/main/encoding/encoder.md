@@ -69,6 +69,17 @@ module ULM-CALLDATA-ENCODER
                         | "append_u256"  [token]
                         | "append_bool"  [token]
                         | "append_str"  [token]
+                        | "debug"  [token]
+                        | "debug_u8"  [token]
+                        | "debug_u16"  [token]
+                        | "debug_u32"  [token]
+                        | "debug_u64"  [token]
+                        | "debug_u128"  [token]
+                        | "debug_u160"  [token]
+                        | "debug_u256"  [token]
+                        | "debug_bool"  [token]
+                        | "debug_str"  [token]
+                        | "debug_unit"  [token]
                         | "empty"  [token]
                         | "length"  [token]
 
@@ -134,6 +145,7 @@ module ULM-CALLDATA-ENCODER
                 , HeadSize
                 , Head, Tail
                 , appendType(T)
+                , debugType(T)
                 )
         ,   appendValues(Evs, HeadSize, Head, Tail)
         )
@@ -159,12 +171,30 @@ module ULM-CALLDATA-ENCODER
         => error("appendType: unrecognized type", ListItem(T))
         [owise]
 
+    syntax PathInExpressionOrError ::= PathInExpression | SemanticsError
+    syntax PathInExpressionOrError ::= debugType(Type)  [function, total]
+    
+    rule debugType(u8  ) => :: debug :: debug_u8
+    rule debugType(u16 ) => :: debug :: debug_u16
+    rule debugType(u32 ) => :: debug :: debug_u32
+    rule debugType(u64 ) => :: debug :: debug_u64
+    rule debugType(u128) => :: debug :: debug_u128
+    rule debugType(u160) => :: debug :: debug_u160
+    rule debugType(u256) => :: debug :: debug_u256
+
+    rule debugType(bool) => :: debug :: debug_bool
+    rule debugType(()) => :: debug :: debug_unit
+    rule debugType(str) => :: debug :: debug_str
+    rule debugType(T:Type) => error("debugType: unrecognized type", ListItem(T))
+        [owise]
+
     syntax NonEmptyStatementsOrError ::= appendValue
                                             ( value: Expression
                                             , headSize: Expression
                                             , head: Identifier
                                             , tail: Identifier
                                             , appendFn: AppendTypeOrError
+                                            , debugFn: PathInExpressionOrError
                                             )  [function, total]
 
       rule appendValue
@@ -173,6 +203,16 @@ module ULM-CALLDATA-ENCODER
               , head: _Head:Identifier
               , tail: _Tail:Identifier
               , appendFn: E:SemanticsError
+              , debugFn: _Debug:PathInExpressionOrError
+              )
+          =>  E
+      rule appendValue
+              (... value: _Value:Expression
+              , headSize: _HeadSize:Expression
+              , head: _Head:Identifier
+              , tail: _Tail:Identifier
+              , appendFn: _Append:AppendType
+              , debugFn: E:SemanticsError
               )
           =>  E
       rule appendValue
@@ -181,8 +221,10 @@ module ULM-CALLDATA-ENCODER
               , head: Head:Identifier
               , tail: _Tail:Identifier
               , appendFn: fixedSize(P:PathInExpression)
+              , debugFn: Debug:PathInExpression
               )
           =>  let Head = P ( Head , Value , .CallParamsList );
+              Debug ( Value, .CallParamsList );
               .NonEmptyStatements
       rule appendValue
               (... value: Value:Expression
@@ -190,6 +232,7 @@ module ULM-CALLDATA-ENCODER
               , head: Head:Identifier
               , tail: Tail:Identifier
               , appendFn: variableSize(P:PathInExpression)
+              , debugFn: Debug:PathInExpression
               )
           =>  let Head = :: bytes_hooks :: append_u32
                   ( Head
@@ -197,15 +240,18 @@ module ULM-CALLDATA-ENCODER
                   , .CallParamsList
                   );
               let Tail = P ( Tail , Value , .CallParamsList );
+              Debug ( Value, .CallParamsList );
               .NonEmptyStatements
       rule appendValue
-              (... value: _Value:Expression
+              (... value: Value:Expression
               , headSize: _HeadSize:Expression
               , head: _Head:Identifier
               , tail: _Tail:Identifier
               , appendFn: empty
+              , debugFn: Debug:PathInExpression
               )
-          =>  .NonEmptyStatements
+          =>  Debug ( Value, .CallParamsList );
+              .NonEmptyStatements
 
     syntax ExpressionOrError ::= headSize(Type)  [function, total]
     rule headSize(u8  ) => v(ptrValue(null, u32(32p32)))

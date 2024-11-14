@@ -303,7 +303,6 @@ module ULM-SEMANTICS-HOOKS-BYTES
     rule ulmBytesAppendBool(ptrValue(P, u64(BytesId)), ptrValue(_, true))
         => ulmBytesAppendInt(ptrValue(P, u64(BytesId)), ptrValue(null, u8(1p8)))
 
-    // TODO: This can create key ambiguity for storage
     rule ulmBytesAppendStr(ptrValue(_, u64(BytesId)), ptrValue(_, Value:String))
         => ulmBytesAppendLenAndBytes(ulmBytesId(BytesId), String2Bytes(Value))
 

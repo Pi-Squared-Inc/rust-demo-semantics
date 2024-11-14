@@ -25,6 +25,7 @@ module ULM-TARGET-CONFIGURATION
     imports RUST-EXECUTION-TEST-CONFIGURATION
     imports ULM-CONFIGURATION
     imports ULM-FULL-PREPROCESSED-CONFIGURATION
+    imports ULM-SEMANTICS-HOOKS-DEBUG-CONFIGURATION
     imports ULM-PREPROCESSING-EPHEMERAL-CONFIGURATION
     imports ULM-TEST-CONFIGURATION
 
@@ -35,6 +36,7 @@ module ULM-TARGET-CONFIGURATION
         <ulm-test/>
         <rust-test/>
         <execution/>
+        <ulm-debug/>
         <k/>
 endmodule
 
