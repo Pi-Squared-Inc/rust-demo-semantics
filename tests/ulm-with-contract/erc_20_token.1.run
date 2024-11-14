@@ -8,11 +8,11 @@ list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ul
 list_mock SetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) , 9900_u256 ) ulmNoResult();
 list_mock GetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) ) ulmIntResult(0, u256);
 list_mock SetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) , 100_u256 ) ulmNoResult();
-list_mock Log3Hook ( 100389287136786176327247604509743168900146139575972864366142685224231313322991 , 1010101 , 2020202 , b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00d" ) ulmNoResult();
+list_mock Log3Hook ( eventSignature("Transfer(address,address,uint256)") , 1010101 , 2020202 , encodeValues(100_u256:u256) ) ulmNoResult();
 list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(9900, u256);
 list_mock GetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) ) ulmIntResult(100, u256);
 list_mock SetAccountStorageHook ( storageKey("allowances", 1010101_u160:u160, 3030303_u160:u160) , 200_u256 ) ulmNoResult();
-list_mock Log3Hook ( 63486140976153616755203102783360879283472101686154884697241723088393386309925 , 1010101 , 3030303 , b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xc8" ) ulmNoResult();
+list_mock Log3Hook ( eventSignature("Approval(address,address,uint256)") , 1010101 , 3030303 , encodeValues(200_u256:u256) ) ulmNoResult();
 list_mock GetAccountStorageHook ( storageKey("allowances", 1010101_u160:u160, 3030303_u160:u160) ) ulmIntResult(200, u256);
 list_mock SetAccountStorageHook ( storageKey("allowances", 1010101_u160:u160, 3030303_u160:u160) , 0_u256 ) ulmNoResult();
 list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(9900, u256);
@@ -20,7 +20,7 @@ list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ul
 list_mock SetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) , 9700_u256 ) ulmNoResult();
 list_mock GetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) ) ulmIntResult(100, u256);
 list_mock SetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) , 300_u256 ) ulmNoResult();
-list_mock Log3Hook ( 100389287136786176327247604509743168900146139575972864366142685224231313322991 , 1010101 , 2020202 , b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xc8" ) ulmNoResult();
+list_mock Log3Hook ( eventSignature("Transfer(address,address,uint256)") , 1010101 , 2020202 , encodeValues(200_u256:u256) ) ulmNoResult();
 list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(9700, u256);
 list_mock GetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) ) ulmIntResult(300, u256);
 

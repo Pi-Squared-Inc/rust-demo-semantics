@@ -44,8 +44,11 @@ module ULM-TEST-SYNTAX
 
     syntax UlmTestHook  ::= SetAccountStorageHook(StorageKey, Expression)  [seqstrict, result(TestResult)]
                           | GetAccountStorageHook(StorageKey)  [seqstrict, result(TestResult)]
+                          | Log3Hook(EventSignature, Int, Int, EncodeValues)  [seqstrict(1, 4), result(TestResult)]
 
     syntax StorageKey ::= storageKey(String, EncodeArgs)
+    syntax EventSignature ::= eventSignature(String)
+    syntax EncodeValues ::= encodeValues(EncodeArgs)
 endmodule
 
 module ULM-TEST-EXECUTION
@@ -68,7 +71,7 @@ module ULM-TEST-EXECUTION
 
     syntax UlmTestHook  ::= #SetAccountStorageHook(Int, IntOrError)
                           | #GetAccountStorageHook(Int)
-
+                          | #Log3Hook(Int, Int, Int, Bytes)
     syntax Mockable ::= UlmHook
 
     syntax BytesOrError ::= extractCallSignature(EncodeCall)  [function, total]
@@ -208,9 +211,12 @@ module ULM-TEST-EXECUTION
     syntax Bool ::= isTestResult(K) [symbol(isTestResult), function]
     rule isTestResult(_:K) => false  [owise]
     rule isTestResult(evaluatedStorageKey(_:Bytes)) => true
+    rule isTestResult(evaluatedEventSignature(_:Int)) => true
+    rule isTestResult(encodedValues(_:Bytes)) => true
     rule isTestResult(_:PtrValue) => true
     rule isTestResult(#SetAccountStorageHook(_:Int, _:Int)) => true
     rule isTestResult(#GetAccountStorageHook(_:Int)) => true
+    rule isTestResult(#Log3Hook(_:Int, _:Int, _:Int, _:Bytes)) => true
 
     syntax StorageKey ::= storageKey(NonEmptyStatementsOrError)
                         | storageKey(Expression)  [strict(1)]
@@ -231,6 +237,30 @@ module ULM-TEST-EXECUTION
         =>  storageKey({.InnerAttributes Statements buffer_id })
     rule storageKey(ptrValue(_, u64(BytesId))) => storageKey(ulmBytesId(BytesId))
     rule storageKey(ulmBytesValue(B:Bytes)) => evaluatedStorageKey(B)
+
+    syntax EventSignature ::= evaluatedEventSignature(Int)
+    rule eventSignature(Signature:String)
+        => evaluatedEventSignature(Bytes2Int(Keccak256raw(String2Bytes(Signature)), BE, Unsigned))
+
+    syntax EncodeValues ::= encodeValues(NonEmptyStatementsOrError)
+                          | encodeValues(Expression)  [strict(1)]
+                          | encodeValues(UlmExpression)  [strict(1)]
+                          | encodedValues(Bytes)
+    rule encodeValues(Args:EncodeArgs)
+        => encodeValues
+            ( concat
+                (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
+                    .NonEmptyStatements
+                ,   encodeStatements
+                        ( buffer_id
+                        , encodeArgsToEncodeValues(Args)
+                        )
+                )
+            )
+    rule encodeValues(Statements:NonEmptyStatements)
+        =>  encodeValues({.InnerAttributes Statements buffer_id })
+    rule encodeValues(ptrValue(_, u64(BytesId))) => encodeValues(ulmBytesId(BytesId))
+    rule encodeValues(ulmBytesValue(B:Bytes)) => encodedValues(B)
 
     rule SetAccountStorageHook(evaluatedStorageKey(B:Bytes), ptrValue(_, Value:Value))
         => #SetAccountStorageHook
@@ -255,6 +285,18 @@ module ULM-TEST-EXECUTION
     rule list_mock #GetAccountStorageHook(Key:Int) Result:UlmHookResult
         => list_mock
             GetAccountStorageHook(Key)
+            Result
+
+    rule Log3Hook(evaluatedEventSignature(I:Int), A:Int, C:Int, encodedValues(B2:Bytes))
+        => #Log3Hook
+                ( I
+                , A
+                , C
+                , B2
+                )
+    rule list_mock #Log3Hook(V1:Int, V2:Int, V3:Int, B:Bytes) Result:UlmHookResult
+        => list_mock
+            Log3Hook(V1, V2, V3, B)
             Result
 
     // This may seem stupid, but it's a workaround for

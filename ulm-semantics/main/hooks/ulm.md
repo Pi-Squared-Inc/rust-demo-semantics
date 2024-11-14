@@ -8,8 +8,6 @@ module ULM-SEMANTICS-HOOKS-ULM-SYNTAX
                       | CallerHook()
                       | SetAccountStorageHook(Int, Int)
                       | GetAccountStorageHook(Int)
-                      // TODO: Build mocks for all the hooks below in a meaningful
-                      // way in tests (right now we just use opaque values).
                       | Log0Hook(Bytes)
                       | Log1Hook(Int, Bytes)
                       | Log2Hook(Int, Int, Bytes)
