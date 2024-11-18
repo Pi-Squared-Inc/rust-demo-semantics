@@ -199,7 +199,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
   syntax StructStruct ::= "struct" Identifier MaybeGenericParams MaybeWhereClause "{" MaybeStructFields "}"
   syntax MaybeStructFields ::= "" | StructFields | StructFields ","
   syntax StructFields ::= NeList{StructField, ","}
-  syntax StructField ::= OuterAttributes MaybeVisibility Identifier ":" Type //TODO: Outerfields and visibility for 
+  syntax StructField ::= OuterAttributes MaybeVisibility Identifier ":" Type //TODO: Outerfields and visibility for
                                                                              //struct fields is not yet supported.
 
 ```
@@ -545,21 +545,21 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax StructExpression ::= StructExprStruct 
-                            | StructExprTuple 
+  syntax StructExpression ::= StructExprStruct
+                            | StructExprTuple
                             | StructExprUnit
   syntax StructExprStruct ::= TypePath "{" MaybeStructExprFieldsOrStructBase "}" //TODO: Not implemented properly
                                                                                  //Should use PathInExpression instead of
-                                                                                 //TypePath. 
+                                                                                 //TypePath.
   syntax MaybeStructExprFieldsOrStructBase ::= "" | StructExprFields | StructBases //TODO: Not implemented properly
                                                                         //StructBases should be
                                                                         //singular. and its correct
-                                                                        //value is:  StructExprField (, StructExprField)* (, StructBase | ,?)  
-  syntax StructExprFields ::= NeList{StructExprField, ","} 
+                                                                        //value is:  StructExprField (, StructExprField)* (, StructBase | ,?)
+  syntax StructExprFields ::= NeList{StructExprField, ","}
   syntax StructBases ::= NeList{StructBase, ","}
   syntax StructExprField ::= Identifier ":" Expression //TODO: Not implemented properly. Needs outer attributes.
 
-  syntax StructBase ::= Expression //TODO: Not implemented properly. Actual value should be '".." Expression' 
+  syntax StructBase ::= Expression //TODO: Not implemented properly. Actual value should be '".." Expression'
   syntax StructExprUnit ::= "TODO: not needed yet, not implementing"
   syntax StructExprTuple ::= "TODO: not needed yet, not implementing"
 
@@ -724,12 +724,12 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax IfExpression ::= "if" ExpressionExceptStructExpression BlockExpression  MaybeIfElseExpression [strict(1)] 
+  syntax IfExpression ::= "if" ExpressionExceptStructExpression BlockExpression  MaybeIfElseExpression [strict(1)]
 
-  syntax MaybeIfElseExpression ::= "" 
+  syntax MaybeIfElseExpression ::= ""
                                  | "else" IfElseExpression
-  syntax IfElseExpression ::= BlockExpression 
-                            | IfExpression  
+  syntax IfElseExpression ::= BlockExpression
+                            | IfExpression
                             | IfLetExpression
   // TODO: Not implemented properly
   syntax ExpressionExceptStructExpression ::= Expression
@@ -815,7 +815,7 @@ https://doc.rust-lang.org/reference/items/extern-crates.html
 
 ```k
 
-  syntax RangePattern ::= Expression ".." Expression 
+  syntax RangePattern ::= Expression ".." Expression
 
 ```
 

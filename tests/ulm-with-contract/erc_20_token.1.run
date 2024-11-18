@@ -25,10 +25,10 @@ list_mock GetAccountStorageHook ( 1154948450467236006739439905978168116697077396
 list_mock GetAccountStorageHook ( 17171626450567201640701347902808840427582371480602455275836469707331258301780 ) ulmIntResult(300, u256);
 
 push "uint256";
-hold_list_values_from_test_stack; 
+hold_list_values_from_test_stack;
 push 10000_u256;
-hold_list_values_from_test_stack; 
-encode_constructor_data; 
+hold_list_values_from_test_stack;
+encode_constructor_data;
 
 
 return_value;
@@ -52,12 +52,12 @@ check_eq 0_u32;
 
 
 push "balanceOf";
-hold_string_from_test_stack; 
-push "address"; 
-hold_list_values_from_test_stack; 
+hold_string_from_test_stack;
+push "address";
+hold_list_values_from_test_stack;
 push 1010101_u160;
-hold_list_values_from_test_stack; 
-encode_call_data; 
+hold_list_values_from_test_stack;
+encode_call_data;
 return_value;
 mock CallData;
 
@@ -77,13 +77,13 @@ check_eq 10000_u256;
 
 push "transfer";
 hold_string_from_test_stack;
-push "address"; 
-push "uint256"; 
-hold_list_values_from_test_stack; 
+push "address";
+push "uint256";
+hold_list_values_from_test_stack;
 push 2020202_u160;
 push 100_u256;
-hold_list_values_from_test_stack; 
-encode_call_data; 
+hold_list_values_from_test_stack;
+encode_call_data;
 return_value;
 mock CallData;
 
@@ -107,10 +107,10 @@ check_eq 1_u64;
 push "balanceOf";
 hold_string_from_test_stack;
 push "address";
-hold_list_values_from_test_stack; 
+hold_list_values_from_test_stack;
 push 1010101_u160;
-hold_list_values_from_test_stack; 
-encode_call_data; 
+hold_list_values_from_test_stack;
+encode_call_data;
 return_value;
 mock CallData;
 
@@ -129,12 +129,12 @@ check_eq 9900_u256;
 
 
 push "balanceOf";
-hold_string_from_test_stack; 
+hold_string_from_test_stack;
 push "address";
-hold_list_values_from_test_stack; 
+hold_list_values_from_test_stack;
 push 2020202_u160;
 hold_list_values_from_test_stack;
-encode_call_data; 
+encode_call_data;
 return_value;
 mock CallData;
 
@@ -154,13 +154,13 @@ check_eq 100_u256;
 
 push "approve";
 hold_string_from_test_stack;
-push "address"; 
-push "uint256"; 
-hold_list_values_from_test_stack; 
+push "address";
+push "uint256";
+hold_list_values_from_test_stack;
 push 3030303_u160;
 push 200_u256;
 hold_list_values_from_test_stack;
-encode_call_data; 
+encode_call_data;
 return_value;
 mock CallData;
 
@@ -191,7 +191,7 @@ push 1010101_u160;
 push 2020202_u160;
 push 200_u256;
 hold_list_values_from_test_stack;
-encode_call_data; 
+encode_call_data;
 return_value;
 mock CallData;
 
@@ -219,7 +219,7 @@ push "address";
 hold_list_values_from_test_stack;
 push 1010101_u160;
 hold_list_values_from_test_stack;
-encode_call_data; 
+encode_call_data;
 return_value;
 mock CallData;
 
@@ -244,7 +244,7 @@ push "address";
 hold_list_values_from_test_stack;
 push 2020202_u160;
 hold_list_values_from_test_stack;
-encode_call_data; 
+encode_call_data;
 return_value;
 mock CallData;
 
