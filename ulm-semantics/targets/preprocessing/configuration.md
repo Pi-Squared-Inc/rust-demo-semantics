@@ -15,7 +15,6 @@ module COMMON-K-CELL
         <k>
             cratesParser($PGM:WrappedCrateList)
             ~> ulmPreprocessCrates
-            ~> ulmEncodePreprocessedCell
         </k>
 endmodule
 
@@ -25,11 +24,9 @@ module ULM-TARGET-CONFIGURATION
     imports ULM-PREPROCESSING-EPHEMERAL-CONFIGURATION
 
     configuration
-        <ulm-target>
-            <ulm-full-preprocessed/>
-            <ulm-preprocessing-ephemeral/>
-            <k/>
-        </ulm-target>
+        <ulm-full-preprocessed/>
+        <ulm-preprocessing-ephemeral/>
+        <k/>
 endmodule
 
 ```
