@@ -5,9 +5,6 @@ module ULM-ENCODING-SYNTAX
     imports LIST
     imports RUST-REPRESENTATION
 
-    syntax ULMInstruction ::= "ulmEncodePreprocessedCell"
-                            | ulmEncodedPreprocessedCell(Bytes)
-
     // TODO: Make these functions total and returning BytesOrError
     syntax Bytes ::= encodeCallData (String, List, List) [function] //Function name, argument types, argument list
                    | encodeConstructorData (List, List) [function] // argument types, argument list
