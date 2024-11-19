@@ -6,4 +6,4 @@ set -e
 
 compilation/prepare-contract.sh \
     tests/ulm-contracts/erc_20_token.rs \
-    erc_20_token.preprocessed.kore
+    .build/compilation/erc_20_token.preprocessed.kore
