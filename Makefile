@@ -96,9 +96,11 @@ clean:
 
 build: $(RUST_PREPROCESSING_TIMESTAMP) \
 				$(RUST_EXECUTION_TIMESTAMP) \
-				$(ULM_EXECUTION_TIMESTAMP) \
 				$(ULM_PREPROCESSING_TIMESTAMP) \
 				$(ULM_TESTING_TIMESTAMP)
+
+build-ulm: $(ULM_EXECUTION_TIMESTAMP) \
+				$(ULM_PREPROCESSING_TIMESTAMP) \
 
 build-legacy: \
 		$(MX_TESTING_TIMESTAMP) \
@@ -184,17 +186,35 @@ $(MX_RUST_TWO_CONTRACTS_TESTING_TIMESTAMP): $(MX_SEMANTICS_FILES) $(RUST_SEMANTI
 			-I . \
 			--debug
 
-$(ULM_EXECUTION_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
+$(ULM_EXECUTION_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
 	-rm -r $(ULM_EXECUTION_KOMPILED)
+	poetry -C ../evm-semantics/kevm-pyk run kdist build evm-semantics.plugin
+	make -C ../ulm/kllvm/ all
 	$$(which kompile) ulm-semantics/targets/execution/ulm-target.md  \
-			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
-			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
-			--emit-json -o $(ULM_EXECUTION_KOMPILED) \
-			-I kllvm \
-			-I deps/blockchain-k-plugin \
+			--hook-namespaces 'KRYPTO ULM' \
+			-O2 \
+			-ccopt -g \
+			-ccopt -std=c++20 \
+			-ccopt -lcrypto \
+			-ccopt -lsecp256k1 \
+			-ccopt -lssl \
+			-ccopt $$(poetry -C ../evm-semantics/kevm-pyk run kdist which evm-semantics.plugin)/krypto.a \
+			-ccopt -L../ulm/kllvm \
+			-ccopt -lulmkllvm \
+			-ccopt ../ulm/kllvm/lang/ulm_language_entry.cpp \
+			-ccopt -I../ulm/kllvm \
+			-ccopt -DULM_LANG_ID=rust \
+			-ccopt -shared \
+			-ccopt -fPIC \
+			--llvm-hidden-visibility \
+			--llvm-kompile-type library \
+			--llvm-kompile-output libkrust.so \
+			-o $(ULM_EXECUTION_KOMPILED) \
+			-I ../ulm/kllvm \
 			-I . \
-			--debug
+			-I ../evm-semantics/kevm-pyk/src/kevm_pyk/kproj/plugin \
+			-v
 
 $(ULM_PREPROCESSING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
 	# Workaround for https://github.com/runtimeverification/k/issues/4141
