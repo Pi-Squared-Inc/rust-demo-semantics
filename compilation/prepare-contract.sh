@@ -27,4 +27,9 @@ poetry -C rust-lite install
 poetry -C rust-lite run python \
   -m rust_lite.extract_preprocessed \
   $TEMP_DIR/output.kore \
-  $COMPILATION_DIR/$2
+  $TEMP_DIR/output.preprocessed.kore \
+
+WORKDIR=$(dirname $(pwd))
+export LD_LIBRARY_PATH=$WORKDIR/ulm/kllvm:$WORKDIR/rust-demo-semantics/.build/ulm-execution-kompiled
+
+.build/emit-contract-bytes $TEMP_DIR/output.preprocessed.kore > $2
