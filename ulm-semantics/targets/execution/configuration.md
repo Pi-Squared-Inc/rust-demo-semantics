@@ -22,12 +22,15 @@ module ULM-TARGET-CONFIGURATION
     imports RUST-EXECUTION-CONFIGURATION
     imports ULM-CONFIGURATION
     imports ULM-FULL-PREPROCESSED-CONFIGURATION
+    imports ULM-PREPROCESSING-EPHEMERAL-CONFIGURATION
 
     configuration
+        <ulm-preprocessing-ephemeral/>
         <ulm-full-preprocessed/>
         <ulm/>
         <execution/>
         <k/>
+
 endmodule
 
 ```
