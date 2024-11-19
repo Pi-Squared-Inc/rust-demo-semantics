@@ -101,6 +101,7 @@ build: $(RUST_PREPROCESSING_TIMESTAMP) \
 
 build-ulm: $(ULM_EXECUTION_TIMESTAMP) \
 				$(ULM_PREPROCESSING_TIMESTAMP) \
+				.build/emit-contract-bytes
 
 build-legacy: \
 		$(MX_TESTING_TIMESTAMP) \
@@ -239,6 +240,17 @@ $(ULM_TESTING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/bl
 			-I deps/blockchain-k-plugin \
 			-I kllvm \
 			--debug
+
+.build/emit-contract-bytes: $(ULM_EXECUTION_TIMESTAMP)
+	clang++-16 ../ulm/kllvm/emit_contract_bytes.cpp \
+			-I $$(dirname $$(which kompile))/../include/kllvm \
+			-I $$(dirname $$(which kompile))/../include \
+			-std=c++20 \
+			-DULM_LANG_ID=rust \
+			-Wno-return-type-c-linkage \
+			-lulmkllvm -L ../ulm/kllvm/ \
+			-lkrust -L $(ULM_EXECUTION_KOMPILED) \
+			-o .build/emit-contract-bytes
 
 $(RUST_SYNTAX_OUTPUT_DIR)/%.rs-parsed: $(RUST_SYNTAX_INPUT_DIR)/%.rs $(RUST_PREPROCESSING_TIMESTAMP)
 	mkdir -p $(RUST_SYNTAX_OUTPUT_DIR)
