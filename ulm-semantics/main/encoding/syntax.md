@@ -22,7 +22,7 @@ module ULM-ENCODING-SYNTAX
     syntax EncodeValues ::= List{EncodeValue, ","}
 
     // assumes that bufferId points to an empty buffer.
-    syntax NonEmptyStatementsOrError ::= encodeStatements(bufferId: Identifier, values: EncodeValues)  [function, total]
+    syntax NonEmptyStatementsOrError ::= codegenValuesEncoder(bufferId: Identifier, values: EncodeValues)  [function, total]
 
     syntax EncodeValue ::= paramToEncodeValue(NormalizedFunctionParameter)  [function, total]
     syntax EncodeValues ::= paramsToEncodeValues(NormalizedFunctionParameterList)  [function, total]

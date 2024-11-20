@@ -113,20 +113,20 @@ module ULM-CALLDATA-ENCODER
                         | "ulm#head"  [token]
                         | "ulm#tail"  [token]
 
-    syntax NonEmptyStatementsOrError ::= #encodeStatements
+    syntax NonEmptyStatementsOrError ::= #codegenValuesEncoder
                                             ( bufferId: Identifier
                                             , headSize: ExpressionOrError
                                             , append: NonEmptyStatementsOrError
                                             )  [function, total]
 
-    rule encodeStatements(... bufferId: BufferId:Identifier, values: Values:EncodeValues)
-        => #encodeStatements(BufferId, totalHeadSize(Values), appendValues(Values, ulm#head_size, ulm#head, ulm#tail))
+    rule codegenValuesEncoder(... bufferId: BufferId:Identifier, values: Values:EncodeValues)
+        => #codegenValuesEncoder(BufferId, totalHeadSize(Values), appendValues(Values, ulm#head_size, ulm#head, ulm#tail))
 
-    rule #encodeStatements(_BufferId:Identifier, e(HeadSize:SemanticsError), _AppendValues:NonEmptyStatementsOrError)
+    rule #codegenValuesEncoder(_BufferId:Identifier, e(HeadSize:SemanticsError), _AppendValues:NonEmptyStatementsOrError)
         => HeadSize
-    rule #encodeStatements(_BufferId:Identifier, v(_HeadSize:Expression), AppendValues:SemanticsError)
+    rule #codegenValuesEncoder(_BufferId:Identifier, v(_HeadSize:Expression), AppendValues:SemanticsError)
         => AppendValues
-    rule #encodeStatements(BufferId:Identifier, v(HeadSize:Expression), AppendValues:NonEmptyStatements)
+    rule #codegenValuesEncoder(BufferId:Identifier, v(HeadSize:Expression), AppendValues:NonEmptyStatements)
         => concatNonEmptyStatements
             (   let ulm#head_size = HeadSize;
                 let ulm#head = :: bytes_hooks :: empty ( .CallParamsList );

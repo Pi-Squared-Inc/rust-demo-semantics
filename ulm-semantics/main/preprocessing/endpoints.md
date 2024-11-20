@@ -48,7 +48,7 @@ module ULM-PREPROCESSING-ENDPOINTS
             (... wrapperMethod: WrapperMethod
             , params: Params
             , method: ImplementationMethod
-            , appendReturn: encodeStatements(buffer_id, (return_value : ReturnType , .EncodeValues))
+            , appendReturn: codegenValuesEncoder(buffer_id, (return_value : ReturnType , .EncodeValues))
             , decodeStatements: decodeParams(0, Params)
             )
 
