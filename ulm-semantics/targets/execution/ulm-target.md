@@ -9,7 +9,6 @@ requires "rust-semantics/full-preprocessing.md"
 requires "rust-semantics/rust-common.md"
 requires "rust-semantics/rust-common-syntax.md"
 
-
 module ULM-TARGET-SYNTAX
     imports RUST-CRATES-SYNTAX
 endmodule

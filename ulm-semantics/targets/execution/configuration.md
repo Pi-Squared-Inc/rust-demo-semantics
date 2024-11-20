@@ -1,5 +1,4 @@
 ```k
-
 requires "../../main/configuration.md"
 requires "../../main/preprocessed-configuration.md"
 requires "rust-semantics/config.md"
