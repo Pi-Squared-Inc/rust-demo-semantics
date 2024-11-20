@@ -179,6 +179,9 @@ module ULM-TEST-EXECUTION
 
     rule (ulmCancel ~> expect_cancel) => .K
 
+    // BytesList is used to define bytes concatenation in tests, so the "+"
+    // uses below represent the test AST concatenation, which we are
+    // evaluating by concatenating the bytes.
     syntax Bytes ::= concat(BytesList)  [function, total]
     rule concat(.BytesList) => b""
     rule concat(B:Bytes + Bs:BytesList) => B +Bytes concat(Bs)
