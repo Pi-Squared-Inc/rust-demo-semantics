@@ -34,7 +34,7 @@ module ULM-PREPROCESSING-EVENTS
             // but the last one are indexed. We should handle generic events.
             => #ulmPreprocessEvent
                 ( Method
-                , encodeStatements
+                , codegenValuesEncoder
                     ( data
                     , paramsToEncodeValues
                         ( last(Param, Params)
