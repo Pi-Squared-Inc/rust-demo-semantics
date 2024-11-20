@@ -13,26 +13,17 @@ traits.
 Setup for ULM
 -------------
 
-The commands below will not work without the encode/decode ULM hooks,
-which are not included by the build commands below.
+You must have `ulm` and `evm-semantics` checked out as sibling directories
+(i.e. `../ulm` and `../evm-semantics`).
 
-"Compiling" the erc-20 contract to bytes:
-
-```sh
-make .build/ulm-preprocessing-kompiled/timestamp
-compilation/prepare-erc20.sh
+Build the semantics:
+```
+make build-ulm -j3
 ```
 
-The above will produce a cell containing the full preprocessed contract.
-
-Running the contract requires a different semantics (there main difference from
-the above is the setup of the `<k>` cell; there are other small differences, but
-they matter less):
-
-```sh
-make .build/ulm-execution-kompiled/timestamp
+Preprocess and convert a contract to bytes:
 ```
-When running the above (say, with `krun`), and calling the constructor
-(`$CREATE` is `true`), it expects `CallData()` to contain the initial quantity
-to mint and assign to the caller (`u256`). At the end, it will leave the
-contract's bytes in the `<k>` cell in a similar way to the `SIMPLE-ulm` example.
+compilation/prepare-contract.sh \
+    tests/ulm-contracts/erc_20_token.rs \
+    .build/compilation/erc_20_token.preprocessed.kore
+```
