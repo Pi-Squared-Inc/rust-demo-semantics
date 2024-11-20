@@ -8,7 +8,7 @@ module ULM-PREPROCESSING-EVENTS
     imports private ULM-PREPROCESSING-SYNTAX-PRIVATE
 
     syntax Identifier ::= "bytes_hooks"  [token]
-                        | "data"  [token]
+                        | "log_buffer"  [token]
                         | "empty"  [token]
                         | "Log0"  [token]
                         | "Log1"  [token]
@@ -35,7 +35,7 @@ module ULM-PREPROCESSING-EVENTS
             => #ulmPreprocessEvent
                 ( Method
                 , codegenValuesEncoder
-                    ( data
+                    ( log_buffer
                     , paramsToEncodeValues
                         ( last(Param, Params)
                         , .NormalizedFunctionParameterList
@@ -68,13 +68,13 @@ module ULM-PREPROCESSING-EVENTS
             empty => block({
                 .InnerAttributes
                 concatNonEmptyStatements
-                    (   let data = :: bytes_hooks :: empty ( .CallParamsList );
+                    (   let log_buffer = :: bytes_hooks :: empty ( .CallParamsList );
                         AppendLast
                     ,   :: ulm :: LogIdentifier
                             ( ptrValue(null, EventSignature)
                             , concatCallParamsList
                                 ( paramsToArgs(allButLast(Param, Params))
-                                , (data , .CallParamsList)
+                                , (log_buffer , .CallParamsList)
                                 )
                             );
                         .NonEmptyStatements
