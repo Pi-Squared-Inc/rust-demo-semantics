@@ -3,7 +3,7 @@ from web3 import Web3
 from web3.middleware import SignAndSendRawMiddlewareBuilder
 import time
 
-rust_token_hex = open('tests/ulm-contracts/DAIMock.kore.bin').read().rstrip()
+rust_token_hex = open('.build/erc20/rust-token.bin').read().rstrip()
 
 w3 = Web3(Web3.HTTPProvider('http://localhost:8545'))
 sender = w3.eth.account.create()
