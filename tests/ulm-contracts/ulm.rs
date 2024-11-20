@@ -40,14 +40,14 @@ extern {
     fn Address(&self) -> u160;
     fn Caller(&self) -> u160;
     fn CallValue(&self) -> u256;
-    fn CallData(&self) -> Bytes;
+    fn CallData(&self) -> u64;
 
     // chain parameters
     fn ChainId(&self) -> u256;
     
     // account getters
     fn GetAccountBalance(&self, acct: u160) -> u256;
-    fn GetAccountCode(&self, acct: u160) -> Bytes;
+    fn GetAccountCode(&self, acct: u160) -> u64;
     fn GetAccountStorage(&self, key: u256) -> u256;
     fn GetAccountOrigStorage(&self, key: u256) -> u256;
     fn GetAccountTransientStorage(&self, key: u256) -> u256;
@@ -62,17 +62,17 @@ extern {
     fn SetAccountStorage(&self, key: u256, value: u256);
     fn SetAccountTransientStorage(&self, key: u256, value: u256);
 
-    fn Log0(data: Bytes);
-    fn Log1(topic0: u256, data: Bytes);
-    fn Log2(topic0: u256, topic1: u256, data: Bytes);
-    fn Log3(topic0: u256, topic1: u256, topic2: u256, data: Bytes);
-    fn Log4(topic0: u256, topic1: u256, topic2: u256, topic3: u256, data: Bytes);
+    fn Log0(data: u64);
+    fn Log1(topic0: u256, data: u64);
+    fn Log2(topic0: u256, topic1: u256, data: u64);
+    fn Log3(topic0: u256, topic1: u256, topic2: u256, data: u64);
+    fn Log4(topic0: u256, topic1: u256, topic2: u256, topic3: u256, data: u64);
     
-    fn MessageResult(gas: u256, data: Bytes, status: u256, target: u256) -> MessageResult;
-    fn Create(value: u256, data: Bytes, gas: u256) -> MessageResult;
-    fn Create2(value: u256, data: Bytes, salt: Bytes, gas: u256) -> MessageResult;
-    fn Call(gas: u256, to: u160, value: u256, data: Bytes) -> MessageResult;
-    fn CallCode(gas: u256, to: u160, value: u256, data: Bytes) -> MessageResult;
-    fn DelegateCall(gas: u256, to: u160, data: Bytes) -> MessageResult;
-    fn StaticCall(gas: u256, to: u160, data: Bytes) -> MessageResult;
+    fn MessageResult(gas: u256, data: u64, status: u256, target: u256) -> MessageResult;
+    fn Create(value: u256, data: u64, gas: u256) -> MessageResult;
+    fn Create2(value: u256, data: u64, salt: u64, gas: u256) -> MessageResult;
+    fn Call(gas: u256, to: u160, value: u256, data: u64) -> MessageResult;
+    fn CallCode(gas: u256, to: u160, value: u256, data: u64) -> MessageResult;
+    fn DelegateCall(gas: u256, to: u160, data: u64) -> MessageResult;
+    fn StaticCall(gas: u256, to: u160, data: u64) -> MessageResult;
 }
