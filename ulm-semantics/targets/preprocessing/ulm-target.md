@@ -1,17 +1,14 @@
 ```k
 
-requires "../../main/encoding.md"
-requires "../../main/preprocessing.md"
+requires "../common/ulm-target.md"
 requires "configuration.md"
 
 module ULM-TARGET-SYNTAX
+    imports ULM-TARGET-COMMON-SYNTAX
 endmodule
 
 module ULM-TARGET
-    imports private RUST-FULL-PREPROCESSING
-    imports private ULM-ENCODING
-    imports private ULM-PREPROCESSING
-    imports private ULM-TARGET-CONFIGURATION
+    imports private ULM-TARGET-COMMON
 endmodule
 
 ```

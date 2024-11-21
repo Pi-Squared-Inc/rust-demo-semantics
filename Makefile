@@ -96,7 +96,6 @@ clean:
 
 build: $(RUST_PREPROCESSING_TIMESTAMP) \
 				$(RUST_EXECUTION_TIMESTAMP) \
-				$(ULM_PREPROCESSING_TIMESTAMP) \
 				$(ULM_TESTING_TIMESTAMP)
 
 build-ulm: $(ULM_EXECUTION_TIMESTAMP) \
@@ -224,8 +223,9 @@ $(ULM_PREPROCESSING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) d
 			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
 			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
 			--emit-json -o $(ULM_PREPROCESSING_KOMPILED) \
+			-I ../ulm/kllvm \
 			-I . \
-			-I deps/blockchain-k-plugin \
+			-I ../evm-semantics/kevm-pyk/src/kevm_pyk/kproj/plugin \
 			--debug
 
 $(ULM_TESTING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a

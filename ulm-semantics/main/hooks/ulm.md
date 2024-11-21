@@ -218,7 +218,7 @@ endmodule
 module ULM-SEMANTICS-HOOKS-SIGNATURE
     imports private ULM-SIGNATURE
     imports private ULM-SEMANTICS-HOOKS-STATE-CONFIGURATION
-    imports private ULM-TARGET-CONFIGURATION
+    imports private ULM-TARGET-COMMON-CONFIGURATION
 
     rule getOutput
             (   <generatedTop>
