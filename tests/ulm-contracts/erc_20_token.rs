@@ -34,14 +34,6 @@ pub trait Erc20Token {
     #[storage_mapper("total_supply")]
     fn s_total_supply(&self) -> ::single_value_mapper::SingleValueMapper<u256>;
 
-    // #[view(getName)]
-    #[storage_mapper("name")]
-    fn s_name(&self) -> ::single_value_mapper::SingleValueMapper<ManagedBuffer>;
-
-    // #[view(getSymbol)]
-    #[storage_mapper("symbol")]
-    fn s_symbol(&self) -> ::single_value_mapper::SingleValueMapper<ManagedBuffer>;
-
     // #[view(getBalances)]
     #[storage_mapper("balances")]
     fn s_balances(&self, address: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
@@ -58,11 +50,7 @@ pub trait Erc20Token {
 
 
     #[init]
-    fn init(&self, /*name: &ManagedBuffer, symbol: &ManagedBuffer, */init_supply: u256) {
-        // self.s_name().set_if_empty(name);
-        // self.s_symbol().set_if_empty(symbol);
-        self._mint(::ulm::Caller(), init_supply);
-    }
+    fn init(&self) {}
 
     #[upgrade]
     fn upgrade(&self) {}
@@ -77,15 +65,15 @@ pub trait Erc20Token {
         self.s_total_supply().get()
     }
 
-    // #[view(name)]
-    // fn name(&self) -> ManagedBuffer {
-    //     self.s_name().get()
-    // }
+    #[endpoint(name)]
+    fn name(&self) -> str {
+        "Dai Stablecoin"
+    }
 
-    // #[view(symbol)]
-    // fn symbol(&self) -> ManagedBuffer {
-    //     self.s_symbol().get()
-    // }
+    #[endpoint(symbol)]
+    fn symbol(&self) -> str {
+        "DAI"
+    }
 
     #[view(balanceOf)]
     fn balance_of(&self, account: u160) -> u256 {
@@ -142,7 +130,8 @@ pub trait Erc20Token {
         }
     }
 
-    fn _mint(&self, account: u160, value: u256) {
+    #[endpoint(mint)]
+    fn mint(&self, account: u160, value: u256) {
         ::helpers::require(!::address::is_zero(account), "Zero address");
         self._update(0_u160, account, value);
     }
