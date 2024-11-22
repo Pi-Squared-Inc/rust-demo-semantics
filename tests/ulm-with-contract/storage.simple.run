@@ -2,12 +2,12 @@ mock SetAccountStorageHook ( 738663589423117231874453614695099632837440602528266
 mock GetAccountStorageHook ( 73866358942311723187445361469509963283744060252826659833950887638461707973283 ) ulmIntResult(123, u256);
 
 push "setMyData";
-hold_string_from_test_stack; 
+hold_string_from_test_stack;
 push "uint64";
 hold_list_values_from_test_stack;
 push 123_u64;
-hold_list_values_from_test_stack; 
-encode_call_data; 
+hold_list_values_from_test_stack;
+encode_call_data;
 return_value;
 mock CallData;
 
@@ -20,8 +20,8 @@ check_eq 2;
 
 
 push "getMyData";
-hold_string_from_test_stack; 
-encode_call_data; 
+hold_string_from_test_stack;
+encode_call_data;
 return_value;
 mock CallData;
 

@@ -20,9 +20,9 @@ module INITIALIZATION
                     ...
                 </struct>
         </structs>
-        
+
     rule
-        <k> structParser(Name:TypePath, ((FN:Identifier : FT:Type):StructField  , RF:StructFields):StructFields) => 
+        <k> structParser(Name:TypePath, ((FN:Identifier : FT:Type):StructField  , RF:StructFields):StructFields) =>
                 structParser(Name:TypePath, RF:StructFields)
             ...
         </k>
@@ -38,7 +38,7 @@ module INITIALIZATION
               </field>
             ...
           </fields>
-        </struct> 
+        </struct>
 
     rule structParser(_Name:TypePath, .StructFields) => .K
 

@@ -10,7 +10,7 @@ module RUST-INTEGER-ARITHMETIC-OPERATIONS
     imports private RUST-SHARED-SYNTAX
     imports private RUST-REPRESENTATION
 
-    // Operations are implemented only for the same types, 
+    // Operations are implemented only for the same types,
     // as implicit type casting (coercion) is not available
     // in Rust.
 
@@ -69,7 +69,7 @@ module RUST-INTEGER-ARITHMETIC-OPERATIONS
         requires B =/=K 0p64
     rule ptrValue(_, i64(A):Value) % ptrValue(_, i64(B):Value) => ptrValue(null, i64(A %sMInt B))
         requires B =/=K 0p64
-    
+
     rule ptrValue(_, u64(A):Value) * ptrValue(_, u64(B):Value) => ptrValue(null, u64(A *MInt B))
     rule ptrValue(_, u64(A):Value) + ptrValue(_, u64(B):Value) => ptrValue(null, u64(A +MInt B))
     rule ptrValue(_, u64(A):Value) - ptrValue(_, u64(B):Value) => ptrValue(null, u64(A -MInt B))

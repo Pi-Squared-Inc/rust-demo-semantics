@@ -16,9 +16,9 @@ pub trait ConstantValueLookup {
 
     fn lookup_constant(&self) -> u64 { :: constant_lookup :: SAMPLE_CONSTANT }
 
-    fn lookup_constant_with_type(&self) -> u64 { 
+    fn lookup_constant_with_type(&self) -> u64 {
         let x = 100_u64 + :: constant_lookup :: SAMPLE_CONSTANT;
-        x 
+        x
     }
 
 }
