@@ -163,11 +163,11 @@ module RUST-REPRESENTATION
     rule checkIntOfType(u256(_),  u256) => true
     rule checkIntOfType(_, _) => false [owise]
 
-    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u8) requires checkIntOfType(B,  u8) 
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u8) requires checkIntOfType(B,  u8)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i8) requires checkIntOfType(B,  i8)
-    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u16) requires checkIntOfType(B,  u16) 
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u16) requires checkIntOfType(B,  u16)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i16) requires checkIntOfType(B,  i16)
-    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u32) requires checkIntOfType(B,  u32) 
+    rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u32) requires checkIntOfType(B,  u32)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i32) requires checkIntOfType(B,  i32)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  u64) requires checkIntOfType(B,  u64)
     rule checkIntOfSameType(A:Value, B:Value) => checkIntOfType(A,  i64) requires checkIntOfType(B,  i64)

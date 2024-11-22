@@ -7,7 +7,7 @@
 use multiversx_sc::imports::*;
 
 pub const YEARLY_INTEREST: u64 = 7_000;
-pub const BPS: u64 = 100_000; 
+pub const BPS: u64 = 100_000;
 pub const SECONDS_IN_DAY: u64 = 24 * 60 * 60;
 pub const SECONDS_IN_YEAR: u64 = 365_u64 * SECONDS_IN_DAY;
 
@@ -50,7 +50,7 @@ pub trait Staking {
             self.call_value().single_fungible_esdt();
         require!(token_id == self.staking_token().get(), "Wrong token ID.");
         require!(amount > BigUint::zero(), "Amount must be greater than 0");
-        
+
         let caller =
             self.blockchain().get_caller();
         self.staked_balances(&caller).set(self.staked_balances(&caller).get() + &amount);

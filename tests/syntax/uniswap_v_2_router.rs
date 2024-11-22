@@ -26,7 +26,7 @@ mod pair_proxy {
         #[view(getReserve0)]
         #[storage_mapper("reserve0")]
         fn reserve0(&self) -> SingleValueMapper<BigUint>;
-    
+
         #[view(getReserve1)]
         #[storage_mapper("reserve1")]
         fn reserve1(&self) -> SingleValueMapper<BigUint>;

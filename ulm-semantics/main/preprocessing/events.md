@@ -24,7 +24,7 @@ module ULM-PREPROCESSING-EVENTS
                                   , eventSignature: ValueOrError
                                   )
 
-    rule 
+    rule
         <k>
             ulmPreprocessEvent
                 (... fullMethodPath: Method:PathInExpression

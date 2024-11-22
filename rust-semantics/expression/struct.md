@@ -16,70 +16,70 @@ module RUST-EXPRESSION-STRUCT
                    | fromStructExpressionWithAssignmentsBuildFieldsMap(TypePath, StructExprFields, Map)
 
     // From Struct Expression to struct(P, F). Case 1, field names are not given:
-    rule <k> 
-            I:TypePath { L:StructBases } => fromStructExpressionWithLiteralsBuildFieldsMap(I, L, VL, .Map) 
-            ... 
+    rule <k>
+            I:TypePath { L:StructBases } => fromStructExpressionWithLiteralsBuildFieldsMap(I, L, VL, .Map)
+            ...
          </k>
         <struct-path> I </struct-path>
         <field-list> VL </field-list>
-        
+
     rule <k> fromStructExpressionWithLiteralsBuildFieldsMap(I:TypePath, (E:Expression, RL):StructBases, FieldNameList:List, FieldsMap:Map)
-                => E ~> fromStructExpressionWithLiteralsBuildFieldsMap(I, RL, FieldNameList, FieldsMap) ... 
+                => E ~> fromStructExpressionWithLiteralsBuildFieldsMap(I, RL, FieldNameList, FieldsMap) ...
          </k>
 
-    rule 
-        <k> 
-            ptrValue(_, V:Value):PtrValue ~> 
+    rule
+        <k>
+            ptrValue(_, V:Value):PtrValue ~>
             fromStructExpressionWithLiteralsBuildFieldsMap(
-                    I:TypePath, 
-                    RL:StructBases, 
-                    (FieldNameList):List ListItem(FieldName), 
+                    I:TypePath,
+                    RL:StructBases,
+                    (FieldNameList):List ListItem(FieldName),
                     FieldsMap:Map)
-            => fromStructExpressionWithLiteralsBuildFieldsMap(I, RL, FieldNameList, FieldsMap (FieldName |-> NVI):Map )  
-            ... 
+            => fromStructExpressionWithLiteralsBuildFieldsMap(I, RL, FieldNameList, FieldsMap (FieldName |-> NVI):Map )
+            ...
         </k>
         <values> VALUES:Map => VALUES[NVI <- V] </values>
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
-        requires notBool (FieldName in_keys(FieldsMap)) 
+        requires notBool (FieldName in_keys(FieldsMap))
 
-    rule <k> 
-            fromStructExpressionWithLiteralsBuildFieldsMap(I:TypePath, .StructBases, .List, FieldsMap:Map) 
-                => struct(I, FieldsMap) 
-            ... 
+    rule <k>
+            fromStructExpressionWithLiteralsBuildFieldsMap(I:TypePath, .StructBases, .List, FieldsMap:Map)
+                => struct(I, FieldsMap)
+            ...
         </k>
 
     // From Struct Expression to struct(P, F). Case 2, field names are given:
-    rule <k> 
-            I:TypePath { S:MaybeStructExprFieldsOrStructBase } => fromStructExpressionWithAssignmentsBuildFieldsMap(I, S, .Map) 
-            ... 
+    rule <k>
+            I:TypePath { S:MaybeStructExprFieldsOrStructBase } => fromStructExpressionWithAssignmentsBuildFieldsMap(I, S, .Map)
+            ...
          </k>
 
-    rule <k> 
+    rule <k>
             fromStructExpressionWithAssignmentsBuildFieldsMap(
-                    Name:TypePath, 
+                    Name:TypePath,
                     ((FieldName:Identifier : Le:Expression):StructExprField, RS):StructExprFields,
                     FieldsMap:Map)
                 => Le ~> FieldName ~> fromStructExpressionWithAssignmentsBuildFieldsMap(Name, RS, FieldsMap)
             ...
         </k>
 
-    rule <k> 
+    rule <k>
             ptrValue(_, V:Value):PtrValue ~> FieldName:Identifier ~>
             fromStructExpressionWithAssignmentsBuildFieldsMap(
-                Name:TypePath, 
+                Name:TypePath,
                 RS:StructExprFields,
                 FieldsMap:Map
             ) =>
             fromStructExpressionWithAssignmentsBuildFieldsMap(
                 Name, RS, FieldsMap (FieldName |-> NVI):Map
             )
-        ... 
+        ...
         </k>
         <values> VALUES:Map => VALUES[NVI <- V] </values>
         <next-value-id> NVI:Int => NVI +Int 1 </next-value-id>
 
     rule <k> fromStructExpressionWithAssignmentsBuildFieldsMap(
-                Name:TypePath, 
+                Name:TypePath,
                 .StructExprFields,
                 FieldsMap:Map
             ) => struct(Name, FieldsMap)

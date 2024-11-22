@@ -1,17 +1,17 @@
-push "noEndpoint"; 
-hold_string_from_test_stack; 
+push "noEndpoint";
+hold_string_from_test_stack;
 push "uint64";
-hold_list_values_from_test_stack; 
-push 123_u64; 
-hold_list_values_from_test_stack; 
-encode_call_data; 
+hold_list_values_from_test_stack;
+push 123_u64;
+hold_list_values_from_test_stack;
+encode_call_data;
 
-return_value; 
-mock CallData; 
+return_value;
+mock CallData;
 
 call_contract 12345;
 return_value;
 check_eq ();
 
-push_status; 
+push_status;
 check_eq 3
