@@ -1,18 +1,18 @@
-push "strEndpoint"; 
-hold_string_from_test_stack; 
-hold_list_values_from_test_stack; 
-hold_list_values_from_test_stack; 
-encode_call_data; 
+push "strEndpoint";
+hold_string_from_test_stack;
+hold_list_values_from_test_stack;
+hold_list_values_from_test_stack;
+encode_call_data;
 
-return_value; 
-mock CallData; 
+return_value;
+mock CallData;
 
 call_contract 12345;
 return_value;
 check_eq ();
 
-push_status; 
-check_eq 2; 
+push_status;
+check_eq 2;
 output_to_arg;
 call :: test_helpers :: decode_single_str;
 return_value;
