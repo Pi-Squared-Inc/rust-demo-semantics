@@ -69,9 +69,6 @@ ULM_SEMANTICS_FILES ::= $(shell find ulm-semantics/ -type f -a '(' -name '*.md' 
 ULM_EXECUTION_KOMPILED ::= .build/ulm-execution-kompiled
 ULM_EXECUTION_TIMESTAMP ::= $(ULM_EXECUTION_KOMPILED)/timestamp
 
-ULM_PREPROCESSING_KOMPILED ::= .build/ulm-preprocessing-kompiled
-ULM_PREPROCESSING_TIMESTAMP ::= $(ULM_PREPROCESSING_KOMPILED)/timestamp
-
 ULM_TESTING_KOMPILED ::= .build/ulm-testing-kompiled
 ULM_TESTING_TIMESTAMP ::= $(ULM_TESTING_KOMPILED)/timestamp
 
@@ -96,11 +93,9 @@ clean:
 
 build: $(RUST_PREPROCESSING_TIMESTAMP) \
 				$(RUST_EXECUTION_TIMESTAMP) \
-				$(ULM_PREPROCESSING_TIMESTAMP) \
 				$(ULM_TESTING_TIMESTAMP)
 
 build-ulm: $(ULM_EXECUTION_TIMESTAMP) \
-				$(ULM_PREPROCESSING_TIMESTAMP) \
 				.build/emit-contract-bytes
 
 build-legacy: \
@@ -216,17 +211,6 @@ $(ULM_EXECUTION_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES)
 			-I . \
 			-I ../evm-semantics/kevm-pyk/src/kevm_pyk/kproj/plugin \
 			-v
-
-$(ULM_PREPROCESSING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
-	# Workaround for https://github.com/runtimeverification/k/issues/4141
-	-rm -r $(ULM_PREPROCESSING_KOMPILED)
-	$$(which kompile) ulm-semantics/targets/preprocessing/ulm-target.md  \
-			--hook-namespaces KRYPTO -ccopt -g -ccopt -std=c++17 -ccopt -lcrypto \
-			-ccopt -lsecp256k1 -ccopt -lssl -ccopt 'deps/blockchain-k-plugin/build/krypto/lib/krypto.a' \
-			--emit-json -o $(ULM_PREPROCESSING_KOMPILED) \
-			-I . \
-			-I deps/blockchain-k-plugin \
-			--debug
 
 $(ULM_TESTING_TIMESTAMP): $(ULM_SEMANTICS_FILES) $(RUST_SEMANTICS_FILES) deps/blockchain-k-plugin/build/krypto/lib/krypto.a
 	# Workaround for https://github.com/runtimeverification/k/issues/4141

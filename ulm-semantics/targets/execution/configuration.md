@@ -7,12 +7,15 @@ requires "rust-semantics/config.md"
 module COMMON-K-CELL
     imports private BYTES-SYNTAX
     imports private INT-SYNTAX
+    imports private RUST-PREPROCESSING-SYNTAX
     imports private ULM-DECODING-SYNTAX
     imports private ULM-EXECUTION-SYNTAX
+    imports private ULM-PREPROCESSING-SYNTAX
 
     configuration
         <k>
-            ulmDecodePreprocessedCell($PGM:Bytes)
+            cratesParser(ulmDecodeRustCrates($PGM:Bytes))
+            ~> ulmPreprocessCrates
             ~> ulmExecute($CREATE:Bool, $PGM:Bytes, $ACCTCODE:Int, $GAS:Int)
         </k>
 endmodule
