@@ -101,7 +101,7 @@ module ULM-TEST-EXECUTION
         => concat
             (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
                 .NonEmptyStatements
-            ,   encodeStatements(buffer_id, encodeArgsToEncodeValues(Args))
+            ,   codegenValuesEncoder(buffer_id, encodeArgsToEncodeValues(Args))
             )
 
     rule encode_call_data C:EncodeCall
@@ -227,7 +227,7 @@ module ULM-TEST-EXECUTION
             ( concat
                 (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
                     .NonEmptyStatements
-                ,   encodeStatements
+                ,   codegenValuesEncoder
                         ( buffer_id
                         , (StorageName : str , encodeArgsToEncodeValues(Args))
                         )
@@ -251,7 +251,7 @@ module ULM-TEST-EXECUTION
             ( concat
                 (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
                     .NonEmptyStatements
-                ,   encodeStatements
+                ,   codegenValuesEncoder
                         ( buffer_id
                         , encodeArgsToEncodeValues(Args)
                         )

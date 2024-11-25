@@ -18,10 +18,9 @@ module ULM-PREPROCESSING-STORAGE
                 )
             => ulmAddStorageMethodBody
                 (... methodName: Method
-                , storageName: StorageName
                 , mapperValueType: MapperValue
                 , appendParamsInstructions:
-                    encodeStatements
+                    codegenValuesEncoder
                         ( buffer_id
                         ,   ( ptrValue(null, StorageName) : str
                             , paramsToEncodeValues(Params)
@@ -42,7 +41,6 @@ module ULM-PREPROCESSING-STORAGE
         <k>
             ulmAddStorageMethodBody
                 (... methodName: Method:PathInExpression
-                , storageName: StorageName:String
                 , mapperValueType: MapperValueType:Type
                 , appendParamsInstructions: Append:NonEmptyStatements
                 ) => .K
