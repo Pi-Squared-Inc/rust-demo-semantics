@@ -48,7 +48,7 @@ module ULM-PREPROCESSING-ENDPOINTS
             (... wrapperMethod: WrapperMethod
             , params: Params
             , method: ImplementationMethod
-            , appendReturn: appendValue(buffer_id, return_value, ReturnType)
+            , appendReturn: codegenValuesEncoder(buffer_id, (return_value : ReturnType , .EncodeValues))
             , decodeStatements: decodeParams(0, Params)
             )
 
@@ -58,7 +58,7 @@ module ULM-PREPROCESSING-ENDPOINTS
                   (... wrapperMethod: WrapperMethod:PathInExpression
                   , params: Params:NormalizedFunctionParameterList
                   , method: ImplementationMethod:Identifier
-                  , appendReturn: v(Append:Expression)
+                  , appendReturn: Append:NonEmptyStatements
                   , decodeStatements: Decode:NonEmptyStatements
                   ) => .K
             ...
@@ -77,11 +77,14 @@ module ULM-PREPROCESSING-ENDPOINTS
                             :: state_hooks :: setGasLeft(gas , .CallParamsList);
                             concatNonEmptyStatements
                                 ( Decode
-                                , let return_value = callMethod(ImplementationMethod, Params);
-                                  let buffer_id = :: bytes_hooks :: empty(.CallParamsList);
-                                  let buffer_id = Append;
-                                  :: state_hooks :: setOutput(buffer_id , .CallParamsList);
-                                  :: state_hooks :: setStatus(:: ulm :: EVMC_SUCCESS , .CallParamsList);
+                                , concatNonEmptyStatements
+                                    (   let return_value = callMethod(ImplementationMethod, Params);
+                                        let buffer_id = :: bytes_hooks :: empty(.CallParamsList);
+                                        Append
+                                    ,   :: state_hooks :: setOutput(buffer_id , .CallParamsList);
+                                        :: state_hooks :: setStatus(:: ulm :: EVMC_SUCCESS , .CallParamsList);
+                                        .NonEmptyStatements
+                                    )
                                 )
                         })
                     </method-implementation>
@@ -164,6 +167,7 @@ module ULM-PREPROCESSING-ENDPOINTS
                         | "append_u160"  [token]
                         | "append_u256"  [token]
                         | "append_bool"  [token]
+                        | "append_str"  [token]
                         | "decode_u8"  [token]
                         | "decode_u16"  [token]
                         | "decode_u32"  [token]
@@ -246,15 +250,15 @@ module ULM-PREPROCESSING-ENDPOINTS
     rule decodeForType(u256) => v(:: bytes_hooks :: decode_u256 ( buffer_id , .CallParamsList ))
 
     syntax Expression ::= callMethod(Identifier, NormalizedFunctionParameterList)  [function, total]
-    syntax Expression ::= callMethod(Identifier, CallParamsList)  [function, total]
+    syntax Expression ::= #callMethod(Identifier, CallParamsList)  [function, total]
     syntax CallParamsList ::= buildArgs(Int, NormalizedFunctionParameterList)  [function, total]
 
     rule callMethod(Method:Identifier, Ps:NormalizedFunctionParameterList)
-        => callMethod(Method, buildArgs(0, Ps))
+        => #callMethod(Method, buildArgs(0, Ps))
 
-    rule callMethod(Method:Identifier, .CallParamsList)
+    rule #callMethod(Method:Identifier, .CallParamsList)
         => self . Method ( )
-    rule callMethod(Method:Identifier, (_ , _:CallParamsList) #as Ps:CallParamsList)
+    rule #callMethod(Method:Identifier, (_ , _:CallParamsList) #as Ps:CallParamsList)
         => self . Method ( Ps )
 
     rule buildArgs(_:Int, .NormalizedFunctionParameterList) => .CallParamsList

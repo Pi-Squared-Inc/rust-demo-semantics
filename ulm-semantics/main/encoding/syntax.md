@@ -21,8 +21,14 @@ module ULM-ENCODING-SYNTAX
     syntax BytesOrError  ::= methodSignature(String, NormalizedFunctionParameterList)  [function, total]
     syntax ValueOrError  ::= eventSignature(String, NormalizedFunctionParameterList)  [function, total]
 
-    syntax ExpressionOrError ::= appendValue(bufferId: Identifier, value: Identifier, Type)  [function, total]
+    syntax EncodeValue ::= Expression ":" Type
+    syntax EncodeValues ::= List{EncodeValue, ","}
 
+    // assumes that bufferId points to an empty buffer.
+    syntax NonEmptyStatementsOrError ::= codegenValuesEncoder(bufferId: Identifier, values: EncodeValues)  [function, total]
+
+    syntax EncodeValue ::= paramToEncodeValue(NormalizedFunctionParameter)  [function, total]
+    syntax EncodeValues ::= paramsToEncodeValues(NormalizedFunctionParameterList)  [function, total]
 endmodule
 
 module ULM-ENCODING-HELPER-SYNTAX
