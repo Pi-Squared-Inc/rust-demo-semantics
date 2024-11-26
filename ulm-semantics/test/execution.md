@@ -18,6 +18,7 @@ module ULM-TEST-SYNTAX
                                 | "list_values_holder" List
 
     syntax ULMTestTypeHolderList ::= List{ULMTestTypeHolder, ","}
+    syntax BytesList ::= NeList{Bytes, "+"}
 
     syntax ExecutionItem  ::= "mock" "CallData"
                             | "mock" "Caller"
@@ -29,13 +30,14 @@ module ULM-TEST-SYNTAX
                             | "call_contract" Int
                             | "init_contract" Int
                             | "clear_pgm"
-                            | "hold" KItem 
+                            | "hold" KItem
                             | "output_to_arg"
                             | "push_status"
                             | "check_eq" Int
                             | "hold_string_from_test_stack"
                             | "hold_list_values_from_test_stack"
                             | "expect_cancel"
+                            | "check_raw_output" BytesList
 
     syntax Identifier ::= "u8"  [token]
                         | "u16"  [token]
@@ -49,6 +51,7 @@ endmodule
 module ULM-TEST-EXECUTION
     imports private BYTES
     imports private COMMON-K-CELL
+    imports private K-EQUAL-SYNTAX
     imports private RUST-EXECUTION-TEST-CONFIGURATION
     imports private RUST-SHARED-SYNTAX
     imports private ULM-ENCODING-SYNTAX
@@ -59,8 +62,6 @@ module ULM-TEST-EXECUTION
     imports private ULM-SEMANTICS-HOOKS-ULM-SYNTAX
     imports private ULM-REPRESENTATION
     imports private ULM-TEST-SYNTAX
-    imports private RUST-SHARED-SYNTAX
-    imports private BYTES
 
     syntax Mockable ::= UlmHook
 
@@ -68,60 +69,60 @@ module ULM-TEST-EXECUTION
     // for mocking tests
     rule <k> UTH:ULMTestTypeHolder ~> EI:ExecutionItem => EI ~> UTH ... </k>
     rule <k> UTHL:ULMTestTypeHolderList ~> EI:ExecutionItem => EI ~> UTHL ... </k>
-    rule <k> UTH1:ULMTestTypeHolder ~> UTH2:ULMTestTypeHolder 
-                => (UTH1, UTH2):ULMTestTypeHolderList ... </k> 
-    rule <k> UTH:ULMTestTypeHolder ~> UTHL:ULMTestTypeHolderList 
-                => (UTH, UTHL):ULMTestTypeHolderList ... </k> 
+    rule <k> UTH1:ULMTestTypeHolder ~> UTH2:ULMTestTypeHolder
+                => (UTH1, UTH2):ULMTestTypeHolderList ... </k>
+    rule <k> UTH:ULMTestTypeHolder ~> UTHL:ULMTestTypeHolderList
+                => (UTH, UTHL):ULMTestTypeHolderList ... </k>
 
     rule <k> hold_string_from_test_stack => ptr_holder P ... </k>
          <test-stack> ListItem(P) L:List => L </test-stack>
     rule <k> ptr_holder ptrValue(_, V) => value_holder V ... </k>
-    
+
 
     // TODO: Rework the implementation of the productions related to list value holding
     // Ref - https://github.com/Pi-Squared-Inc/rust-demo-semantics/pull/167#discussion_r1813386536
     rule <k> hold_list_values_from_test_stack => list_ptrs_holder L ~> list_values_holder .List ... </k>
          <test-stack> L:List => .List </test-stack>
-    rule <k> list_ptrs_holder ListItem(I) LPH ~> list_values_holder LLH   
-                => I ~> list_ptrs_holder LPH ~> list_values_holder LLH ... </k> 
+    rule <k> list_ptrs_holder ListItem(I) LPH ~> list_values_holder LLH
+                => I ~> list_ptrs_holder LPH ~> list_values_holder LLH ... </k>
     rule <k> ptrValue(_, V) ~> list_ptrs_holder LPH ~> list_values_holder LLH
-                => list_ptrs_holder LPH ~> list_values_holder ListItem(V) LLH ... </k> 
+                => list_ptrs_holder LPH ~> list_values_holder ListItem(V) LLH ... </k>
     rule <k> list_ptrs_holder .List => .K ... </k>
 
     rule <k> hold I => value_holder I ... </k>
 
     rule <k> encode_call_data_to_string
              ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .ULMTestTypeHolderList
-             => Bytes2String(encodeCallData(FNAME, PTYPES, ARGS)) 
+             => Bytes2String(encodeCallData(FNAME, PTYPES, ARGS))
             ...
-         </k> 
-    
+         </k>
+
     rule <k> encode_call_data_to_string
-             ~> value_holder FNAME 
-             => Bytes2String(encodeCallData(FNAME, .List, .List)) 
+             ~> value_holder FNAME
+             => Bytes2String(encodeCallData(FNAME, .List, .List))
             ...
          </k> [owise]
 
     rule <k> encode_call_data
              ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .ULMTestTypeHolderList
-             => ulmBytesNew(encodeCallData(FNAME, PTYPES, ARGS)) 
+             => ulmBytesNew(encodeCallData(FNAME, PTYPES, ARGS))
             ...
-         </k> 
+         </k>
 
     rule <k> encode_call_data
              ~> value_holder FNAME
-             => ulmBytesNew(encodeCallData(FNAME, .List, .List)) 
+             => ulmBytesNew(encodeCallData(FNAME, .List, .List))
             ...
          </k> [owise]
 
     rule <k> encode_constructor_data
              ~> list_values_holder ARGS , list_values_holder PTYPES , .ULMTestTypeHolderList
-             => ulmBytesNew(encodeConstructorData(PTYPES, ARGS)) 
+             => ulmBytesNew(encodeConstructorData(PTYPES, ARGS))
             ...
-         </k> 
+         </k>
 
     rule <k> encode_constructor_data
-             => ulmBytesNew(encodeConstructorData(.List, .List)) 
+             => ulmBytesNew(encodeConstructorData(.List, .List))
             ...
          </k> [owise]
 
@@ -177,6 +178,26 @@ module ULM-TEST-EXECUTION
         <test-stack> ListItem(I) => .List ... </test-stack>
 
     rule (ulmCancel ~> expect_cancel) => .K
+
+    // BytesList is used to define bytes concatenation in tests, so the "+"
+    // uses below represent the test AST concatenation, which we are
+    // evaluating by concatenating the bytes.
+    syntax Bytes ::= concat(BytesList)  [function, total]
+    rule concat(.BytesList) => b""
+    rule concat(B:Bytes + Bs:BytesList) => B +Bytes concat(Bs)
+
+    syntax Int ::= size(BytesList)  [function, total]
+    rule size(.BytesList) => 0
+    rule size(_:Bytes + Bs:BytesList) => 1 +Int size(Bs)
+
+    rule check_raw_output (L:BytesList => concat(L) + .BytesList)
+        requires size(L) >Int 1
+    rule
+        <k>
+            check_raw_output B:Bytes + .BytesList => .K
+            ...
+        </k>
+        <ulm-output> B:Bytes </ulm-output>
 
 endmodule
 

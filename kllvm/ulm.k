@@ -62,7 +62,7 @@ module ULM-HOOKS
                | "EVMC_FAILURE" [function]
                | "EVMC_INVALID_INSTRUCTION" [function]
                | "EVMC_UNDEFINED_INSTRUCTION" [function]
-               | "EVMC_OUT_OF_GAS" [function] 
+               | "EVMC_OUT_OF_GAS" [function]
                | "EVMC_BAD_JUMP_DESTINATION" [function]
                | "EVMC_STACK_OVERFLOW" [function]
                | "EVMC_STACK_UNDERFLOW" [function]

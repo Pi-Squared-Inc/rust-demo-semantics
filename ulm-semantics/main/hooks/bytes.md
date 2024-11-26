@@ -31,6 +31,7 @@ module ULM-SEMANTICS-HOOKS-BYTES
                         | "length"  [token]
                         | "equals"  [token]
                         | "append_bool"  [token]
+                        | "append_bytes_raw"  [token]
                         | "append_u256"  [token]
                         | "append_u160"  [token]
                         | "append_u128"  [token]
@@ -146,6 +147,13 @@ module ULM-SEMANTICS-HOOKS-BYTES
 
     rule
         normalizedFunctionCall
+            ( :: bytes_hooks :: append_bytes_raw :: .PathExprSegments
+            , BufferIdId:Ptr, ToAppendId:Ptr, .PtrList
+            )
+        => ulmBytesAppendBytesRaw(BufferIdId, ToAppendId)
+
+    rule
+        normalizedFunctionCall
             ( :: bytes_hooks :: decode_u256 :: .PathExprSegments
             , BufferIdId:Ptr, .PtrList
             )
@@ -232,6 +240,8 @@ module ULM-SEMANTICS-HOOKS-BYTES
                             | ulmBytesAppendInt(Expression, Expression)  [seqstrict]
                             | ulmBytesAppendInt(UlmExpression, Int)  [strict(1)]
                             | ulmBytesAppendBool(Expression, Expression)  [seqstrict]
+                            | ulmBytesAppendBytesRaw(Expression, Expression)  [seqstrict]
+                            | ulmBytesAppendBytesRaw(UlmExpression, UlmExpression)  [seqstrict]
                             | ulmBytesAppendStr(Expression, Expression)  [seqstrict]
                             | ulmBytesAppendBytes(UlmExpression, Bytes)  [strict(1)]
                             | ulmBytesAppendLenAndBytes(UlmExpression, Bytes)  [strict(1)]
@@ -297,16 +307,29 @@ module ULM-SEMANTICS-HOOKS-BYTES
     rule ulmBytesAppendStr(ptrValue(_, u64(BytesId)), ptrValue(_, Value:String))
         => ulmBytesAppendLenAndBytes(ulmBytesId(BytesId), String2Bytes(Value))
 
+    rule ulmBytesAppendBytesRaw(ptrValue(_, u64(BytesId)), ptrValue(_, u64(ToAppendId)))
+        => ulmBytesAppendBytesRaw(ulmBytesId(BytesId), ulmBytesId(ToAppendId))
+    rule ulmBytesAppendBytesRaw(ulmBytesValue(B:Bytes), ulmBytesValue(ToAppend))
+        => ulmBytesNew(B +Bytes ToAppend)
+
     rule ulmBytesAppendBytes(ulmBytesValue(B:Bytes), Value:Bytes)
         => ulmBytesNew(B +Bytes Value)
 
     rule ulmBytesAppendLenAndBytes(ulmBytesValue(First:Bytes), Second:Bytes)
-        => ulmBytesNew(First +Bytes Int2Bytes(2, lengthBytes(Second), BE) +Bytes Second)
+        => ulmBytesNew
+            ( First
+                +Bytes Int2Bytes(32, lengthBytes(Second), BE)
+                +Bytes padRightBytes
+                    ( Second
+                    , ((lengthBytes(Second) +Int 31) /Int 32) *Int 32
+                    , 0
+                    )
+            )
         requires lengthBytes(Second) <Int (1 <<Int 16)
 
     rule ulmBytesDecodeBytes(ptrValue(_, u64(BytesId)), L:Int)
         => ulmBytesDecodeBytes(ulmBytesId(BytesId), L:Int)
-    rule ulmBytesDecodeBytes(ulmBytesValue(B:Bytes), L:Int) 
+    rule ulmBytesDecodeBytes(ulmBytesValue(B:Bytes), L:Int)
         => tupleExpression
             ( ulmBytesNew(substrBytes(B, L, lengthBytes(B)))
             , ulmBytesNew(substrBytes(B, 0, L))
@@ -330,15 +353,18 @@ module ULM-SEMANTICS-HOOKS-BYTES
         requires isSignedInt(T) andBool 32 <=Int lengthBytes(B)
     rule ulmBytesDecode(ulmBytesValue(B:Bytes), str)
         => ulmBytesDecodeStr
-            ( Bytes2Int(substrBytes(B, 0, 2), BE, Signed)
-            , substrBytes(B, 2, lengthBytes(B))
+            ( Bytes2Int(substrBytes(B, 0, 32), BE, Signed)
+            , substrBytes(B, 32, lengthBytes(B))
             )
         requires 2 <=Int lengthBytes(B)
 
     rule ulmBytesDecodeInt(Value:Int, B:Bytes, T:Type)
         => ulmBytesDecode(integerToValue(Value, T), B)
     rule ulmBytesDecodeStr(Len:Int, B:Bytes)
-        => ulmBytesDecode(Bytes2String(substrBytes(B, 0, Len)), substrBytes(B, Len, lengthBytes(B)))
+        => ulmBytesDecode
+            ( Bytes2String(substrBytes(B, 0, Len))
+            , substrBytes(B, ((Len +Int 31) /Int 32) *Int 32, lengthBytes(B))
+            )
         requires 0 <=Int Len andBool Len <=Int lengthBytes(B)
 
     rule ulmBytesDecode(Value:Value, B:Bytes)

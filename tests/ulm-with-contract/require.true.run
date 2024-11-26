@@ -1,10 +1,10 @@
 push "myEndpoint";
-hold_string_from_test_stack; 
+hold_string_from_test_stack;
 push "uint64";
-hold_list_values_from_test_stack; 
+hold_list_values_from_test_stack;
 push 123_u64;
-hold_list_values_from_test_stack; 
-encode_call_data; 
+hold_list_values_from_test_stack;
+encode_call_data;
 return_value;
 mock CallData;
 

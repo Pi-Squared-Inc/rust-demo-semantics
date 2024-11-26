@@ -12,11 +12,11 @@ pub trait TopLevelFn {
     #[upgrade]
     fn upgrade(&self) {}
 
-    fn call_top_level(&self, v: u64) -> u64 { 
+    fn call_top_level(&self, v: u64) -> u64 {
       ::top_level_fn::top_level(v)
     }
 
-    fn call_top_level_no_arg(&self) -> u64 { 
+    fn call_top_level_no_arg(&self) -> u64 {
       ::top_level_fn::top_level_no_arg()
     }
 }

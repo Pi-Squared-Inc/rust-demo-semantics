@@ -8,7 +8,7 @@ module ULM-PREPROCESSING-STORAGE
     imports private ULM-PREPROCESSING-SYNTAX-PRIVATE
     imports private ULM-REPRESENTATION
 
-    rule 
+    rule
         <k>
             ulmPreprocessStorage
                 (... fullMethodPath: Method:PathInExpression

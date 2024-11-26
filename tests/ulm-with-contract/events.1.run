@@ -4,12 +4,12 @@ push "logEvent";
 hold_string_from_test_stack;
 push "uint64";
 push "uint64";
-hold_list_values_from_test_stack; 
+hold_list_values_from_test_stack;
 push 123_u64;
-push 555_u64; 
-hold_list_values_from_test_stack; 
-encode_call_data; 
-return_value; 
+push 555_u64;
+hold_list_values_from_test_stack;
+encode_call_data;
+return_value;
 mock CallData;
 
 call_contract 12345;
