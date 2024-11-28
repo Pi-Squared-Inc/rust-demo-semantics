@@ -1,36 +1,30 @@
-list_mock GetAccountStorageHook ( 13032332009337290780939164280742955473285243463246449969298152790977293574652 ) ulmIntResult(0, u256);
-list_mock SetAccountStorageHook ( 13032332009337290780939164280742955473285243463246449969298152790977293574652 , 10000 ) ulmNoResult();
-list_mock GetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 ) ulmIntResult(0, u256);
-list_mock SetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 , 10000 ) ulmNoResult();
-list_mock GetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 ) ulmIntResult(10000, u256);
-list_mock GetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 ) ulmIntResult(10000, u256);
-list_mock GetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 ) ulmIntResult(10000, u256);
-list_mock SetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 , 9900 ) ulmNoResult();
-list_mock GetAccountStorageHook ( 107935355587284645605585039702009686485686559005730386557515578263121021727641 ) ulmIntResult(0, u256);
-list_mock SetAccountStorageHook ( 107935355587284645605585039702009686485686559005730386557515578263121021727641 , 100 ) ulmNoResult();
-list_mock Log3Hook ( 100389287136786176327247604509743168900146139575972864366142685224231313322991 , 1010101 , 2020202 , b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00d" ) ulmNoResult();
-list_mock GetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 ) ulmIntResult(9900, u256);
-list_mock GetAccountStorageHook ( 107935355587284645605585039702009686485686559005730386557515578263121021727641 ) ulmIntResult(100, u256);
-list_mock SetAccountStorageHook ( 6299478510657022222390882510197411465571447485061513230872540120223652878023 , 200 ) ulmNoResult();
-list_mock Log3Hook ( 63486140976153616755203102783360879283472101686154884697241723088393386309925 , 1010101 , 3030303 , b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xc8" ) ulmNoResult();
-list_mock GetAccountStorageHook ( 6299478510657022222390882510197411465571447485061513230872540120223652878023 ) ulmIntResult(200, u256);
-list_mock SetAccountStorageHook ( 6299478510657022222390882510197411465571447485061513230872540120223652878023 , 0 ) ulmNoResult();
-list_mock GetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 ) ulmIntResult(9900, u256);
-list_mock GetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 ) ulmIntResult(9900, u256);
-list_mock SetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 , 9700 ) ulmNoResult();
-list_mock GetAccountStorageHook ( 107935355587284645605585039702009686485686559005730386557515578263121021727641 ) ulmIntResult(100, u256);
-list_mock SetAccountStorageHook ( 107935355587284645605585039702009686485686559005730386557515578263121021727641 , 300 ) ulmNoResult();
-list_mock Log3Hook ( 100389287136786176327247604509743168900146139575972864366142685224231313322991 , 1010101 , 2020202 , b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xc8" ) ulmNoResult();
-list_mock GetAccountStorageHook ( 61159765391625381932700807532824927387505868579121206115135228514320059425645 ) ulmIntResult(9700, u256);
-list_mock GetAccountStorageHook ( 107935355587284645605585039702009686485686559005730386557515578263121021727641 ) ulmIntResult(300, u256);
+list_mock GetAccountStorageHook ( storageKey("total_supply", ) ) ulmIntResult(0, u256);
+list_mock SetAccountStorageHook ( storageKey("total_supply", ) , 10000_u256 ) ulmNoResult();
+list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(0, u256);
+list_mock SetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) , 10000_u256 ) ulmNoResult();
+list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(10000, u256);
+list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(10000, u256);
+list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(10000, u256);
+list_mock SetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) , 9900_u256 ) ulmNoResult();
+list_mock GetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) ) ulmIntResult(0, u256);
+list_mock SetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) , 100_u256 ) ulmNoResult();
+list_mock Log3Hook ( eventSignature("Transfer(address,address,uint256)") , 1010101 , 2020202 , encodeValues(100_u256:u256) ) ulmNoResult();
+list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(9900, u256);
+list_mock GetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) ) ulmIntResult(100, u256);
+list_mock SetAccountStorageHook ( storageKey("allowances", 1010101_u160:u160, 3030303_u160:u160) , 200_u256 ) ulmNoResult();
+list_mock Log3Hook ( eventSignature("Approval(address,address,uint256)") , 1010101 , 3030303 , encodeValues(200_u256:u256) ) ulmNoResult();
+list_mock GetAccountStorageHook ( storageKey("allowances", 1010101_u160:u160, 3030303_u160:u160) ) ulmIntResult(200, u256);
+list_mock SetAccountStorageHook ( storageKey("allowances", 1010101_u160:u160, 3030303_u160:u160) , 0_u256 ) ulmNoResult();
+list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(9900, u256);
+list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(9900, u256);
+list_mock SetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) , 9700_u256 ) ulmNoResult();
+list_mock GetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) ) ulmIntResult(100, u256);
+list_mock SetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) , 300_u256 ) ulmNoResult();
+list_mock Log3Hook ( eventSignature("Transfer(address,address,uint256)") , 1010101 , 2020202 , encodeValues(200_u256:u256) ) ulmNoResult();
+list_mock GetAccountStorageHook ( storageKey("balances", 1010101_u160:u160) ) ulmIntResult(9700, u256);
+list_mock GetAccountStorageHook ( storageKey("balances", 2020202_u160:u160) ) ulmIntResult(300, u256);
 
-push "uint256";
-hold_list_values_from_test_stack;
-push 10000_u256;
-hold_list_values_from_test_stack;
-encode_constructor_data;
-
-
+encode_constructor_data 10000_u256:u256;
 return_value;
 mock CallData;
 
@@ -51,13 +45,7 @@ check_eq 0_u32;
 
 
 
-push "balanceOf";
-hold_string_from_test_stack;
-push "address";
-hold_list_values_from_test_stack;
-push 1010101_u160;
-hold_list_values_from_test_stack;
-encode_call_data;
+encode_call_data balanceOf(1010101_u160:u160);
 return_value;
 mock CallData;
 
@@ -75,15 +63,7 @@ return_value;
 check_eq 10000_u256;
 
 
-push "transfer";
-hold_string_from_test_stack;
-push "address";
-push "uint256";
-hold_list_values_from_test_stack;
-push 2020202_u160;
-push 100_u256;
-hold_list_values_from_test_stack;
-encode_call_data;
+encode_call_data transfer(2020202_u160:u160, 100_u256:u256);
 return_value;
 mock CallData;
 
@@ -104,13 +84,7 @@ return_value;
 check_eq 1_u64;
 
 
-push "balanceOf";
-hold_string_from_test_stack;
-push "address";
-hold_list_values_from_test_stack;
-push 1010101_u160;
-hold_list_values_from_test_stack;
-encode_call_data;
+encode_call_data balanceOf(1010101_u160:u160);
 return_value;
 mock CallData;
 
@@ -128,13 +102,7 @@ return_value;
 check_eq 9900_u256;
 
 
-push "balanceOf";
-hold_string_from_test_stack;
-push "address";
-hold_list_values_from_test_stack;
-push 2020202_u160;
-hold_list_values_from_test_stack;
-encode_call_data;
+encode_call_data balanceOf(2020202_u160:u160);
 return_value;
 mock CallData;
 
@@ -152,15 +120,7 @@ return_value;
 check_eq 100_u256;
 
 
-push "approve";
-hold_string_from_test_stack;
-push "address";
-push "uint256";
-hold_list_values_from_test_stack;
-push 3030303_u160;
-push 200_u256;
-hold_list_values_from_test_stack;
-encode_call_data;
+encode_call_data approve(3030303_u160:u160, 200_u256:u256);
 return_value;
 mock CallData;
 
@@ -181,17 +141,7 @@ return_value;
 check_eq 1_u64;
 
 
-push "transferFrom";
-hold_string_from_test_stack;
-push "address";
-push "address";
-push "uint256";
-hold_list_values_from_test_stack;
-push 1010101_u160;
-push 2020202_u160;
-push 200_u256;
-hold_list_values_from_test_stack;
-encode_call_data;
+encode_call_data transferFrom(1010101_u160:u160, 2020202_u160:u160, 200_u256:u256);
 return_value;
 mock CallData;
 
@@ -213,13 +163,7 @@ check_eq 1_u64;
 
 
 
-push "balanceOf";
-hold_string_from_test_stack;
-push "address";
-hold_list_values_from_test_stack;
-push 1010101_u160;
-hold_list_values_from_test_stack;
-encode_call_data;
+encode_call_data balanceOf(1010101_u160:u160);
 return_value;
 mock CallData;
 
@@ -238,13 +182,7 @@ check_eq 9700_u256;
 
 
 
-push "balanceOf";
-hold_string_from_test_stack;
-push "address";
-hold_list_values_from_test_stack;
-push 2020202_u160;
-hold_list_values_from_test_stack;
-encode_call_data;
+encode_call_data balanceOf(2020202_u160:u160);
 return_value;
 mock CallData;
 

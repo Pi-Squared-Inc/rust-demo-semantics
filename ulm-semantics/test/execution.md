@@ -3,41 +3,34 @@
 module ULM-TEST-SYNTAX
     imports BYTES-SYNTAX
     imports INT-SYNTAX
-    imports STRING-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
+    imports STRING-SYNTAX
+    imports ULM-ENCODING-ENCODE-VALUE-SYNTAX
     imports ULM-SEMANTICS-HOOKS-ULM-SYNTAX
-    imports BYTES-SYNTAX
 
-    // TODO: Do not use KItem for ptr_holder and value_holder. This is
-    // too generic and can lead to problems.
-    // TODO: Replace the list_ptrs_holder and list_values_holder with
-    // PtrList and ValueList.
-    syntax ULMTestTypeHolder ::= "ptr_holder" KItem [strict]
-                                | "value_holder" KItem
-                                | "list_ptrs_holder" List
-                                | "list_values_holder" List
-
-    syntax ULMTestTypeHolderList ::= List{ULMTestTypeHolder, ","}
     syntax BytesList ::= NeList{Bytes, "+"}
+
+    syntax EncodeCall ::= Identifier "(" EncodeValues ")"
+
+    syntax Expression ::= newBytes(Bytes)
 
     syntax ExecutionItem  ::= "mock" "CallData"
                             | "mock" "Caller"
                             | "mock" UlmHook UlmHookResult
+                            | "mock" UlmTestHook UlmHookResult  [strict(1), result(TestResult)]
                             | "list_mock" UlmHook UlmHookResult
-                            | "encode_call_data"
-                            | "encode_call_data_to_string"
-                            | "encode_constructor_data"
+                            | "list_mock" UlmTestHook UlmHookResult  [strict(1), result(TestResult)]
+                            | "encode_call_data" EncodeCall
+                            | "encode_constructor_data" EncodeValues
                             | "call_contract" Int
                             | "init_contract" Int
                             | "clear_pgm"
-                            | "hold" KItem
                             | "output_to_arg"
                             | "push_status"
                             | "check_eq" Int
-                            | "hold_string_from_test_stack"
-                            | "hold_list_values_from_test_stack"
                             | "expect_cancel"
                             | "check_raw_output" BytesList
+                            | "check_eq_bytes" Bytes
 
     syntax Identifier ::= "u8"  [token]
                         | "u16"  [token]
@@ -46,13 +39,24 @@ module ULM-TEST-SYNTAX
                         | "u128"  [token]
                         | "u160"  [token]
                         | "u256"  [token]
+
+    syntax UlmTestHook  ::= SetAccountStorageHook(StorageKey, Expression)  [seqstrict, result(TestResult)]
+                          | GetAccountStorageHook(StorageKey)  [seqstrict, result(TestResult)]
+                          | Log3Hook(EventSignature, Int, Int, EncodeValues)  [seqstrict(1, 4), result(TestResult)]
+
+    syntax StorageKey ::= storageKey(String, EncodeValues)
+    syntax EventSignature ::= eventSignature(String)
+    syntax EncodeValues ::= encodeValues(EncodeValues)
 endmodule
 
 module ULM-TEST-EXECUTION
     imports private BYTES
     imports private COMMON-K-CELL
     imports private K-EQUAL-SYNTAX
+    imports private KRYPTO
+    imports private RUST-ERROR-SYNTAX
     imports private RUST-EXECUTION-TEST-CONFIGURATION
+    imports private RUST-REPRESENTATION
     imports private RUST-SHARED-SYNTAX
     imports private ULM-ENCODING-SYNTAX
     imports private ULM-EXECUTION-SYNTAX
@@ -63,68 +67,70 @@ module ULM-TEST-EXECUTION
     imports private ULM-REPRESENTATION
     imports private ULM-TEST-SYNTAX
 
+    syntax UlmTestHook  ::= mockSetAccountStorageHook(Int, IntOrError)
+                          | mockGetAccountStorageHook(Int)
+                          | #Log3Hook(Int, Int, Int, Bytes)
     syntax Mockable ::= UlmHook
 
-    // The following constructions allows us to build more complex data structures
-    // for mocking tests
-    rule <k> UTH:ULMTestTypeHolder ~> EI:ExecutionItem => EI ~> UTH ... </k>
-    rule <k> UTHL:ULMTestTypeHolderList ~> EI:ExecutionItem => EI ~> UTHL ... </k>
-    rule <k> UTH1:ULMTestTypeHolder ~> UTH2:ULMTestTypeHolder
-                => (UTH1, UTH2):ULMTestTypeHolderList ... </k>
-    rule <k> UTH:ULMTestTypeHolder ~> UTHL:ULMTestTypeHolderList
-                => (UTH, UTHL):ULMTestTypeHolderList ... </k>
+    syntax BytesOrError ::= extractCallSignature(EncodeCall)  [function, total]
+    rule extractCallSignature(Fn:Identifier ( Args:EncodeValues ))
+        => methodSignature(IdentifierToString(Fn), encodeArgsToNormalizedParams(Args))
+    syntax NormalizedFunctionParameterList ::= encodeArgsToNormalizedParams(EncodeValues)  [function, total]
+    rule encodeArgsToNormalizedParams(.EncodeValues) => .NormalizedFunctionParameterList
+    rule encodeArgsToNormalizedParams(_:Expression : T:Type ,  Eas:EncodeValues )
+        => #token("#unused", "Identifier"):T , encodeArgsToNormalizedParams(Eas)
 
-    rule <k> hold_string_from_test_stack => ptr_holder P ... </k>
-         <test-stack> ListItem(P) L:List => L </test-stack>
-    rule <k> ptr_holder ptrValue(_, V) => value_holder V ... </k>
+    syntax Identifier ::= "append_bytes_raw"  [token]
+                        | "buffer_id"  [token]
+                        | "bytes_hooks"  [token]
+                        | "empty"  [token]
+                        | "str"  [token]
 
+    syntax NonEmptyStatementsOrError ::= encodeInstructions(EncodeCall)  [function, total]
+    rule encodeInstructions( _:Identifier ( Args:EncodeValues ) )
+        => encodeInstructions(Args)
+    syntax NonEmptyStatementsOrError ::= encodeInstructions(EncodeValues)  [function, total]
+    rule encodeInstructions(Args:EncodeValues)
+        => concat
+            (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
+                .NonEmptyStatements
+            ,   codegenValuesEncoder(buffer_id, Args)
+            )
 
-    // TODO: Rework the implementation of the productions related to list value holding
-    // Ref - https://github.com/Pi-Squared-Inc/rust-demo-semantics/pull/167#discussion_r1813386536
-    rule <k> hold_list_values_from_test_stack => list_ptrs_holder L ~> list_values_holder .List ... </k>
-         <test-stack> L:List => .List </test-stack>
-    rule <k> list_ptrs_holder ListItem(I) LPH ~> list_values_holder LLH
-                => I ~> list_ptrs_holder LPH ~> list_values_holder LLH ... </k>
-    rule <k> ptrValue(_, V) ~> list_ptrs_holder LPH ~> list_values_holder LLH
-                => list_ptrs_holder LPH ~> list_values_holder ListItem(V) LLH ... </k>
-    rule <k> list_ptrs_holder .List => .K ... </k>
+    rule encode_call_data C:EncodeCall
+        => encodeCallData(extractCallSignature(C), encodeInstructions(C))
 
-    rule <k> hold I => value_holder I ... </k>
+    syntax ExecutionItem ::= encodeCallData(BytesOrError, NonEmptyStatementsOrError)
+    rule encodeCallData(Signature:Bytes, Statements:NonEmptyStatements)
+        =>  Statements
+            :: bytes_hooks :: append_bytes_raw
+                ( ulmBytesNew(Signature) , buffer_id , .CallParamsList ):Expression
 
-    rule <k> encode_call_data_to_string
-             ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .ULMTestTypeHolderList
-             => Bytes2String(encodeCallData(FNAME, PTYPES, ARGS))
+    rule
+        <k>
+            check_eq_bytes B:Bytes => .K
             ...
-         </k>
-
-    rule <k> encode_call_data_to_string
-             ~> value_holder FNAME
-             => Bytes2String(encodeCallData(FNAME, .List, .List))
+        </k>
+        <test-stack>
+            ListItem(ptrValue(_, u64(V))) => .List
             ...
-         </k> [owise]
+        </test-stack>
+        <ulm-bytes-buffers>
+            Buffers:Map
+        </ulm-bytes-buffers>
+        // We expect that the item at the top of the stack points to the
+        // bytes provided to `check_eq_bytes`. This means that the
+        // equality below should evaluate to false on the "orDefault" case
+        // (i.e. the item at the top of the stack does not point to bytes).
+        requires B:Bytes:KItem ==K Buffers[MInt2Unsigned(V)] orDefault 0
 
-    rule <k> encode_call_data
-             ~> list_values_holder ARGS , list_values_holder PTYPES , value_holder FNAME , .ULMTestTypeHolderList
-             => ulmBytesNew(encodeCallData(FNAME, PTYPES, ARGS))
-            ...
-         </k>
+    syntax ExecutionItem ::= encodeConstructorData(NonEmptyStatementsOrError)
 
-    rule <k> encode_call_data
-             ~> value_holder FNAME
-             => ulmBytesNew(encodeCallData(FNAME, .List, .List))
-            ...
-         </k> [owise]
-
-    rule <k> encode_constructor_data
-             ~> list_values_holder ARGS , list_values_holder PTYPES , .ULMTestTypeHolderList
-             => ulmBytesNew(encodeConstructorData(PTYPES, ARGS))
-            ...
-         </k>
-
-    rule <k> encode_constructor_data
-             => ulmBytesNew(encodeConstructorData(.List, .List))
-            ...
-         </k> [owise]
+    rule encode_constructor_data Args:EncodeValues
+        => encodeConstructorData(encodeInstructions(Args))
+    rule encodeConstructorData(Statements:NonEmptyStatements)
+        =>  Statements
+            buffer_id:Expression
 
     rule
         <k> mock CallData => mock(CallDataHook(), V) ... </k>
@@ -199,6 +205,100 @@ module ULM-TEST-EXECUTION
         </k>
         <ulm-output> B:Bytes </ulm-output>
 
+    syntax Bool ::= isTestResult(K) [symbol(isTestResult), function]
+    rule isTestResult(_:K) => false  [owise]
+    rule isTestResult(evaluatedStorageKey(_:Bytes)) => true
+    rule isTestResult(evaluatedEventSignature(_:Int)) => true
+    rule isTestResult(encodedValues(_:Bytes)) => true
+    rule isTestResult(_:PtrValue) => true
+    rule isTestResult(mockSetAccountStorageHook(_:Int, _:Int)) => true
+    rule isTestResult(mockGetAccountStorageHook(_:Int)) => true
+    rule isTestResult(#Log3Hook(_:Int, _:Int, _:Int, _:Bytes)) => true
+
+    syntax StorageKey ::= storageKey(NonEmptyStatementsOrError)
+                        | storageKey(Expression)  [strict(1)]
+                        | storageKey(UlmExpression)  [strict(1)]
+                        | evaluatedStorageKey(Bytes)
+    rule storageKey(StorageName:String, Args:EncodeValues)
+        => storageKey
+            ( concat
+                (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
+                    .NonEmptyStatements
+                ,   codegenValuesEncoder
+                        ( buffer_id
+                        , (StorageName : str , Args)
+                        )
+                )
+            )
+    rule storageKey(Statements:NonEmptyStatements)
+        =>  storageKey({.InnerAttributes Statements buffer_id })
+    rule storageKey(ptrValue(_, u64(BytesId))) => storageKey(ulmBytesId(BytesId))
+    rule storageKey(ulmBytesValue(B:Bytes)) => evaluatedStorageKey(B)
+
+    syntax EventSignature ::= evaluatedEventSignature(Int)
+    rule eventSignature(Signature:String)
+        => evaluatedEventSignature(Bytes2Int(Keccak256raw(String2Bytes(Signature)), BE, Unsigned))
+
+    syntax EncodeValues ::= encodeValues(NonEmptyStatementsOrError)
+                          | encodeValues(Expression)  [strict(1)]
+                          | encodeValues(UlmExpression)  [strict(1)]
+                          | encodedValues(Bytes)
+    rule encodeValues(Args:EncodeValues)
+        => encodeValues
+            ( concat
+                (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
+                    .NonEmptyStatements
+                ,   codegenValuesEncoder
+                        ( buffer_id
+                        , Args
+                        )
+                )
+            )
+    rule encodeValues(Statements:NonEmptyStatements)
+        =>  encodeValues({.InnerAttributes Statements buffer_id })
+    rule encodeValues(ptrValue(_, u64(BytesId))) => encodeValues(ulmBytesId(BytesId))
+    rule encodeValues(ulmBytesValue(B:Bytes)) => encodedValues(B)
+
+    rule SetAccountStorageHook(evaluatedStorageKey(B:Bytes), ptrValue(_, Value:Value))
+        => mockSetAccountStorageHook
+                ( Bytes2Int(Keccak256raw(B), BE, Unsigned)
+                , valueToInteger(Value)
+                )
+    rule mock mockSetAccountStorageHook(Key:Int, Value:Int) Result:UlmHookResult
+        => mock
+            SetAccountStorageHook(Key, Value)
+            Result
+    rule list_mock mockSetAccountStorageHook(Key:Int, Value:Int) Result:UlmHookResult
+        => list_mock
+            SetAccountStorageHook(Key, Value)
+            Result
+
+    rule GetAccountStorageHook(evaluatedStorageKey(B:Bytes))
+        => mockGetAccountStorageHook(Bytes2Int(Keccak256raw(B), BE, Unsigned))
+    rule mock mockGetAccountStorageHook(Key:Int) Result:UlmHookResult
+        => mock
+            GetAccountStorageHook(Key)
+            Result
+    rule list_mock mockGetAccountStorageHook(Key:Int) Result:UlmHookResult
+        => list_mock
+            GetAccountStorageHook(Key)
+            Result
+
+    rule Log3Hook(evaluatedEventSignature(I:Int), A:Int, C:Int, encodedValues(B2:Bytes))
+        => #Log3Hook
+                ( I
+                , A
+                , C
+                , B2
+                )
+    rule list_mock #Log3Hook(V1:Int, V2:Int, V3:Int, B:Bytes) Result:UlmHookResult
+        => list_mock
+            Log3Hook(V1, V2, V3, B)
+            Result
+
+    // This may seem stupid, but it's a workaround for
+    // https://github.com/runtimeverification/k/issues/4683
+    rule isKResult(X) => true requires isTestResult(X)
 endmodule
 
 ```

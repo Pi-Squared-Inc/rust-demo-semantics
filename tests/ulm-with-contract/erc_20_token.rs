@@ -47,7 +47,7 @@ pub trait Erc20Token {
     fn s_balances(&self, address: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
 
     // #[view(getAllowances)]
-    #[storage_mapper("balances")]
+    #[storage_mapper("allowances")]
     fn s_allowances(&self, account: u160, spender: u160) -> ::single_value_mapper::SingleValueMapper<u256>;
 
     #[event("Transfer")]

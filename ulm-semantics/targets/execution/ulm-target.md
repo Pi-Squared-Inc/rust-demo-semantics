@@ -21,6 +21,7 @@ module ULM-TARGET
     imports private ULM-ENCODING
     imports private ULM-EXECUTION
     imports private ULM-PREPROCESSING
+    imports private ULM-SEMANTICS-HOOKS-NO-DEBUG
     imports private ULM-SEMANTICS-HOOKS-TO-ULM-FUNCTIONS
     imports private ULM-TARGET-CONFIGURATION
 endmodule

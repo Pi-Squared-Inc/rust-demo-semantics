@@ -6,8 +6,6 @@ module ULM-SEMANTICS-HOOKS-ULM-SYNTAX
 
     syntax UlmHook  ::= CallDataHook()
                       | CallerHook()
-                      // TODO: Build mocks for all the hooks below in a meaningful
-                      // way in tests (right now we just use opaque values).
                       | SetAccountStorageHook(Int, Int)
                       | GetAccountStorageHook(Int)
                       | Log0Hook(Bytes)

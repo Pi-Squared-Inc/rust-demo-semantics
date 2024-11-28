@@ -43,7 +43,6 @@ module ULM-PREPROCESSING-SYNTAX-PRIVATE
                                 )
                             | ulmAddStorageMethodBody
                                   ( methodName: PathInExpression
-                                  , storageName: String
                                   , mapperValueType: Type
                                   , appendParamsInstructions: NonEmptyStatementsOrError
                                   )

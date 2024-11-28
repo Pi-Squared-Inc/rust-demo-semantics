@@ -5,6 +5,8 @@ module ULM-PREPROCESSING-STORAGE
     imports private COMMON-K-CELL
     imports private RUST-ERROR-SYNTAX
     imports private RUST-PREPROCESSING-CONFIGURATION
+    imports private RUST-REPRESENTATION
+    imports private ULM-ENCODING-SYNTAX
     imports private ULM-PREPROCESSING-SYNTAX-PRIVATE
     imports private ULM-REPRESENTATION
 
@@ -16,9 +18,14 @@ module ULM-PREPROCESSING-STORAGE
                 )
             => ulmAddStorageMethodBody
                 (... methodName: Method
-                , storageName: StorageName
                 , mapperValueType: MapperValue
-                , appendParamsInstructions: encodeParams(Params)
+                , appendParamsInstructions:
+                    codegenValuesEncoder
+                        ( buffer_id
+                        ,   ( ptrValue(null, StorageName) : str
+                            , paramsToEncodeValues(Params)
+                            )
+                        )
                 )
             ...
         </k>
@@ -34,7 +41,6 @@ module ULM-PREPROCESSING-STORAGE
         <k>
             ulmAddStorageMethodBody
                 (... methodName: Method:PathInExpression
-                , storageName: StorageName:String
                 , mapperValueType: MapperValueType:Type
                 , appendParamsInstructions: Append:NonEmptyStatements
                 ) => .K
@@ -46,11 +52,6 @@ module ULM-PREPROCESSING-STORAGE
                 concatNonEmptyStatements
                     ( concatNonEmptyStatements
                         (   let buffer_id = :: bytes_hooks :: empty(.CallParamsList);
-                            let buffer_id = :: bytes_hooks :: append_str
-                                    ( buffer_id
-                                    , ptrValue(null, StorageName)
-                                    , .CallParamsList
-                                    );
                             .NonEmptyStatements
                         ,   Append
                         )
@@ -79,16 +80,8 @@ module ULM-PREPROCESSING-STORAGE
                         | "single_value_mapper"  [token]
                         | "SingleValueMapper"  [token]
                         | "storage"  [token]
+                        | "str"  [token]
                         | "value_type"  [token]
-
-    syntax NonEmptyStatementsOrError ::= encodeParams(NormalizedFunctionParameterList)
-                                              [function, total]
-    rule encodeParams(.NormalizedFunctionParameterList) => .NonEmptyStatements
-    rule encodeParams(Name:Identifier : T:Type , Ps:NormalizedFunctionParameterList)
-        => concat(encodeParam(Name, T), encodeParams(Ps))
-    rule encodeParams(P:NormalizedFunctionParameter , Ps:NormalizedFunctionParameterList)
-        => error("encodeParams: unexpected", ListItem(P) ListItem(Ps))
-        [owise]
 
     syntax NonEmptyStatementsOrError ::= encodeParam(Identifier, Type)  [function, total]
     syntax NonEmptyStatementsOrError ::= encodeParam(ExpressionOrError)  [function, total]

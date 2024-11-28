@@ -31,20 +31,20 @@ module ULM-ENCODING-HELPER
 
     // Encoding of individual types
 
-    rule convertToKBytes(i8(V) , "int8") => Int2Bytes(32, MInt2Signed(V), BE:Endianness) 
-    rule convertToKBytes(u8(V) , "uint8") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness) 
-    rule convertToKBytes(i16(V), "int16") => Int2Bytes(32, MInt2Signed(V), BE:Endianness) 
-    rule convertToKBytes(u16(V), "uint16") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness) 
-    rule convertToKBytes(i32(V), "int32") => Int2Bytes(32, MInt2Signed(V), BE:Endianness) 
-    rule convertToKBytes(u32(V), "uint32") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness) 
-    rule convertToKBytes(i64(V), "int64") => Int2Bytes(32, MInt2Signed(V), BE:Endianness) 
-    rule convertToKBytes(u64(V), "uint64") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness) 
-    rule convertToKBytes(u128(V), "uint128") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness) 
-    rule convertToKBytes(true,  "bool") => Int2Bytes(32, 1, BE:Endianness) 
+    rule convertToKBytes(i8(V) , "int8") => Int2Bytes(32, MInt2Signed(V), BE:Endianness)
+    rule convertToKBytes(u8(V) , "uint8") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)
+    rule convertToKBytes(i16(V), "int16") => Int2Bytes(32, MInt2Signed(V), BE:Endianness)
+    rule convertToKBytes(u16(V), "uint16") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)
+    rule convertToKBytes(i32(V), "int32") => Int2Bytes(32, MInt2Signed(V), BE:Endianness)
+    rule convertToKBytes(u32(V), "uint32") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)
+    rule convertToKBytes(i64(V), "int64") => Int2Bytes(32, MInt2Signed(V), BE:Endianness)
+    rule convertToKBytes(u64(V), "uint64") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)
+    rule convertToKBytes(u128(V), "uint128") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)
+    rule convertToKBytes(true,  "bool") => Int2Bytes(32, 1, BE:Endianness)
     rule convertToKBytes(false, "bool") => Int2Bytes(32, 0, BE:Endianness)
-    rule convertToKBytes(u256(V), "uint256") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness) 
-    rule convertToKBytes(u160(V), "uint160") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)  
-    rule convertToKBytes(u160(V), "address") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)  
+    rule convertToKBytes(u256(V), "uint256") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)
+    rule convertToKBytes(u160(V), "uint160") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)
+    rule convertToKBytes(u160(V), "address") => Int2Bytes(32, MInt2Unsigned(V), BE:Endianness)
 
 endmodule
 
@@ -69,6 +69,17 @@ module ULM-CALLDATA-ENCODER
                         | "append_u256"  [token]
                         | "append_bool"  [token]
                         | "append_str"  [token]
+                        | "debug"  [token]
+                        | "debug_u8"  [token]
+                        | "debug_u16"  [token]
+                        | "debug_u32"  [token]
+                        | "debug_u64"  [token]
+                        | "debug_u128"  [token]
+                        | "debug_u160"  [token]
+                        | "debug_u256"  [token]
+                        | "debug_bool"  [token]
+                        | "debug_str"  [token]
+                        | "debug_unit"  [token]
                         | "empty"  [token]
                         | "length"  [token]
 
@@ -80,34 +91,6 @@ module ULM-CALLDATA-ENCODER
     rule encodeEventSignatureAsInt(FS)
         => Bytes2Int(Keccak256raw(String2Bytes(FS)), BE, Unsigned)
     rule encodeEventSignatureAsInt(E:SemanticsError) => E
-
-    // TODO: it may be worth extracting the substrString(Keccak256(String2Bytes(FS)), 0, 8) 
-    // thing to a function that takes a String and produces a String or Bytes (as opposed to
-    // taking a StringOrError as below) (perhaps with an encodeAsBytes(...) on top of it) and 
-    // then use it here and in the rules below.
-    rule encodeCallData(FN:String, FAT:List, FAL:List) => 
-           encodeFunctionSignature(FN, FAT) +Bytes encodeFunctionParams(FAL, FAT, b"")  
-    rule encodeConstructorData(FAT:List, FAL:List) => 
-           encodeFunctionParams(FAL, FAT, b"")  
-
-    // Function signature encoding
-    rule encodeFunctionSignature(FuncName:String, RL:List) => 
-            encodeFunctionSignatureHelper(RL:List, FuncName +String "(") [priority(40)]
-        
-    rule encodeFunctionSignatureHelper(ListItem(FuncParam:String) RL:List, FS) => 
-            encodeFunctionSignatureHelper(RL, FS +String FuncParam +String ",") [owise]
-    
-    // The last param does not have a follow up comma
-    rule encodeFunctionSignatureHelper(ListItem(FuncParam:String) .List, FS) => 
-            encodeFunctionSignatureHelper(.List, FS +String FuncParam ) 
-
-    rule encodeFunctionSignatureHelper(.List, FS) => encodeHexBytes(substrString(Keccak256(String2Bytes(FS  +String ")")), 0, 8)) 
-
-    // Function parameters encoding
-    rule encodeFunctionParams(ListItem(V:Value) ARGS:List, ListItem(T:String) PTYPES:List, B:Bytes) =>
-            encodeFunctionParams(ARGS:List, PTYPES:List, B:Bytes +Bytes convertToKBytes(V, T))
-
-    rule encodeFunctionParams(.List, .List, B:Bytes) => B
 
     syntax Identifier ::= "ulm#head_size"  [token]
                         | "ulm#head"  [token]
@@ -162,6 +145,7 @@ module ULM-CALLDATA-ENCODER
                 , HeadSize
                 , Head, Tail
                 , appendType(T)
+                , debugType(T)
                 )
         ,   appendValues(Evs, HeadSize, Head, Tail)
         )
@@ -187,12 +171,30 @@ module ULM-CALLDATA-ENCODER
         => error("appendType: unrecognized type", ListItem(T))
         [owise]
 
+    syntax PathInExpressionOrError ::= PathInExpression | SemanticsError
+    syntax PathInExpressionOrError ::= debugType(Type)  [function, total]
+
+    rule debugType(u8  ) => :: debug :: debug_u8
+    rule debugType(u16 ) => :: debug :: debug_u16
+    rule debugType(u32 ) => :: debug :: debug_u32
+    rule debugType(u64 ) => :: debug :: debug_u64
+    rule debugType(u128) => :: debug :: debug_u128
+    rule debugType(u160) => :: debug :: debug_u160
+    rule debugType(u256) => :: debug :: debug_u256
+
+    rule debugType(bool) => :: debug :: debug_bool
+    rule debugType(()) => :: debug :: debug_unit
+    rule debugType(str) => :: debug :: debug_str
+    rule debugType(T:Type) => error("debugType: unrecognized type", ListItem(T))
+        [owise]
+
     syntax NonEmptyStatementsOrError ::= appendValue
                                             ( value: Expression
                                             , headSize: Expression
                                             , head: Identifier
                                             , tail: Identifier
                                             , appendFn: AppendTypeOrError
+                                            , debugFn: PathInExpressionOrError
                                             )  [function, total]
 
       rule appendValue
@@ -201,6 +203,16 @@ module ULM-CALLDATA-ENCODER
               , head: _Head:Identifier
               , tail: _Tail:Identifier
               , appendFn: E:SemanticsError
+              , debugFn: _Debug:PathInExpressionOrError
+              )
+          =>  E
+      rule appendValue
+              (... value: _Value:Expression
+              , headSize: _HeadSize:Expression
+              , head: _Head:Identifier
+              , tail: _Tail:Identifier
+              , appendFn: _Append:AppendType
+              , debugFn: E:SemanticsError
               )
           =>  E
       rule appendValue
@@ -209,8 +221,10 @@ module ULM-CALLDATA-ENCODER
               , head: Head:Identifier
               , tail: _Tail:Identifier
               , appendFn: fixedSize(P:PathInExpression)
+              , debugFn: Debug:PathInExpression
               )
           =>  let Head = P ( Head , Value , .CallParamsList );
+              Debug ( Value, .CallParamsList );
               .NonEmptyStatements
       rule appendValue
               (... value: Value:Expression
@@ -218,6 +232,7 @@ module ULM-CALLDATA-ENCODER
               , head: Head:Identifier
               , tail: Tail:Identifier
               , appendFn: variableSize(P:PathInExpression)
+              , debugFn: Debug:PathInExpression
               )
           =>  let Head = :: bytes_hooks :: append_u32
                   ( Head
@@ -225,15 +240,18 @@ module ULM-CALLDATA-ENCODER
                   , .CallParamsList
                   );
               let Tail = P ( Tail , Value , .CallParamsList );
+              Debug ( Value, .CallParamsList );
               .NonEmptyStatements
       rule appendValue
-              (... value: _Value:Expression
+              (... value: Value:Expression
               , headSize: _HeadSize:Expression
               , head: _Head:Identifier
               , tail: _Tail:Identifier
               , appendFn: empty
+              , debugFn: Debug:PathInExpression
               )
-          =>  .NonEmptyStatements
+          =>  Debug ( Value, .CallParamsList );
+              .NonEmptyStatements
 
     syntax ExpressionOrError ::= headSize(Type)  [function, total]
     rule headSize(u8  ) => v(ptrValue(null, u32(32p32)))

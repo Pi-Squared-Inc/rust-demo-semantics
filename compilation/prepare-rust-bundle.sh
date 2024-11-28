@@ -25,9 +25,9 @@ cat $ULM_CONTRACTS_TESTING_INPUT_DIR/bytes_hooks.rs >> $output_file
 echo ">)>" >> $output_file
 
 echo "<(<" >> $output_file
-echo "::test_helpers" >> $output_file
+echo "::debug" >> $output_file
 echo "<|>" >> $output_file
-cat $ULM_CONTRACTS_TESTING_INPUT_DIR/test_helpers.rs >> $output_file
+cat $ULM_CONTRACTS_TESTING_INPUT_DIR/debug.rs >> $output_file
 echo ">)>" >> $output_file
 
 echo "<(<" >> $output_file
@@ -46,6 +46,12 @@ echo "<(<" >> $output_file
 echo "::single_value_mapper" >> $output_file
 echo "<|>" >> $output_file
 cat $ULM_CONTRACTS_TESTING_INPUT_DIR/single_value_mapper.rs >> $output_file
+echo ">)>" >> $output_file
+
+echo "<(<" >> $output_file
+echo "::test_helpers" >> $output_file
+echo "<|>" >> $output_file
+cat $ULM_CONTRACTS_TESTING_INPUT_DIR/test_helpers.rs >> $output_file
 echo ">)>" >> $output_file
 
 echo "<(<" >> $output_file
