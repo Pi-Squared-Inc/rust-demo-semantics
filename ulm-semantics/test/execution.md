@@ -69,8 +69,8 @@ module ULM-TEST-EXECUTION
     imports private ULM-REPRESENTATION
     imports private ULM-TEST-SYNTAX
 
-    syntax UlmTestHook  ::= #SetAccountStorageHook(Int, IntOrError)
-                          | #GetAccountStorageHook(Int)
+    syntax UlmTestHook  ::= mockSetAccountStorageHook(Int, IntOrError)
+                          | mockGetAccountStorageHook(Int)
                           | #Log3Hook(Int, Int, Int, Bytes)
     syntax Mockable ::= UlmHook
 
@@ -125,6 +125,10 @@ module ULM-TEST-EXECUTION
         <ulm-bytes-buffers>
             Buffers:Map
         </ulm-bytes-buffers>
+        // We expect that the item at the top of the stack points to the
+        // bytes provided to `check_eq_bytes`. This means that the
+        // equality below should evaluate to false on the "orDefault" case
+        // (i.e. the item at the top of the stack does not point to bytes).
         requires B:Bytes:KItem ==K Buffers[MInt2Unsigned(V)] orDefault 0
 
     syntax ExecutionItem ::= encodeConstructorData(NonEmptyStatementsOrError)
@@ -214,8 +218,8 @@ module ULM-TEST-EXECUTION
     rule isTestResult(evaluatedEventSignature(_:Int)) => true
     rule isTestResult(encodedValues(_:Bytes)) => true
     rule isTestResult(_:PtrValue) => true
-    rule isTestResult(#SetAccountStorageHook(_:Int, _:Int)) => true
-    rule isTestResult(#GetAccountStorageHook(_:Int)) => true
+    rule isTestResult(mockSetAccountStorageHook(_:Int, _:Int)) => true
+    rule isTestResult(mockGetAccountStorageHook(_:Int)) => true
     rule isTestResult(#Log3Hook(_:Int, _:Int, _:Int, _:Bytes)) => true
 
     syntax StorageKey ::= storageKey(NonEmptyStatementsOrError)
@@ -263,26 +267,26 @@ module ULM-TEST-EXECUTION
     rule encodeValues(ulmBytesValue(B:Bytes)) => encodedValues(B)
 
     rule SetAccountStorageHook(evaluatedStorageKey(B:Bytes), ptrValue(_, Value:Value))
-        => #SetAccountStorageHook
+        => mockSetAccountStorageHook
                 ( Bytes2Int(Keccak256raw(B), BE, Unsigned)
                 , valueToInteger(Value)
                 )
-    rule mock #SetAccountStorageHook(Key:Int, Value:Int) Result:UlmHookResult
+    rule mock mockSetAccountStorageHook(Key:Int, Value:Int) Result:UlmHookResult
         => mock
             SetAccountStorageHook(Key, Value)
             Result
-    rule list_mock #SetAccountStorageHook(Key:Int, Value:Int) Result:UlmHookResult
+    rule list_mock mockSetAccountStorageHook(Key:Int, Value:Int) Result:UlmHookResult
         => list_mock
             SetAccountStorageHook(Key, Value)
             Result
 
     rule GetAccountStorageHook(evaluatedStorageKey(B:Bytes))
-        => #GetAccountStorageHook(Bytes2Int(Keccak256raw(B), BE, Unsigned))
-    rule mock #GetAccountStorageHook(Key:Int) Result:UlmHookResult
+        => mockGetAccountStorageHook(Bytes2Int(Keccak256raw(B), BE, Unsigned))
+    rule mock mockGetAccountStorageHook(Key:Int) Result:UlmHookResult
         => mock
             GetAccountStorageHook(Key)
             Result
-    rule list_mock #GetAccountStorageHook(Key:Int) Result:UlmHookResult
+    rule list_mock mockGetAccountStorageHook(Key:Int) Result:UlmHookResult
         => list_mock
             GetAccountStorageHook(Key)
             Result
