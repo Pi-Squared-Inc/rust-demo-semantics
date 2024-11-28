@@ -3,16 +3,14 @@
 module ULM-TEST-SYNTAX
     imports BYTES-SYNTAX
     imports INT-SYNTAX
-    imports STRING-SYNTAX
     imports RUST-EXECUTION-TEST-PARSING-SYNTAX
+    imports STRING-SYNTAX
+    imports ULM-ENCODING-ENCODE-VALUE-SYNTAX
     imports ULM-SEMANTICS-HOOKS-ULM-SYNTAX
-    imports BYTES-SYNTAX
 
     syntax BytesList ::= NeList{Bytes, "+"}
 
-    syntax EncodeArg ::= Expression ":" Type
-    syntax EncodeArgs ::= List{EncodeArg, ","}
-    syntax EncodeCall ::= Identifier "(" EncodeArgs ")"
+    syntax EncodeCall ::= Identifier "(" EncodeValues ")"
 
     syntax Expression ::= newBytes(Bytes)
 
@@ -23,7 +21,7 @@ module ULM-TEST-SYNTAX
                             | "list_mock" UlmHook UlmHookResult
                             | "list_mock" UlmTestHook UlmHookResult  [strict(1), result(TestResult)]
                             | "encode_call_data" EncodeCall
-                            | "encode_constructor_data" EncodeArgs
+                            | "encode_constructor_data" EncodeValues
                             | "call_contract" Int
                             | "init_contract" Int
                             | "clear_pgm"
@@ -46,9 +44,9 @@ module ULM-TEST-SYNTAX
                           | GetAccountStorageHook(StorageKey)  [seqstrict, result(TestResult)]
                           | Log3Hook(EventSignature, Int, Int, EncodeValues)  [seqstrict(1, 4), result(TestResult)]
 
-    syntax StorageKey ::= storageKey(String, EncodeArgs)
+    syntax StorageKey ::= storageKey(String, EncodeValues)
     syntax EventSignature ::= eventSignature(String)
-    syntax EncodeValues ::= encodeValues(EncodeArgs)
+    syntax EncodeValues ::= encodeValues(EncodeValues)
 endmodule
 
 module ULM-TEST-EXECUTION
@@ -75,11 +73,11 @@ module ULM-TEST-EXECUTION
     syntax Mockable ::= UlmHook
 
     syntax BytesOrError ::= extractCallSignature(EncodeCall)  [function, total]
-    rule extractCallSignature(Fn:Identifier ( Args:EncodeArgs ))
+    rule extractCallSignature(Fn:Identifier ( Args:EncodeValues ))
         => methodSignature(IdentifierToString(Fn), encodeArgsToNormalizedParams(Args))
-    syntax NormalizedFunctionParameterList ::= encodeArgsToNormalizedParams(EncodeArgs)  [function, total]
-    rule encodeArgsToNormalizedParams(.EncodeArgs) => .NormalizedFunctionParameterList
-    rule encodeArgsToNormalizedParams(_:Expression : T:Type ,  Eas:EncodeArgs )
+    syntax NormalizedFunctionParameterList ::= encodeArgsToNormalizedParams(EncodeValues)  [function, total]
+    rule encodeArgsToNormalizedParams(.EncodeValues) => .NormalizedFunctionParameterList
+    rule encodeArgsToNormalizedParams(_:Expression : T:Type ,  Eas:EncodeValues )
         => #token("#unused", "Identifier"):T , encodeArgsToNormalizedParams(Eas)
 
     syntax Identifier ::= "append_bytes_raw"  [token]
@@ -88,20 +86,15 @@ module ULM-TEST-EXECUTION
                         | "empty"  [token]
                         | "str"  [token]
 
-    syntax EncodeValues ::= encodeArgsToEncodeValues(EncodeArgs)  [function, total]
-    rule encodeArgsToEncodeValues(.EncodeArgs) => .EncodeValues
-    rule encodeArgsToEncodeValues(E:Expression : T:Type , Es:EncodeArgs)
-        => E : T , encodeArgsToEncodeValues(Es)
-
     syntax NonEmptyStatementsOrError ::= encodeInstructions(EncodeCall)  [function, total]
-    rule encodeInstructions( _:Identifier ( Args:EncodeArgs ) )
+    rule encodeInstructions( _:Identifier ( Args:EncodeValues ) )
         => encodeInstructions(Args)
-    syntax NonEmptyStatementsOrError ::= encodeInstructions(EncodeArgs)  [function, total]
-    rule encodeInstructions(Args:EncodeArgs)
+    syntax NonEmptyStatementsOrError ::= encodeInstructions(EncodeValues)  [function, total]
+    rule encodeInstructions(Args:EncodeValues)
         => concat
             (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
                 .NonEmptyStatements
-            ,   codegenValuesEncoder(buffer_id, encodeArgsToEncodeValues(Args))
+            ,   codegenValuesEncoder(buffer_id, Args)
             )
 
     rule encode_call_data C:EncodeCall
@@ -133,7 +126,7 @@ module ULM-TEST-EXECUTION
 
     syntax ExecutionItem ::= encodeConstructorData(NonEmptyStatementsOrError)
 
-    rule encode_constructor_data Args:EncodeArgs
+    rule encode_constructor_data Args:EncodeValues
         => encodeConstructorData(encodeInstructions(Args))
     rule encodeConstructorData(Statements:NonEmptyStatements)
         =>  Statements
@@ -226,14 +219,14 @@ module ULM-TEST-EXECUTION
                         | storageKey(Expression)  [strict(1)]
                         | storageKey(UlmExpression)  [strict(1)]
                         | evaluatedStorageKey(Bytes)
-    rule storageKey(StorageName:String, Args:EncodeArgs)
+    rule storageKey(StorageName:String, Args:EncodeValues)
         => storageKey
             ( concat
                 (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
                     .NonEmptyStatements
                 ,   codegenValuesEncoder
                         ( buffer_id
-                        , (StorageName : str , encodeArgsToEncodeValues(Args))
+                        , (StorageName : str , Args)
                         )
                 )
             )
@@ -250,14 +243,14 @@ module ULM-TEST-EXECUTION
                           | encodeValues(Expression)  [strict(1)]
                           | encodeValues(UlmExpression)  [strict(1)]
                           | encodedValues(Bytes)
-    rule encodeValues(Args:EncodeArgs)
+    rule encodeValues(Args:EncodeValues)
         => encodeValues
             ( concat
                 (   let buffer_id = :: bytes_hooks :: empty( .CallParamsList );
                     .NonEmptyStatements
                 ,   codegenValuesEncoder
                         ( buffer_id
-                        , encodeArgsToEncodeValues(Args)
+                        , Args
                         )
                 )
             )
